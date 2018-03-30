@@ -1,0 +1,343 @@
+host: localhost
+port: 5000
+driversPath: ./drivers
+drivers:
+    shield:
+        enable: true
+        name: Shield
+        executable: adb
+        hostName: shield
+        port: 5555
+        commands:
+            menu:
+                code: 1
+            home:
+                code: 3
+            back:
+                code: 4
+            dpad_up:
+                code: 19
+            dpad_down:
+                code: 20
+            dpad_left:
+                code: 21
+            dpad_right:
+                code: 22
+            dpad_center:
+                code: 23
+            volume_up:
+                code: 23
+            volume_down:
+                code: 25
+            power:
+                code: 26
+            fastForward:
+                code: 90
+            next:
+                code: 87
+            pause:
+                code: 127
+            play:
+                code: 126
+            playPause:
+                code: 85
+            prev:
+                code: 88
+            revind:
+                code: 89
+            skipBack:
+                code: 273
+            skipForward:
+                code: 272
+            stepBack:
+                code: 275
+            stepForward:
+                code: 274
+            stop:
+                code: 86
+    lgtv:
+        enable: true
+        name: LGTV
+        hostName: lgwebostv
+        port: 3000
+        timeout: 1
+        commands:
+            get_channels:
+                uri: tv/getChannelList
+                result: true
+            current_channel:
+                uri: tv/getCurrentChannel
+                result: true
+            get_input_list:
+                uri: tv/getExternalInputList
+                result: true
+            status:
+                uri: audio/getStatus
+                result: true
+            get_volume:
+                uri: audio/getVolume
+                result: true
+            get_sw_info:
+                uri: com.webos.service.update/getCurrentSWInformation
+                result: true
+            get_service_list:
+                uri: api/getServiceList
+                result: true
+            list_launch_points:
+                uri: com.webos.applicationManager/listLaunchPoints
+                result: true
+            get_program_info:
+                uri: tv/getChannelProgramInfo
+                result: true
+            get_foreground_app_info:
+                uri: com.webos.applicationManager/getForegroundAppInfo
+                result: true
+            get_app_status:
+                uri: com.webos.service.appstatus/getAppStatus
+                result: true
+            get_app_state:
+                uri: system.launcher/getAppState
+                result: true
+            get_program_info:
+                uri: tv/getChannelProgramInfo
+                result: true
+            toast:
+                uri: system.notifications/createToast
+                argKey: message
+            open_uri:
+                uri: system.launcher/open
+                argKey: target
+            launch:
+                uri: system.launcher/launch
+                argKey: id
+            close:
+                uri: system.launcher/close
+                argKey: id
+            'off':
+                uri: system/turnOff
+            channel:
+                uri: tv/openChannel
+                argKey: channelId
+            input:
+                uri: tv/switchInput
+                argKey: inputId
+            mute:
+                uri: audio/setMute
+                argKey: mute
+            set_volume:
+                uri: audio/setVolume
+                argKey: volume
+            play:
+                uri: media.controls/play
+            stop:
+                uri: media.controls/stop
+            pause:
+                uri: media.controls/pause
+            rewind:
+                uri: media.controls/rewind
+            fast_forward:
+                uri: media.controls/fastForward
+            channel_up:
+                uri: tv/channelUp
+            channel_down:
+                uri: tv/channelDown
+            set_3d_on:
+                uri: com.webos.service.tv.display/set3DOn
+            set_3d_off:
+                uri: com.webos.service.tv.display/set3DOff
+            launch_app:
+                uri: com.webos.applicationManager/launch
+            enter:
+                uri: com.webos.service.ime/sendEnterKey
+            pause:
+                uri: media.controls/pause
+            play:
+                uri: media.controls/play
+            stop:
+                uri: media.controls/stop
+            volume_up:
+                uri: audio/volumeUp
+            volume_down:
+                uri: audio/volumeDown
+            delete_characters:
+                uri: com.webos.service.ime/deleteCharacters
+                argKey: count
+            close_web_app:
+                uri: webapp/closeWebApp
+            close_viewer:
+                uri: media.viewer/close
+        registerCommand:
+            forcePairing: false
+            pairingType: PROMPT
+            client-key: ab3cb407ac6069c73f9399400812c15e
+            manifest:
+                signed:
+                    permissions:
+                        - TEST_SECURE
+                        - CONTROL_INPUT_TEXT
+                        - CONTROL_MOUSE_AND_KEYBOARD
+                        - READ_INSTALLED_APPS
+                        - READ_LGE_SDX
+                        - READ_NOTIFICATIONS
+                        - SEARCH
+                        - WRITE_SETTINGS
+                        - WRITE_NOTIFICATION_ALERT
+                        - CONTROL_POWER
+                        - READ_CURRENT_CHANNEL
+                        - READ_RUNNING_APPS
+                        - READ_UPDATE_INFO
+                        - UPDATE_FROM_REMOTE_APP
+                        - READ_LGE_TV_INPUT_EVENTS
+                        - READ_TV_CURRENT_TIME
+                permissions:
+                    - LAUNCH
+                    - LAUNCH_WEBAPP
+                    - APP_TO_APP
+                    - CLOSE
+                    - TEST_OPEN
+                    - TEST_PROTECTED
+                    - CONTROL_AUDIO
+                    - CONTROL_DISPLAY
+                    - CONTROL_INPUT_JOYSTICK
+                    - CONTROL_INPUT_MEDIA_RECORDING
+                    - CONTROL_INPUT_MEDIA_PLAYBACK
+                    - CONTROL_INPUT_TV
+                    - CONTROL_POWER
+                    - READ_APP_STATUS
+                    - READ_CURRENT_CHANNEL
+                    - READ_INPUT_DEVICE_LIST
+                    - READ_NETWORK_STATE
+                    - READ_RUNNING_APPS
+                    - READ_TV_CHANNEL_LIST
+                    - WRITE_NOTIFICATION_TOAST
+                    - READ_POWER_STATE
+                    - READ_COUNTRY_INFO
+    tivo:
+        enable: true
+        name: Tivo
+        hostName: tivo
+        port: 31339
+        timeout: 5
+        commands:
+            set_channel:
+                commands:
+                    -
+                        code: IRCODE LIVETV
+                        delay: 1
+                    -
+                        code: SETCH
+                        argument: true
+                        response: true
+                acceptsNumber: true
+            up:
+                code: IRCODE UP
+            down:
+                code: IRCODE DOWN
+            left:
+                code: IRCODE LEFT
+            right:
+                code: IRCODE RIGHT
+            select:
+                code: IRCODE SELECT
+            tivo:
+                code: IRCODE TIVO
+            live_tv:
+                code: IRCODE LIVETV
+            guide:
+                code: IRCODE GUIDE
+            info:
+                code: IRCODE INFO
+            exit:
+                code: IRCODE EXIT
+            thumbs_up:
+                code: IRCODE THUMBSUP
+            thumbs_down:
+                code: IRCODE THUMBSDOWN
+            channel_up:
+                code: IRCODE CHANNELUP
+            channel_down:
+                code: IRCODE CHANNELDOWN
+            mute:
+                code: IRCODE MUTE
+            volume_down:
+                code: IRCODE VOLUMEDOWN
+            volume_up:
+                code: IRCODE VOLUMEUP
+            tv_input:
+                code: IRCODE TVINPUT
+            play:
+                code: IRCODE PLAY
+            forward:
+                code: IRCODE FORWARD
+            reverse:
+                code: IRCODE REVERSE
+            pause:
+                code: IRCODE PAUSE
+            slow:
+                code: IRCODE SLOW
+            replay:
+                code: IRCODE REPLAY
+            advance:
+                code: IRCODE ADVANCE
+            record:
+                code: IRCODE RECORD
+            '0':
+                code: IRCODE NUM0
+            '1':
+                code: IRCODE NUM1
+            '2':
+                code: IRCODE NUM2
+            '3':
+                code: IRCODE NUM3
+            '4':
+                code: IRCODE NUM4
+            '5':
+                code: IRCODE NUM5
+            '6':
+                code: IRCODE NUM6
+            '7':
+                code: IRCODE NUM7
+            '8':
+                code: IRCODE NUM8
+            '9':
+                code: IRCODE NUM9
+            enter:
+                code: IRCODE ENTER
+            clear:
+                code: IRCODE CLEAR
+            a:
+                code: IRCODE ACTION_A
+            b:
+                code: IRCODE ACTION_B
+            c:
+                code: IRCODE ACTION_C
+            d:
+                code: IRCODE ACTION_D
+    denon:
+        enable: true
+        name: Denon
+        hostName: denon
+        port: 23
+        timeout: 10
+        commands:
+            select_input:
+                code: SI
+                values:
+                    - dvd
+            master_volume:
+                code: MV
+                values:
+                    - up
+                    - down
+                acceptsNumber: true
+            power:
+                code: PW
+                values:
+                    - 'on'
+                    - 'off'
+            current_input_source:
+                code: SI?
+                result: true
+            current_volume:
+                code: MV?
+                result: true
