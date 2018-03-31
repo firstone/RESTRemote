@@ -13,7 +13,7 @@ class Shield(object):
     def getData(self, commandName, args=None):
         if commandName == 'commands':
             commandList = []
-            for commandName in self.config['keycodes'].iterkeys():
+            for commandName in self.config['commands'].iterkeys():
                 commandList.append({
                     'name': commandName,
                     'method': 'PUT'
@@ -27,7 +27,7 @@ class Shield(object):
 
     def executeCommand(self, commandName, args=None):
         output = subprocess.check_output([self.executable, 'shell', 'input',
-            'keyevent', str(self.config['keycodes'][commandName])])
+            'keyevent', str(self.config['commands'][commandName]['code'])])
 
         result = {
             'driver': __name__,

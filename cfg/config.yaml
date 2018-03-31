@@ -31,7 +31,7 @@ drivers:
                 code: 25
             power:
                 code: 26
-            fastForward:
+            fast_forward:
                 code: 90
             next:
                 code: 87
@@ -43,15 +43,15 @@ drivers:
                 code: 85
             prev:
                 code: 88
-            revind:
+            rewind:
                 code: 89
-            skipBack:
+            skip_back:
                 code: 273
-            skipForward:
+            skip_forward:
                 code: 272
-            stepBack:
+            step_back:
                 code: 275
-            stepForward:
+            step_forward:
                 code: 274
             stop:
                 code: 86
