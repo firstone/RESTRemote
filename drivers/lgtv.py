@@ -112,10 +112,14 @@ class LGTV(WebSocketClient):
                 raise Exception('Command in ' + __name__ +
                     ': ' + commandName + ' isn''t configured for arguments')
 
+            argData = { argKey: args }
             if command.get('acceptsBool'):
-                argData = { argKey: args == 'true' or args == 'on' }
-            else:
-                argData = { argKey: args }
+                argData[argKey] = args == 'true' or args == 'on'
+            elif command.get('acceptsNumber'):
+                try:
+                    argData[argKey] = int(args)
+                except ValueError:
+                    pass
         elif argKey:
             raise Exception('Command in ' + __name__ +
                 ': ' + commandName + ' expects for arguments')
