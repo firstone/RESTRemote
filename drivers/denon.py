@@ -38,7 +38,6 @@ class Denon(object):
     def sendCommand(self, command):
         result = ''
         try:
-            print "Sending", command
             self.conn.send(command)
             self.conn.send('\n')
             time.sleep(1)

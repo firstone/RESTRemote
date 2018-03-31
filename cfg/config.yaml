@@ -364,6 +364,11 @@ drivers:
                 values:
                     'on': 'on'
                     'off': 'off'
+            mute:
+                code: MU
+                values:
+                    'on': 'on'
+                    'off': 'off'
             current_input_source:
                 code: SI?
                 result: true
