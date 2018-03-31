@@ -55,7 +55,7 @@ def RESTRemote(config, debug):
             module = __import__(driverName)
             modules[driverName] = getattr(module, driverData['name'])(driverData)
     print "debug", debug
-    app.run(host=configData.get('host', 'localhost'), port=configData.get('port', 5000),
+    app.run(host=configData.get('bindHost', '0.0.0.0'), port=configData.get('port', 5000),
         debug=debug)
 
 

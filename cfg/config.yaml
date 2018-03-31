@@ -1,4 +1,4 @@
-host: localhost
+bindHost: 0.0.0.0
 port: 5000
 driversPath: ./drivers
 drivers:
@@ -9,6 +9,12 @@ drivers:
         hostName: shield
         port: 5555
         commands:
+            start_app:
+                values:
+                    spmc: com.semperpax.spmc16/.Splash
+                    kodi: org.xbmc.kodi/.Splash
+                    netflix: com.netflix.ninja/.MainActivity
+                    etv: com.etvnet.tv/.EtvnetandroidActivity
             menu:
                 code: 1
             home:
@@ -110,6 +116,10 @@ drivers:
             launch:
                 uri: system.launcher/launch
                 argKey: id
+                values:
+                    netflix: netflix
+                    amazon: amazon
+                    vudu: vudu
             close:
                 uri: system.launcher/close
                 argKey: id
@@ -121,12 +131,23 @@ drivers:
             input:
                 uri: tv/switchInput
                 argKey: inputId
+                values:
+                    hdmi1: com.webos.app.hdmi1
+                    hdmi2: com.webos.app.hdmi2
+                    hdmi3: com.webos.app.hdmi3
+                    hdmi4: com.webos.app.hdmi4
             mute:
                 uri: audio/setMute
                 argKey: mute
+                acceptsBool: true
+                values:
+                    'on': 'on'
+                    'off': 'off'
+            toggle_mute: {}
             set_volume:
                 uri: audio/setVolume
                 argKey: volume
+                acceptsNumber: true
             play:
                 uri: media.controls/play
             stop:
@@ -323,18 +344,26 @@ drivers:
             select_input:
                 code: SI
                 values:
-                    - dvd
+                    dvd: dvd
+                    tv_sat: sat
+                    bluray: bd
+                    tv_audio: tv
+                    media: mplay
+                    game: game
+                    aux1: aux1
+                    cd: cd
+                    aux2: aux2
             master_volume:
                 code: MV
                 values:
-                    - up
-                    - down
+                    up: up
+                    down: down
                 acceptsNumber: true
             power:
                 code: PW
                 values:
-                    - 'on'
-                    - 'off'
+                    'on': 'on'
+                    'off': 'off'
             current_input_source:
                 code: SI?
                 result: true

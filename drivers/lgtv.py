@@ -91,6 +91,15 @@ class LGTV(WebSocketClient):
         }
 
     def executeCommand(self, commandName, args=None):
+        if commandName == 'toggle_mute':
+            output = self.getData('status')
+
+            if 'error' in output['output']:
+                return output
+
+            return self.executeCommand('mute',
+                'off' if output['output']['payload']['mute'] else 'on')
+
         command = self.config['commands'][commandName]
         if command.get('result'):
             raise Exception('Invalid command for ' + __name__ +
@@ -103,7 +112,10 @@ class LGTV(WebSocketClient):
                 raise Exception('Command in ' + __name__ +
                     ': ' + commandName + ' isn''t configured for arguments')
 
-            argData = { argKey: args }
+            if command.get('acceptsBool'):
+                argData = { argKey: args == 'true' or args == 'on' }
+            else:
+                argData = { argKey: args }
         elif argKey:
             raise Exception('Command in ' + __name__ +
                 ': ' + commandName + ' expects for arguments')
