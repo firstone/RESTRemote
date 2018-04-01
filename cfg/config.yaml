@@ -69,6 +69,8 @@ drivers:
         hostName: lgwebostv
         port: 3000
         timeout: 1
+        promptTimeout: 60
+        clientKeyFile: cfg/lgtvClientKey.yaml
         commands:
             get_channels:
                 uri: tv/getChannelList
@@ -192,7 +194,6 @@ drivers:
         registerCommand:
             forcePairing: false
             pairingType: PROMPT
-            client-key: ab3cb407ac6069c73f9399400812c15e
             manifest:
                 signed:
                     permissions:

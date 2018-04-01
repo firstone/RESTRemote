@@ -1,34 +1,55 @@
 import json
 from threading import Event
 from ws4py.client.threadedclient import WebSocketClient
+import yaml
 
 
 class LGTV(WebSocketClient):
 
     def __init__(self, config):
+        super(LGTV, self).__init__("ws://" + config['hostName'] + ':' +
+            str(config['port']),  exclude_headers=["Origin"])
         self.config = config
         self.isOpened = False
         self.connectEvent = Event()
         self.curID = 0
         self.callbacks = {}
-        super(LGTV, self).__init__("ws://" + config['hostName'] + ':' +
-            str(config['port']),  exclude_headers=["Origin"])
+        self.clientKey = None
+        try:
+            with open(config['clientKeyFile'], 'r') as clientKeyInput:
+                self.clientKey = yaml.load(clientKeyInput)
+        except:
+            pass
         print 'Loaded ', __name__, 'driver'
+
+    def saveClientKey(self):
+        with open(self.config['clientKeyFile'], 'w') as clientKeyOutput:
+            yaml.safe_dump(self.clientKey, clientKeyOutput, allow_unicode=True,
+                encoding='utf-8')
+            clientKeyOutput.close()
 
     def opened(self):
         self.isOpened = True
+        if self.clientKey:
+            self.config['registerCommand'].update(self.clientKey)
         self.sendCommand('register', 'register', None,
             self.config['registerCommand'], False)
 
     def closed(self, code, reason=None):
         self.isOpened = False
-        self.connectEvent.unset()
+        self.connectEvent.clear()
         print "LG TV Connection closed", code, reason
 
     def received_message(self, data):
         message = json.loads(str(data))
         if message['id'] == 'register0':
-            self.connectEvent.set()
+            if message['type'] == 'error':
+                print "Connection issue", message['error']
+            elif message['type'] == 'registered':
+                if not self.clientKey:
+                    self.clientKey = message['payload']
+                    self.saveClientKey()
+                self.connectEvent.set()
         callback = self.callbacks.get(message['id'])
         if callback:
             callback['data'] = message
@@ -38,7 +59,8 @@ class LGTV(WebSocketClient):
         if not self.isOpened:
             try:
                 self.connect()
-                self.connectEvent.wait(self.config['timeout'])
+                self.connectEvent.wait(self.config['timeout']
+                    if self.clientKey else self.config['promptTimeout'])
             except:
                 raise Exception('Driver ' + __name__ +
                     ' cannot connect to device')
