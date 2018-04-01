@@ -24,13 +24,16 @@ class Tivo(object):
 
         raise Exception('Invalid command for ' + __name__ + ': ' + commandName)
 
-    def sendCommand(self, command):
+    def sendCommand(self, command, args=None):
         result = ''
         conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         conn.connect((self.config['hostName'], self.config['port']))
         conn.settimeout(self.config['timeout'])
         try:
             conn.send(command['code'])
+            if command.get('argument'):
+                conn.send(' ')
+                conn.send(args)
             conn.send('\r\n')
             if command.get('response', False):
                 result = conn.recv(1024)
@@ -47,9 +50,9 @@ class Tivo(object):
         command = self.config['commands'][commandName]
         if 'commands' in command:
             for item in command['commands']:
-                output.append(self.sendCommand(item))
+                output.append(self.sendCommand(item, args))
         else:
-            output.append(self.sendCommand(command))
+            output.append(self.sendCommand(command, args))
 
         result = {
             'driver': __name__,

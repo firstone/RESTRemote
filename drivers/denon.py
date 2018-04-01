@@ -4,6 +4,9 @@ import time
 
 class Denon(object):
 
+    BUF_SIZE = 4096
+    RESPONSE_DELAY = 1
+
     def __init__(self, config):
         self.config = config
         self.conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -40,8 +43,8 @@ class Denon(object):
         try:
             self.conn.send(command)
             self.conn.send('\n')
-            time.sleep(1)
-            result = self.conn.recv(512)
+            time.sleep(self.RESPONSE_DELAY)
+            result = self.conn.recv(self.BUF_SIZE)
         except socket.timeout:
             pass
         return result[:-1].split('\r') if result else result
@@ -50,6 +53,9 @@ class Denon(object):
         command = self.config['commands'][commandName]['code']
 
         if args:
+            if 'values' in command:
+                args = command['values'][args]
+
             command += args.upper()
 
         result = {

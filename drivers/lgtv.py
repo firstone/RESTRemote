@@ -8,6 +8,7 @@ class LGTV(WebSocketClient):
     def __init__(self, config):
         self.config = config
         self.isOpened = False
+        self.connectEvent = Event()
         self.curID = 0
         self.callbacks = {}
         super(LGTV, self).__init__("ws://" + config['hostName'] + ':' +
@@ -21,10 +22,13 @@ class LGTV(WebSocketClient):
 
     def closed(self, code, reason=None):
         self.isOpened = False
+        self.connectEvent.unset()
         print "LG TV Connection closed", code, reason
 
     def received_message(self, data):
         message = json.loads(str(data))
+        if message['id'] == 'register0':
+            self.connectEvent.set()
         callback = self.callbacks.get(message['id'])
         if callback:
             callback['data'] = message
@@ -34,6 +38,7 @@ class LGTV(WebSocketClient):
         if not self.isOpened:
             try:
                 self.connect()
+                self.connectEvent.wait(self.config['timeout'])
             except:
                 raise Exception('Driver ' + __name__ +
                     ' cannot connect to device')
@@ -111,6 +116,9 @@ class LGTV(WebSocketClient):
             if not argKey:
                 raise Exception('Command in ' + __name__ +
                     ': ' + commandName + ' isn''t configured for arguments')
+
+            if 'values' in command:
+                args = command['values'][args]
 
             argData = { argKey: args }
             if command.get('acceptsBool'):

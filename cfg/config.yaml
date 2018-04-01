@@ -45,7 +45,7 @@ drivers:
                 code: 127
             play:
                 code: 126
-            playPause:
+            play_pause:
                 code: 85
             prev:
                 code: 88
@@ -61,6 +61,8 @@ drivers:
                 code: 274
             stop:
                 code: 86
+            get_app_list:
+                result: true
     lgtv:
         enable: true
         name: LGTV
@@ -247,6 +249,16 @@ drivers:
                         delay: 1
                     -
                         code: SETCH
+                        argument: true
+                        response: true
+                acceptsNumber: true
+            force_channel:
+                commands:
+                    -
+                        code: IRCODE LIVETV
+                        delay: 1
+                    -
+                        code: FORCECH
                         argument: true
                         response: true
                 acceptsNumber: true

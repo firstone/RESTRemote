@@ -39,9 +39,9 @@ def ISYExport(config, destination, output, host, temp):
                 resourceName = driverName + '.' + commandName
                 command = driverName + '/' + commandName
                 if commandData.get('acceptsNumber'):
-                    print 'Create state variable', resourceName
+                    print 'Create state variable for ', resourceName
                     addResource(configData, netConfig, currentID, resourceName)
-                    commands[currentID] = command + '/$' + resourceName
+                    commands[currentID] = command + '/${var.2.<replace with stare resource ID>}'
                     currentID += 1
                     simpleCommand = False
 
