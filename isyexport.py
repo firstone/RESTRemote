@@ -1,7 +1,10 @@
+#!/usr/bin/env python3
+
 import click
 import errno
 import os
 import shutil
+import utils
 import yaml
 import xml.etree.ElementTree as ET
 from zipfile import ZipFile
@@ -39,7 +42,7 @@ def ISYExport(config, destination, output, input, host, temp):
     configData['host'] = host
 
     if input:
-        print "Extracting existing resources from", input.name
+        print("Extracting existing resources from", input.name)
         with ZipFile(input) as inputFile:
             inputFile.extractall(destination)
 
@@ -63,19 +66,21 @@ def ISYExport(config, destination, output, input, host, temp):
     except:
         resourceTree = ET.Element('NetConfig')
 
-    print 'Found', maxResourceID, 'existing resources'
+    print('Found', maxResourceID, 'existing resources')
     curResourceID = maxResourceID + 1
 
-    print "Exporting ISY network resources from", config.name, "to", destination
+    print("Exporting ISY network resources from", config.name, "to", destination)
 
-    for driverName, driverData in configData['drivers'].iteritems():
-        for commandName, commandData in driverData['commands'].iteritems():
+    for deviceName, deviceData in configData['devices'].items():
+        deviceData.update(configData['drivers'][deviceData['driver']])
+        utils.flattenCommands(deviceData)
+        for commandName, commandData in deviceData['commands'].items():
             if not commandData.get('result'):
                 simpleCommand = True
-                resourceName = driverName + '.' + commandName
-                command = driverName + '/' + commandName
+                resourceName = deviceName + '.' + commandName
+                command = deviceName + '/' + commandName
                 if commandData.get('acceptsNumber'):
-                    print 'Create state variable for', resourceName
+                    print('Create state variable for', resourceName)
                     resourceID = addResource(configData, resources, resourceTree,
                         resourceName)
                     commands[resourceID] = command + STATE_VAR_MESSAGE
@@ -105,7 +110,7 @@ def ISYExport(config, destination, output, input, host, temp):
     with ZipFile(os.path.join(destination, output), 'w') as outputFile:
 
         with open(outputFileName, 'w') as output:
-            output.write(ET.tostring(resourceTree))
+            output.write(ET.tostring(resourceTree).decode())
 
         # Add main resources file to zip
         outputFile.write(outputFileName,
@@ -145,7 +150,7 @@ def addResource(configData, resources, parent, resourceName):
 def addNewResource(parent, resourceName):
     global curResourceID
 
-    print 'Adding new resource', resourceName
+    print('Adding new resource', resourceName)
     netRule = ET.SubElement(parent, 'NetRule')
     addElement(netRule, 'name', resourceName)
     addElement(netRule, 'id', str(curResourceID))

@@ -3,24 +3,37 @@ from threading import Event
 from ws4py.client.threadedclient import WebSocketClient
 import yaml
 
+from drivers.param_parser import ParamParser
 
-class LGTV(WebSocketClient):
 
-    def __init__(self, config):
-        super(LGTV, self).__init__("ws://" + config['hostName'] + ':' +
+class WebOS(WebSocketClient):
+
+    def __init__(self, config, logger, use_numeric_key=False):
+        super(WebOS, self).__init__("ws://" + config['hostName'] + ':' +
             str(config['port']),  exclude_headers=["Origin"])
         self.config = config
-        self.isOpened = False
+        self.connected = False
         self.connectEvent = Event()
         self.curID = 0
         self.callbacks = {}
         self.clientKey = None
+        self.logger = logger
+        self.paramParser = ParamParser(config, use_numeric_key)
         try:
             with open(config['clientKeyFile'], 'r') as clientKeyInput:
                 self.clientKey = yaml.load(clientKeyInput)
         except:
             pass
-        print 'Loaded ', __name__, 'driver'
+        self.sock.settimeout(5)
+        try:
+            self.connect()
+        except:
+            logger.debug('Websocket timeout. Possibly device is off')
+
+        logger.info('Loaded %s driver', __name__)
+
+    def start(self):
+        pass
 
     def saveClientKey(self):
         with open(self.config['clientKeyFile'], 'w') as clientKeyOutput:
@@ -29,22 +42,22 @@ class LGTV(WebSocketClient):
             clientKeyOutput.close()
 
     def opened(self):
-        self.isOpened = True
+        self.connected = True
         if self.clientKey:
             self.config['registerCommand'].update(self.clientKey)
         self.sendCommand('register', 'register', None,
             self.config['registerCommand'], False)
 
     def closed(self, code, reason=None):
-        self.isOpened = False
+        self.connected = False
         self.connectEvent.clear()
-        print "LG TV Connection closed", code, reason
+        self.logger.warn('LG TV Connection closed %s, %s', code, reason)
 
     def received_message(self, data):
         message = json.loads(str(data))
         if message['id'] == 'register0':
             if message['type'] == 'error':
-                print "Connection issue", message['error']
+                self.logger.error('Connection issue %s', message['error'])
             elif message['type'] == 'registered':
                 if not self.clientKey:
                     self.clientKey = message['payload']
@@ -55,8 +68,11 @@ class LGTV(WebSocketClient):
             callback['data'] = message
             callback['event'].set()
 
+    def is_connected(self):
+        return self.connected
+
     def sendCommand(self, prefix, type, uri, payload=None, shouldWait=True):
-        if not self.isOpened:
+        if not self.connected:
             try:
                 self.connect()
                 self.connectEvent.wait(self.config['timeout']
@@ -96,7 +112,7 @@ class LGTV(WebSocketClient):
     def getData(self, commandName, args=None):
         if commandName == 'commands':
             commandList = []
-            for commandName, command in self.config['commands'].iteritems():
+            for commandName, command in self.config['commands'].items():
                 commandList.append({
                     'name': commandName,
                     'method': 'GET' if command.get('result', False) else 'PUT'
@@ -111,11 +127,15 @@ class LGTV(WebSocketClient):
             raise Exception('Invalid command for ' + __name__ +
                 ' and method: ' + commandName)
 
-        return {
+        result = {
             'driver': __name__,
             'command': commandName,
             'output': self.sendCommand('', 'request', command['uri'])
         }
+
+        self.process_result(commandName, command, result)
+
+        return result
 
     def executeCommand(self, commandName, args=None):
         if commandName == 'toggle_mute':
@@ -139,8 +159,7 @@ class LGTV(WebSocketClient):
                 raise Exception('Command in ' + __name__ +
                     ': ' + commandName + ' isn''t configured for arguments')
 
-            if 'values' in command:
-                args = command['values'][args]
+            args = self.paramParser(command, args)
 
             argData = { argKey: args }
             if command.get('acceptsBool'):
@@ -162,3 +181,8 @@ class LGTV(WebSocketClient):
         }
 
         return result
+
+    def process_result(self, commandName, command, result):
+        if 'argKey' in command:
+            param = result['output']['payload'][command['argKey']]
+            result['result'] = self.paramParser.translate_param(command, param)

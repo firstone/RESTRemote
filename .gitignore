@@ -1,0 +1,5 @@
+*.pyc
+cfg/lgtvClientKey.yaml
+profile/
+server.json
+logs/
