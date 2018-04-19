@@ -25,21 +25,27 @@ If you don't have a particular device and don't want to load its driver, you can
 
 Once service is running, you can execute GET calls via browser:
 
-http://localhost:5000/drivers
+http://localhost:5000/devices
 
 or via command line. For example, curl:
 
-`curl -i -X GET http://localhost:5000/tivo/commands`
+`curl -i -X GET http://localhost:5000/living_tivo/commands`
 
 PUT commands have to be done from command line or tool:
 
-`curl -i -X PUT http://localhost:5000/lgtv/mute/on`
+`curl -i -X PUT http://localhost:5000/living_tv/mute/on`
 
 ## Basic commands
 
-* */drivers* - list configured drivers
-* */`<driver name>`/commands* - list all available commands with method (**GET**, **PUT**)
+* */devices* - list configured drivers
+* */`<device name>`/commands* - list all available commands with method (**GET**, **PUT**)
 
+
+## Devices
+
+Devices represent your physical AV devices and use drivers to communicated with them.
+
+Each device has key (short name), which is what you use in REST command, a driver associated with it, as well as configuration parameters. Configuration parameters depend on the driver. See the driver section for configuration details.
 
 ## Drivers
 

@@ -1,10 +1,11 @@
 import importlib
 from polyinterface import LOGGER
 from polyinterface import Controller
-from poly.remotedevice import RemoteDevice
-from poly.primaryremotedevice import PrimaryRemoteDevice
 import time
 import utils
+
+from poly.remotedevice import RemoteDevice
+from poly.primaryremotedevice import PrimaryRemoteDevice
 
 
 class RemoteController(Controller):
@@ -35,8 +36,8 @@ class RemoteController(Controller):
             if deviceData.get('enable', True):
                 driverName = deviceData['driver']
                 deviceData.update(self.configData['drivers'][driverName])
-                deviceData['poly'] = self.configData['poly']['drivers'].get(
-                    driverName, {})
+                polyData = self.configData['poly']['drivers'].get(driverName, {})
+                deviceData['poly'] = polyData
 
                 driverModule = importlib.import_module('drivers.' + driverName)
                 deviceDriver = getattr(driverModule,
@@ -45,16 +46,18 @@ class RemoteController(Controller):
 
                 nodeAddress = self.configData['poly']['devices'][deviceName]['address']
                 nodeName = deviceData.get('name', utils.name_to_desc(deviceName))
-                self.addNode(PrimaryRemoteDevice(self, nodeAddress,
-                    driverName, nodeName, deviceData, deviceDriver))
+                primaryDevice = PrimaryRemoteDevice(self, nodeAddress,
+                    driverName, nodeName, deviceData, deviceDriver)
+                self.addNode(primaryDevice)
                 for commandGroup, commandGroupData in deviceData.get(
                     'commandGroups', {}).items():
+                    commandGroupData['poly'] = polyData
                     groupConfig = self.configData['poly']['commandGroups'].get(
                         commandGroup)
                     if groupConfig:
                         groupDriverName = driverName + '_' + commandGroup
                         groupNodeAddress = nodeAddress + '_' + groupConfig['address']
-                        self.addNode(RemoteDevice(self, nodeAddress,
+                        self.addNode(RemoteDevice(self, primaryDevice, nodeAddress,
                             groupNodeAddress, groupDriverName,
                                 utils.name_to_desc(commandGroup),
                                 commandGroupData, deviceDriver))
@@ -70,4 +73,4 @@ class RemoteController(Controller):
 
     id = 'controller'
     commands = { 'DISCOVER': discover }
-    drivers = [ {'driver': 'ST', 'value': 0, 'uom': 2} ]
+    drivers = [ { 'driver': 'ST', 'value': 0, 'uom': 2 } ]

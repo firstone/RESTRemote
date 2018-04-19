@@ -24,6 +24,8 @@ devices:
         hostName: lgwebostv
         timeout: 5
         port: 3000
+        macFile: cfg/lgtvMac.yaml
+        clientKeyFile: cfg/lgtvClientKey.yaml
     living_receiver:
         enable: true
         name: Living Room Receiver
@@ -34,6 +36,23 @@ drivers:
     android:
         description: Android Device
         executable: adb
+        values:
+            activities:
+                -
+                    value: dashboard
+                    param: com.google.android.leanbacklauncher
+                -
+                    value: spmc
+                    param: com.semperpax.spmc16
+                -
+                    value: kodi
+                    param: org.xbmc.kodi
+                -
+                    value: netflix
+                    param: com.netflix.ninja
+                -
+                    value: etv
+                    param: com.etvnet.tv
         commandGroups:
             navigation:
                 commands:
@@ -93,14 +112,20 @@ drivers:
                         result: true
             inputs:
                 commands:
+                    get_current_activity:
+                        value_set: activities_reverse
+                        result: true
                     start_app:
                         values:
                             -
+                                value: dashboard
+                                param: com.google.android.leanbacklauncher/.MainActivity
+                            -
                                 value: spmc
-                                param: com.semperpax.spmc16/.Main
+                                param: com.semperpax.spmc16/.Splash
                             -
                                 value: kodi
-                                param: org.xbmc.kodi/.Main
+                                param: org.xbmc.kodi/.Splash
                             -
                                 value: netflix
                                 param: com.netflix.ninja/.MainActivity
@@ -115,7 +140,6 @@ drivers:
         moduleName: WebOS
         timeout: 1
         promptTimeout: 60
-        clientKeyFile: cfg/lgtvClientKey.yaml
         values:
             inputs:
                 -
@@ -187,17 +211,17 @@ drivers:
                     current_channel:
                         uri: tv/getCurrentChannel
                         result: true
-                    launch:
+                    input:
                         uri: system.launcher/launch
                         argKey: id
                         value_set: inputs
                     channel:
                         uri: tv/openChannel
                         argKey: channelId
-                    input:
-                        uri: tv/switchInput
-                        argKey: inputId
-                        value_set: inputs
+                    # input:
+                    #     uri: tv/switchInput
+                    #     argKey: inputId
+                    #     value_set: inputs
                     channel_up:
                         uri: tv/channelUp
                     channel_down:
@@ -212,7 +236,8 @@ drivers:
                     status:
                         uri: audio/getStatus
                         result: true
-                    get_volume:
+                    current_volume:
+                        argKey: volume
                         uri: audio/getVolume
                         result: true
                     mute:
@@ -224,6 +249,17 @@ drivers:
                                 value: 'on'
                             -
                                 value: 'off'
+                    mute_status:
+                        argKey: muted
+                        uri: audio/getVolume
+                        result: true
+                        values:
+                            -
+                                value: false
+                                param: 'off'
+                            -
+                                value: true
+                                param: 'on'
                     toggle_mute: {}
                     set_volume:
                         uri: audio/setVolume
@@ -256,10 +292,11 @@ drivers:
         commands:
             power_off:
                 uri: system/turnOff
-            set_3d_on:
-                uri: com.webos.service.tv.display/set3DOn
-            set_3d_off:
-                uri: com.webos.service.tv.display/set3DOff
+            power_on: {}
+            # set_3d_on:
+            #     uri: com.webos.service.tv.display/set3DOn
+            # set_3d_off:
+            #     uri: com.webos.service.tv.display/set3DOff
         registerCommand:
             forcePairing: false
             pairingType: PROMPT
@@ -496,7 +533,7 @@ drivers:
                 code: MV
                 acceptsNumber: true
             power:
-                code: PW
+                code: ZM
                 value_set: on_off
             mute:
                 code: MU
@@ -561,24 +598,20 @@ poly:
                     driver:
                         name: SVOL
                         description: Master Volume
+                        input: current_volume
                 select_input:
                     driver:
                         name: GV0
                         description: Input
+                        input: current_input_source
                 power:
                     driver:
                         name: GV1
+                        input: current_power
                 mute:
                     driver:
                         name: GV2
-                current_input_source:
-                    set_driver: GV0
-                current_volume:
-                    set_driver: SVOL
-                current_power:
-                    set_driver: GV1
-                current_mute:
-                    set_driver: GV2
+                        input: current_mute
         web_os:
             commands:
                 set_volume:
@@ -590,6 +623,15 @@ poly:
                         prec: 0
                     driver:
                         name: SVOL
+                        input: current_volume
+                input:
+                    driver:
+                        name: GV0
+                        input: current_input
+                mute:
+                    driver:
+                        name: GV1
+                        input: mute_status
         tivo_ip:
             commands:
                 set_channel:
@@ -600,3 +642,10 @@ poly:
                     param:
                         uom: 56
                         subset: 0-9999
+        android:
+            commands:
+                start_app:
+                    driver:
+                        name: GV0
+                        description: Current Activity
+                        input: get_current_activity

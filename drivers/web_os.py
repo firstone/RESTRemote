@@ -1,5 +1,6 @@
 import json
 from threading import Event
+import wakeonlan
 from ws4py.client.threadedclient import WebSocketClient
 import yaml
 
@@ -24,6 +25,13 @@ class WebOS(WebSocketClient):
                 self.clientKey = yaml.load(clientKeyInput)
         except:
             pass
+
+        try:
+            with open(config['macFile'], 'r') as macInput:
+                self.config.update(yaml.load(macInput))
+        except:
+            pass
+
         self.sock.settimeout(5)
         try:
             self.connect()
@@ -146,6 +154,14 @@ class WebOS(WebSocketClient):
 
             return self.executeCommand('mute',
                 'off' if output['output']['payload']['mute'] else 'on')
+        elif commandName == 'power_on':
+            self.logger.debug('Sending wake up command to %s', self.config['mac'])
+            wakeonlan.send_magic_packet(self.config['mac'])
+            return {
+                'driver': __name__,
+                'command': commandName,
+                'output': ''
+            }
 
         command = self.config['commands'][commandName]
         if command.get('result'):
@@ -159,7 +175,7 @@ class WebOS(WebSocketClient):
                 raise Exception('Command in ' + __name__ +
                     ': ' + commandName + ' isn''t configured for arguments')
 
-            args = self.paramParser(command, args)
+            args = self.paramParser.translate_param(command, args)
 
             argData = { argKey: args }
             if command.get('acceptsBool'):

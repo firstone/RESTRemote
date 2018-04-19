@@ -9,6 +9,8 @@ import yaml
 import xml.etree.ElementTree as ET
 from zipfile import ZipFile
 
+from drivers.param_parser import ParamParser
+
 ISY_CONF_FOLDER = 'CONF'
 ISY_NET_FOLDER = 'NET'
 DEFAULT_TIMEOUT = 4000
@@ -73,7 +75,8 @@ def ISYExport(config, destination, output, input, host, temp):
 
     for deviceName, deviceData in configData['devices'].items():
         deviceData.update(configData['drivers'][deviceData['driver']])
-        utils.flattenCommands(deviceData)
+        paramParser = ParamParser(deviceData)
+        utils.flatten_commands(deviceData)
         for commandName, commandData in deviceData['commands'].items():
             if not commandData.get('result'):
                 simpleCommand = True
@@ -86,8 +89,8 @@ def ISYExport(config, destination, output, input, host, temp):
                     commands[resourceID] = command + STATE_VAR_MESSAGE
                     simpleCommand = False
 
-                if 'values' in commandData:
-                    for value in commandData['values']:
+                if 'value_set' in commandData:
+                    for value in paramParser.value_sets[commandData['value_set']].keys():
                         resourceID = addResource(configData, resources,
                             resourceTree, resourceName + '/' + value)
                         commands[resourceID] = command + '/' + value

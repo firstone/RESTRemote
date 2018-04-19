@@ -36,8 +36,8 @@ class ParamParser(object):
             reverse_set[param] = key
             name_set[key] = item['value']
 
-    def translate_param(self, command, value):
-        if value and 'value_set' in command:
+    def translate_param(self, command, value, defaultValue=None):
+        if value is not None and 'value_set' in command:
             return self.value_sets[command['value_set']].get(value, value)
 
-        return value
+        return defaultValue if defaultValue is not None else value
