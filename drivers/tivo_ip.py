@@ -51,7 +51,7 @@ class TivoIP(object):
             conn.connect((self.config['hostName'], self.config['port']))
             conn.settimeout(self.config['timeout'])
             conn.send(command['code'].encode())
-            if command.get('argument') and args:
+            if (command.get('argument') or 'value_set' in command) and args:
                 conn.send(self.paramParser.translate_param(command, args).encode())
             conn.send('\r\n'.encode())
             if command.get('response', False):
