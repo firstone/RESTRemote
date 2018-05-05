@@ -22,6 +22,7 @@ devices:
         name: Living Room TV
         driver: web_os
         hostName: lgwebostv
+        # hostName: 192.168.10.163
         timeout: 5
         port: 3000
         macFile: cfg/lgtvMac.yaml
@@ -31,6 +32,12 @@ devices:
         name: Living Room Receiver
         driver: denon_avr
         hostName: denon
+        port: 23
+    onkyo_receiver:
+        enable: true
+        name: Onkyo Receiver
+        driver: onkyo_avr
+        hostName: some_ip
         port: 23
 drivers:
     android:
@@ -550,6 +557,100 @@ drivers:
                 code: MU?
                 value_set: on_off_reverse
                 result: true
+    onkyo_avr:
+        description: Onkyo AVR
+        moduleName: OnkyoAVR
+        timeout: 10
+        values:
+            on_off:
+                -
+                    value: 'off'
+                    param: '00'
+                -
+                    value: 'on'
+                    param: '01'
+            up_down:
+                -
+                    value: up
+                    param: UP
+                -
+                    value: down
+                    param: DOWN
+        commands:
+            mute:
+                code: AMT
+                value_set: on_off
+            current_mute:
+                code: AMTQSTN
+                value_set: on_off_reverse
+                result: true
+            power:
+                code: PWR
+                value_set: on_off
+            current_power:
+                code: PWRQSTN
+                value_set: on_off_reverse
+                result: true
+            master_volume:
+                code: MVL
+                values_set: up_down
+            current_volume:
+                code: MVLQSTN
+                result: true
+            set_master_volume:
+                code: MVL
+                acceptsNumber: true
+        commandGroups:
+            zone2:
+                commands:
+                    mute_z2:
+                        code: ZMT
+                        value_set: on_off
+                    current_mute_z2:
+                        code: ZMTQSTN
+                        value_set: on_off_reverse
+                        result: true
+                    power_z2:
+                        code: ZPW
+                        value_set: on_off
+                    current_power_z2:
+                        code: ZPWQSTN
+                        value_set: on_off_reverse
+                        result: true
+                    volume_z2:
+                        code: ZVL
+                        values_set: up_down
+                    current_volume_z2:
+                        code: ZVLQSTN
+                        result: true
+                    set_volume_z2:
+                        code: ZVL
+                        acceptsNumber: true
+            zone3:
+                commands:
+                    mute_z3:
+                        code: MT3
+                        value_set: on_off
+                    current_mute_z3:
+                        code: MT3QSTN
+                        value_set: on_off_reverse
+                        result: true
+                    power_z3:
+                        code: PW3
+                        value_set: on_off
+                    current_power_z3:
+                        code: PW3QSTN
+                        value_set: on_off_reverse
+                        result: true
+                    volume_z3:
+                        code: VL3
+                        values_set: up_down
+                    current_volume_z3:
+                        code: VL3QSTN
+                        result: true
+                    set_volume_z3:
+                        code: VL3
+                        acceptsNumber: true
 poly:
     devices:
         living_tivo:
@@ -560,6 +661,8 @@ poly:
             address: lv_tv
         living_receiver:
             address: lv_avr
+        onkyo_receiver:
+            address: ok_avr
     commandGroups:
         channels:
             address: ch
@@ -582,6 +685,12 @@ poly:
         inputs:
             address: i
             nls: I
+        zone2:
+            address: z2
+            nls: Z2
+        zone3:
+            address: z3
+            nls: Z3
     drivers:
         denon_avr:
             commands:
@@ -609,6 +718,65 @@ poly:
                     driver:
                         name: GV2
                         input: current_mute
+        onkyo_avr:
+            commands:
+                set_master_volume:
+                    param:
+                        uom: 12
+                        min: 0
+                        max: 60
+                        step: 1
+                        prec: 0
+                    driver:
+                        name: SVOL
+                        description: Master Volume
+                        input: current_volume
+                power:
+                    driver:
+                        name: GV0
+                        input: current_power
+                mute:
+                    driver:
+                        name: GV1
+                        input: current_mute
+                set_volume_z2:
+                    param:
+                        uom: 12
+                        min: 0
+                        max: 60
+                        step: 1
+                        prec: 0
+                    driver:
+                        name: GV2
+                        description: Master Volume
+                        input: current_volume_z2
+                power_z2:
+                    driver:
+                        name: GV3
+                        input: current_power_z2
+                mute_z2:
+                    driver:
+                        name: GV3
+                        input: current_mute_z2
+                set_volume_z3:
+                    param:
+                        uom: 12
+                        min: 0
+                        max: 60
+                        step: 1
+                        prec: 0
+                    driver:
+                        name: GV4
+                        description: Master Volume
+                        input: current_volume_z3
+                power_z3:
+                    driver:
+                        name: GV5
+                        input: current_power_z3
+                mute_z3:
+                    driver:
+                        name: GV6
+                        input: current_mute_z3
         web_os:
             commands:
                 set_volume:
