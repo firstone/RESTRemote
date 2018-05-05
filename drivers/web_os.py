@@ -77,6 +77,14 @@ class WebOS(WebSocketClient):
             callback['event'].set()
 
     def is_connected(self):
+        if not self.connected:
+            try:
+                self.connect()
+                self.connectEvent.wait(self.config['timeout']
+                    if self.clientKey else self.config['promptTimeout'])
+            except:
+                pass
+
         return self.connected
 
     def sendCommand(self, prefix, type, uri, payload=None, shouldWait=True):
@@ -178,8 +186,9 @@ class WebOS(WebSocketClient):
             args = self.paramParser.translate_param(command, args)
 
             argData = { argKey: args }
-            if command.get('acceptsBool'):
-                argData[argKey] = args == 'true' or args == 'on'
+
+            if command.get('acceptsBool') and type(args) is not bool:
+                    argData[argKey] = args == 'true' or args == 'on'
             elif command.get('acceptsNumber'):
                 try:
                     argData[argKey] = int(args)

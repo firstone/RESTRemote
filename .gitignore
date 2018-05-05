@@ -4,3 +4,5 @@ cfg/lgtvMac.yaml
 profile/
 server.json
 logs/
+__pycache__
+.DS_Store

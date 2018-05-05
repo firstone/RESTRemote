@@ -160,6 +160,13 @@ drivers:
                     value: amazon
                 -
                     value: vudu
+            on_off:
+                -
+                    value: 'off'
+                    param: false
+                -
+                    value: 'on'
+                    param: true
         commandGroups:
             setup:
                 commands:
@@ -244,22 +251,12 @@ drivers:
                         uri: audio/setMute
                         argKey: mute
                         acceptsBool: true
-                        values:
-                            -
-                                value: 'on'
-                            -
-                                value: 'off'
+                        value_set: on_off
                     mute_status:
                         argKey: muted
                         uri: audio/getVolume
                         result: true
-                        values:
-                            -
-                                value: false
-                                param: 'off'
-                            -
-                                value: true
-                                param: 'on'
+                        value_set: on_off_reverse
                     toggle_mute: {}
                     set_volume:
                         uri: audio/setVolume
