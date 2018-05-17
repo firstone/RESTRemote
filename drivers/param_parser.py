@@ -41,11 +41,15 @@ class ParamParser(object):
             reverse_set[param] = key
             name_set[key] = item['value']
 
-    def translate_param(self, command, value, defaultValue=None):
+    def translate_param(self, command, value, defaultValue=None, returnValue=True):
         if value is not None and 'value_set' in command:
-            return self.value_sets[command['value_set']].get(value, value)
+            result = self.value_sets[command['value_set']].get(value)
+        else:
+            result = defaultValue
 
-        return defaultValue if defaultValue is not None else value
+        if result:
+            return result
+        return value if returnValue else None
 
     def url_encode(self, value):
         result = ''

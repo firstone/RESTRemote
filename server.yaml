@@ -1,16 +1,16 @@
-name: RESTRemote
+name: AVRemote
 docs: https://github.com/firstone/RESTRemote/blob/master/README.md
 type: python3
 executable: polyrestremote.py
 install: install.sh
 shortPoll: 15
 longPoll: 60
-description: Polyglot based IP remote control
+description: Universal A/V devices remote control.
 notice: https://github.com/firstone/RESTRemote/blob/master/LICENSE
 credits:
     -
-        title: REST IP Remote
-        author: Dmitri Kostukov
+        title: A/V Remote
+        author: FirstOne
         source: https://github.com/firstone/RESTRemote
         license: https://github.com/firstone/RESTRemote/blob/master/LICENSE
     -

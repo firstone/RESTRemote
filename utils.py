@@ -7,7 +7,10 @@ def flatten_commands(config):
     config.setdefault('commands', {})
     commands = config['commands']
     for commandGroup in config.get('commandGroups', {}).values():
-        commands.update(commandGroup['commands'])
+        prefix = commandGroup.get('prefix', '')
+        suffix = commandGroup.get('suffix', '')
+        for key, value in commandGroup['commands'].items():
+            commands[prefix + key + suffix] = value
 
 
 def merge_commands(config):

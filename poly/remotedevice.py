@@ -12,6 +12,8 @@ class RemoteDevice(Node):
         self.id = driverName
 
         self.driverSetters = {}
+        self.suffix = config.get('suffix', '')
+        self.prefix = config.get('prefix', '')
         for commandName in config.get('commands', {}).keys():
             self.commands[commandName] = RemoteDevice.execute_command
 
@@ -23,8 +25,8 @@ class RemoteDevice(Node):
                     'uom': polyData.get('param', {}).get('uom', 25)
                 })
 
-                if 'input' in polyData['driver']:
-                    self.driverSetters[polyData['driver']['name']] = polyData['driver']['input']
+                if 'input' in polyData['driver'] and deviceDriver.hasCommand(self.prefix + polyData['driver']['input'] + self.suffix):
+                    self.driverSetters[polyData['driver']['name']] = self.prefix + polyData['driver']['input'] + self.suffix
 
         self.primaryDevice = primaryDevice
         self.deviceDriver = deviceDriver
@@ -35,7 +37,8 @@ class RemoteDevice(Node):
     def execute_command(self, command):
         LOGGER.debug('executing %s', command)
         try:
-            self.deviceDriver.executeCommand(command['cmd'], command.get('value'))
+            self.deviceDriver.executeCommand(self.prefix + command['cmd'] + self.suffix,
+                command.get('value'))
             self.refresh_state()
         except:
             LOGGER.exception('Error sending command to ' + self.name)

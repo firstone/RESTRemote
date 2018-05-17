@@ -123,8 +123,15 @@ class ProfileFactory(object):
         serverData['executable'] += ' --config ' + self.config_file_name
         serverData['credits'][0]['version'] = version
 
+        description = ''
+        for driverData in self.config['drivers'].values():
+            description += ', ' + driverData['description']
+            if driverData.get('experimental', False):
+                description += ' (experimental)'
+
+        serverData['description'] += ' Supported devices: ' + description[2:]
         with open('server.json', 'w') as serverInfo:
-            serverInfo.write(json.dumps(serverData))
+            serverInfo.write(json.dumps(serverData, indent=4))
 
     def write_node_info(self, polyCommandsData, paramParser, nodeName, nodeDesc,
         nlsName, nodeData, nlsData=[]):
@@ -150,7 +157,9 @@ class ProfileFactory(object):
                 param = None
                 nlsCommand = utils.name_to_nls(commandKey)
                 polyData = polyCommandsData.get(commandName, {})
-                if commandData.get('acceptsNumber'):
+                if (commandData.get('acceptsNumber') or
+                    commandData.get('acceptsHex') or
+                    commandData.get('acceptsFloat')):
                     param = ET.SubElement(cmd, 'p', id='', editor=nlsCommand)
                     editor = ET.SubElement(self.editorTree, 'editor', id=nlsCommand)
                     range = ET.SubElement(editor, 'range')
@@ -168,6 +177,8 @@ class ProfileFactory(object):
 
                 if 'driver' in polyData:
                     polyDriverName = polyData['driver']['name']
+                    if param is None:
+                        raise RuntimeError('Driver configured but command is not configured for parameters: ' + commandName)
                     param.set('init', polyDriverName)
                     ET.SubElement(states, 'st', id=polyDriverName,
                         editor=nlsCommand)

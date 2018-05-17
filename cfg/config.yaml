@@ -22,7 +22,6 @@ devices:
         name: Living Room TV
         driver: web_os
         hostName: lgwebostv
-        timeout: 5
         port: 3000
         macFile: cfg/lgtvMac.yaml
         clientKeyFile: cfg/lgtvClientKey.yaml
@@ -32,9 +31,22 @@ devices:
         driver: denon_avr
         hostName: denon
         port: 23
+    onkyo_receiver:
+        enable: false
+        name: Onkyo Receiver
+        driver: onkyo_avr
+        hostName: some_ip
+        port: 23
+    kitchen_tv:
+        enable: true
+        name: Kitchen TV
+        driver: esp8266
+        hostName: 192.168.10.81
+        port: 80
+        ir_emitter: 0
 drivers:
     android:
-        description: Android Device
+        description: nVidia Shield / Android media devices
         executable: adb
         values:
             activities:
@@ -136,9 +148,9 @@ drivers:
             power:
                 code: 26
     web_os:
-        description: WebOS Device
+        description: LG WebOS TVs
         moduleName: WebOS
-        timeout: 1
+        timeout: 5
         promptTimeout: 60
         values:
             inputs:
@@ -506,6 +518,9 @@ drivers:
                 -
                     value: aux2
                     param: AUX2
+                -
+                    value: net
+                    param: NET
             on_off:
                 -
                     value: 'off'
@@ -513,43 +528,230 @@ drivers:
                 -
                     value: 'on'
                     param: 'ON'
+            up_down:
+                -
+                    value: up
+                    param: UP
+                -
+                    value: down
+                    param: DOWN
         commands:
             select_input:
                 code: SI
                 value_set: inputs
-            master_volume:
-                code: MV
-                values:
-                    -
-                        value: up
-                        param: UP
-                    -
-                        value: down
-                        param: DOWN
-            set_master_volume:
-                code: MV
-                acceptsNumber: true
-            power:
-                code: ZM
-                value_set: on_off
-            mute:
-                code: MU
-                value_set: on_off
             current_input_source:
                 code: SI?
                 value_set: inputs_reverse
                 result: true
+            volume:
+                code: MV
+                value_set: up_down
+            set_volume:
+                code: MV
+                acceptsFloat: true
             current_volume:
                 code: MV?
+                acceptsFloat: true
                 result: true
+            power:
+                code: ZM
+                value_set: on_off
             current_power:
                 code: ZM?
                 value_set: on_off_reverse
                 result: true
+            mute:
+                code: MU
+                value_set: on_off
             current_mute:
                 code: MU?
                 value_set: on_off_reverse
                 result: true
+        commandGroups:
+            zone2:
+                suffix: _z2
+                commands:
+                    select_input:
+                        code: Z2
+                        value_set: inputs
+                    current_input_source:
+                        code: Z2?
+                        value_set: inputs_reverse
+                        result: true
+                    volume:
+                        code: Z2
+                        value_set: up_down
+                    set_volume:
+                        code: Z2
+                        acceptsFloat: true
+                    current_volume:
+                        code: Z2?
+                        acceptsFloat: true
+                        result: true
+                    power:
+                        code: Z2
+                        value_set: on_off
+                    current_power:
+                        code: Z2?
+                        value_set: on_off_reverse
+                        result: true
+                    mute:
+                        code: Z2MU
+                        value_set: on_off
+                    current_mute:
+                        code: Z2MU?
+                        value_set: on_off_reverse
+                        result: true
+            zone3:
+                suffix: _z3
+                commands:
+                    select_input:
+                        code: Z3
+                        value_set: inputs
+                    current_input_source:
+                        code: Z3?
+                        value_set: inputs_reverse
+                        result: true
+                    volume:
+                        code: Z3
+                        value_set: up_down
+                    set_volume:
+                        code: Z3
+                        acceptsFloat: true
+                    current_volume:
+                        code: Z3?
+                        acceptsFloat: true
+                        result: true
+                    power:
+                        code: Z3
+                        value_set: on_off
+                    current_power:
+                        code: Z3?
+                        value_set: on_off_reverse
+                        result: true
+                    mute:
+                        code: Z3MU
+                        value_set: on_off
+                    current_mute:
+                        code: Z3MU?
+                        value_set: on_off_reverse
+                        result: true
+
+    onkyo_avr:
+        description: Onkyo AVR
+        experimental: true
+        moduleName: OnkyoAVR
+        timeout: 10
+        values:
+            on_off:
+                -
+                    value: 'off'
+                    param: '00'
+                -
+                    value: 'on'
+                    param: '01'
+            up_down:
+                -
+                    value: up
+                    param: UP
+                -
+                    value: down
+                    param: DOWN
+        commands:
+            mute:
+                code: AMT
+                value_set: on_off
+            current_mute:
+                code: AMTQSTN
+                value_set: on_off_reverse
+                result: true
+            power:
+                code: PWR
+                value_set: on_off
+            current_power:
+                code: PWRQSTN
+                value_set: on_off_reverse
+                result: true
+            volume:
+                code: MVL
+                value_set: up_down
+            current_volume:
+                code: MVLQSTN
+                result: true
+                acceptsHex: true
+            set_volume:
+                code: MVL
+                acceptsHex: true
+        commandGroups:
+            zone2:
+                suffix: _z2
+                commands:
+                    mute:
+                        code: ZMT
+                        value_set: on_off
+                    current_mute:
+                        code: ZMTQSTN
+                        value_set: on_off_reverse
+                        result: true
+                    power:
+                        code: ZPW
+                        value_set: on_off
+                    current_power:
+                        code: ZPWQSTN
+                        value_set: on_off_reverse
+                        result: true
+                    volume:
+                        code: ZVL
+                        value_set: up_down
+                    current_volume:
+                        code: ZVLQSTN
+                        result: true
+                        acceptsHex: true
+                    set_volume:
+                        code: ZVL
+                        acceptsHex: true
+            zone3:
+                suffix: _z3
+                commands:
+                    mute:
+                        code: MT3
+                        value_set: on_off
+                    current_mute:
+                        code: MT3QSTN
+                        value_set: on_off_reverse
+                        result: true
+                    power:
+                        code: PW3
+                        value_set: on_off
+                    current_power:
+                        code: PW3QSTN
+                        value_set: on_off_reverse
+                        result: true
+                    volume:
+                        code: VL3
+                        value_set: up_down
+                    current_volume:
+                        code: VL3QSTN
+                        result: true
+                        acceptsHex: true
+                    set_volume:
+                        code: VL3
+                        acceptsHex: true
+    esp8266:
+        description: Generic IR Controller (ESP8266)
+        moduleName: ESP8266
+        commands:
+            power:
+                code: tv_power_
+                values:
+                    -
+                        value: 'on'
+                        param: 'on'
+                    -
+                        value: 'off'
+                        param: 'off'
+            tv_volume_up: {}
+            tv_volume_down: {}
 poly:
     devices:
         living_tivo:
@@ -560,6 +762,10 @@ poly:
             address: lv_tv
         living_receiver:
             address: lv_avr
+        onkyo_receiver:
+            address: onk_avr
+        kitchen_tv:
+            address: kit_tv
     commandGroups:
         channels:
             address: ch
@@ -582,10 +788,16 @@ poly:
         inputs:
             address: i
             nls: I
+        zone2:
+            address: z2
+            nls: Z2
+        zone3:
+            address: z3
+            nls: Z3
     drivers:
         denon_avr:
             commands:
-                set_master_volume:
+                set_volume:
                     param:
                         uom: 12
                         min: 0
@@ -594,7 +806,7 @@ poly:
                         prec: 1
                     driver:
                         name: SVOL
-                        description: Master Volume
+                        description: Volume
                         input: current_volume
                 select_input:
                     driver:
@@ -608,6 +820,27 @@ poly:
                 mute:
                     driver:
                         name: GV2
+                        input: current_mute
+        onkyo_avr:
+            commands:
+                set_volume:
+                    param:
+                        uom: 12
+                        min: 0
+                        max: 80
+                        step: 1
+                        prec: 0
+                    driver:
+                        name: SVOL
+                        description: Volume
+                        input: current_volume
+                power:
+                    driver:
+                        name: GV0
+                        input: current_power
+                mute:
+                    driver:
+                        name: GV1
                         input: current_mute
         web_os:
             commands:

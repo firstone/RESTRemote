@@ -16,6 +16,8 @@ class RemoteController(Controller):
 
     def start(self):
         LOGGER.info('Started %s Controller', self.id)
+        # self.addNotice('Hello')
+        # self.removeNotice(0)
         self.setDriver('ST', 1)
         self.discover()
 

@@ -1,0 +1,148 @@
+simple:
+    commands:
+        command1: value1
+        command2: value2
+    poly: {}
+sub_group:
+    commands:
+        command1: value1
+        command2: value2
+    commandGroups:
+        group1:
+            commands:
+                command3: value3
+no_main:
+    commandGroups:
+        group1:
+            commands:
+                command3: value3
+suffix:
+    commandGroups:
+        group1:
+            suffix: _g1
+            commands:
+                command1: value1
+                command2: value2
+            poly:
+                commands:
+                    command1:
+                        driver:
+                            name: GV0
+                            description: Input
+                            input: command2
+prefix:
+    commandGroups:
+        group1:
+            prefix: g1_
+            commands:
+                command1: value1
+                command2: value2
+            poly:
+                commands:
+                    command1:
+                        driver:
+                            name: GV0
+                            description: Input
+                            input: command2
+state:
+    commands:
+        command1: value1
+        command2: value2
+    poly:
+        commands:
+            command1:
+                driver:
+                    name: GV0
+                    description: Input
+                    input: command2
+
+driver:
+    values:
+        some_map:
+            -
+                value: key1
+                param: value1
+            -
+                value: key2
+                param: value2
+    commands:
+        command1:
+            code: value1
+        command2:
+            code: value2
+            value_set: some_map
+        command3:
+            result: True
+            code: value3
+        command4:
+            result: True
+            code: value4
+            value_set: some_map_reverse
+denon:
+    values:
+        some_map:
+            -
+                value: up
+                param: UP
+            -
+                value: down
+                param: DOWN
+    commands:
+        command1:
+            code: VL
+            acceptsFloat: true
+        current_volume:
+            code: MV
+            acceptsFloat: true
+        command2:
+            result: true
+            code: MPWR?
+            value_set: some_map_reverse
+        command3:
+            code: MV
+            acceptsFloat: true
+        command4:
+            result: true
+            acceptsNumber: true
+            code: MPWR?
+
+onkyo:
+    values:
+        some_map:
+            -
+                value: on
+                param: '01'
+            -
+                value: off
+                param: '02'
+    commands:
+        command1:
+            code: MVL
+            acceptsHex: true
+numberParams:
+    commands:
+        boolCommand:
+            code: value1
+            acceptsBool: true
+        intCommand:
+            code: value2
+            acceptsNumber: true
+        hexCommand:
+            code: value3
+            acceptsHex: true
+        floatCommand:
+            code: value4
+            acceptsFloat: true
+        intResult:
+            code: value5
+            result: True
+            acceptsNumber: true
+        hexResult:
+            code: value6
+            result: True
+            acceptsHex: true
+        floatResult:
+            code: value7
+            result: True
+            acceptsFloat: true
+    poly: {}

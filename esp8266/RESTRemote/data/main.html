@@ -1,0 +1,20 @@
+<span class="controls">
+    <span>
+        <label class="inputLabel">New Code Name</label>
+        <input id="codeName" type="text">
+    </span>
+    <button class="learn" onclick="learnCode()">Learn</button>
+    <button class="clear" onclick="confirmClearCodes()">Clear All Codes</button>
+</span>
+<div id="dialog" class="modal">
+    <div class="modal-content">
+        <p id="dialogText"></p>
+        <span id="dialogOkCancel">
+            <button onclick="confirmAction()">Ok</button>
+            <button onclick="cancelAction()">Cancel</button>
+        </span>
+        <span id="dialogOk">
+            <button onclick="hideDialog()">Ok</button>
+        </span>
+    </div>
+</div>

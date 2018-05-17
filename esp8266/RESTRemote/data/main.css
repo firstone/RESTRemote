@@ -1,0 +1,86 @@
+.controls {
+    margin: 20px;
+    padding: 10px;
+    font-size: larger;
+}
+.commandTable {
+    border: 1px solid black;
+    font-size: larger;
+    margin: 20px;
+}
+.commandTable td {
+    padding: 10px;
+}
+button {
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 8px;
+    background-color: #666666;
+}
+.send {
+    background-color: #4CAF50;
+}
+.send:active {
+    background-color: #2C8F30;
+}
+.delete {
+    background-color: #F44336;
+}
+.delete:active {
+    background-color: #D42326;
+}
+.learn {
+    background-color: #008CBA;
+}
+.learn:active {
+    background-color: #006C9A;
+}
+.clear {
+    background-color: #333333;
+}
+.clear:active {
+    background-color: #111111;
+}
+button:active {
+    background-color: #464646;
+    box-shadow: inset 0 0 5px 2px #555555;
+}
+button:focus {
+    outline: none;
+}
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
+}
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 3px solid #888;
+    width: 60%;
+    font-size: larger;
+}
+input {
+    font-size: larger;
+    border: none;
+    border-bottom: 1px solid black;
+}
+select {
+    font-size: larger;
+}
+.inputLabel {
+    display: block;
+}
