@@ -127,9 +127,9 @@ class ProfileFactory(object):
         for driverData in self.config['drivers'].values():
             description += ', ' + driverData['description']
             if driverData.get('experimental', False):
-                description += ' (experimental)'
+                description += ' (exp)'
 
-        serverData['description'] += ' Supported devices: ' + description[2:]
+        serverData['description'] += ' Supported: ' + description[2:]
         with open('server.json', 'w') as serverInfo:
             serverInfo.write(json.dumps(serverData, indent=4))
 

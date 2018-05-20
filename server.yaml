@@ -5,7 +5,7 @@ executable: polyrestremote.py
 install: install.sh
 shortPoll: 15
 longPoll: 60
-description: Universal A/V devices remote control.
+description: Universal A/V remote control.
 notice: https://github.com/firstone/RESTRemote/blob/master/LICENSE
 credits:
     -

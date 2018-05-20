@@ -6,7 +6,7 @@
     "install": "install.sh",
     "shortPoll": 15,
     "longPoll": 60,
-    "description": "Universal A/V devices remote control. Supported devices: nVidia Shield, LG TVs, Tivo, Denon AVR, Onkyo AVR (experimental), Most IR devices",
+    "description": "Universal A/V remote control. Supported: nVidia Shield, LG TVs, Tivo, Denon AVR, Onkyo AVR (exp), Most IR devices",
     "notice": "https://github.com/firstone/RESTRemote/blob/master/LICENSE",
     "credits": [
         {
