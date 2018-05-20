@@ -34,7 +34,7 @@ class WebOS(BaseDriver):
 
         self.client.sock.settimeout(config['timeout'])
 
-        logger.info('Loaded %s driver', __name__)
+        logger.info('Loaded %s driver', self.__class__.__name__)
 
     def saveClientKey(self):
         with open(self.config['clientKeyFile'], 'w') as clientKeyOutput:

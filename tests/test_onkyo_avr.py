@@ -21,14 +21,14 @@ class UtilsTester(unittest.TestCase):
         driver.connected = True
         driver.sendCommandRaw('command1', config['commands']['command1'], '01')
         message = struct.Struct(">4sIIB3x8s")
-        driver.conn.send.assert_called_with(message.pack('ICSP'.encode(), 16, 8,
+        driver.conn.send.assert_called_with(message.pack('ISCP'.encode(), 16, 8,
             1, '!1MVL01\r'.encode()))
 
     def test_output(self):
         config = UtilsTester.config['onkyo']
         driver = OnkyoAVR(config, Mock())
         message = struct.Struct(">4sIIB3x8s")
-        result = { 'output': message.pack('ICSP'.encode(), 16, 8, 1,
+        result = { 'output': message.pack('ISCP'.encode(), 16, 8, 1,
             '!1MVL0a\r'.encode()) }
         driver.process_result('command1', config['commands']['command1'], result)
         self.assertEqual(result['result'], 10)

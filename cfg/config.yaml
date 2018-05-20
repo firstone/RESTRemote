@@ -32,13 +32,13 @@ devices:
         hostName: denon
         port: 23
     onkyo_receiver:
-        enable: false
+        enable: true
         name: Onkyo Receiver
         driver: onkyo_avr
         hostName: some_ip
         port: 23
     kitchen_tv:
-        enable: false
+        enable: true
         name: Kitchen TV
         driver: esp8266
         hostName: 192.168.10.81

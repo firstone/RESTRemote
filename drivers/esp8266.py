@@ -11,7 +11,7 @@ class ESP8266(BaseDriver):
     def __init__(self, config, logger, use_numeric_key=False):
         super(ESP8266, self).__init__(config, logger, use_numeric_key)
 
-        logger.info('Loaded %s driver', __name__)
+        logger.info('Loaded %s driver', self.__class__.__name__)
 
     def connect(self):
         response = requests.get(ESP8266.URL.format(self.config['hostName'],

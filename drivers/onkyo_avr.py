@@ -6,7 +6,7 @@ from drivers.base_driver import BaseDriver
 
 class OnkyoAVR(BaseDriver):
 
-    ICSP_SIGNATURE = 'ICSP'
+    ICSP_SIGNATURE = 'ISCP'
     ICSP_VERSION = 1
     ICSP_HEADER = struct.Struct(">4sIIB3x")
     DESTINATION_UNIT_TYPE = '!1'
@@ -17,7 +17,7 @@ class OnkyoAVR(BaseDriver):
     def __init__(self, config, logger, use_numeric_key=False):
         super(OnkyoAVR, self).__init__(config, logger, use_numeric_key)
 
-        logger.info('Loaded %s driver', __name__)
+        logger.info('Loaded %s driver', self.__class__.__name__)
 
     def connect(self):
         self.conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -35,10 +35,11 @@ class OnkyoAVR(BaseDriver):
             if args:
                 commandStr += args
             request = self.convert_to_ISCP(commandStr)
-            print("Onkyo sending", request)
+            self.logger.debug("%s sending %s", self.__class__.__name__, request)
             self.conn.send(self.convert_to_ISCP(commandStr))
-            result = self.conn.recv(OnkyoAVR.RECEIVE_BUFFER_SIZE).decode()
-            print("Onkyo received", result)
+            resultBuf = self.conn.recv(OnkyoAVR.RECEIVE_BUFFER_SIZE)
+            self.logger.debug("%s received %s", self.__class__.__name__, resultBuf)
+            result = resultBuf.decode()
         except socket.timeout:
             pass
         return result

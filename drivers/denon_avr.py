@@ -12,7 +12,7 @@ class DenonAVR(BaseDriver):
     def __init__(self, config, logger, use_numeric_key=False):
         super(DenonAVR, self).__init__(config, logger, use_numeric_key)
 
-        logger.info('Loaded %s driver', __name__)
+        logger.info('Loaded %s driver', self.__class__.__name__)
 
     def connect(self):
         self.conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

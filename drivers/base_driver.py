@@ -31,7 +31,7 @@ class BaseDriver(object):
 
     def hasCommand(self, commandName):
         return commandName in self.config['commands']
-    
+
     def getData(self, commandName, args=None):
         if commandName == 'commands':
             commandList = []
@@ -41,7 +41,7 @@ class BaseDriver(object):
                     'method': 'GET' if command.get('result', False) else 'PUT'
                 })
             return {
-                'driver': __name__,
+                'driver': self.__class__.__name__,
                 'commands': commandList
             }
 
@@ -51,7 +51,7 @@ class BaseDriver(object):
                 ' and method: ' + commandName)
 
         result = {
-            'driver': __name__,
+            'driver': self.__class__.__name__,
             'command': commandName,
             'output': self.sendCommandRaw(commandName, command)
         }
