@@ -34,9 +34,11 @@ class OnkyoAVR(BaseDriver):
             commandStr = command['code']
             if args:
                 commandStr += args
+            request = self.convert_to_ISCP(commandStr)
+            print("Onkyo sending", request)
             self.conn.send(self.convert_to_ISCP(commandStr))
-            if command.get('response', False):
-                result = self.conn.recv(OnkyoAVR.RECEIVE_BUFFER_SIZE).decode()
+            result = self.conn.recv(OnkyoAVR.RECEIVE_BUFFER_SIZE).decode()
+            print("Onkyo received", result)
         except socket.timeout:
             pass
         return result
