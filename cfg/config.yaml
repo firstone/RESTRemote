@@ -38,7 +38,7 @@ devices:
         hostName: some_ip
         port: 23
     kitchen_tv:
-        enable: true
+        enable: false
         name: Kitchen TV
         driver: esp8266
         hostName: 192.168.10.81
@@ -46,7 +46,7 @@ devices:
         ir_emitter: 0
 drivers:
     android:
-        description: nVidia Shield / Android media devices
+        description: nVidia Shield
         executable: adb
         values:
             activities:
@@ -148,7 +148,7 @@ drivers:
             power:
                 code: 26
     web_os:
-        description: LG WebOS TVs
+        description: LG TVs
         moduleName: WebOS
         timeout: 5
         promptTimeout: 60
@@ -657,7 +657,43 @@ drivers:
                 -
                     value: down
                     param: DOWN
+            inputs:
+                -
+                    value: vcr_dvr
+                    param: '00'
+                -
+                    value: cbl_sat
+                    param: '01'
+                -
+                    value: game_tv
+                    param: '02'
+                -
+                    value: aux1
+                    param: '03'
+                -
+                    value: aux2
+                    param: '04'
+                -
+                    value: dvd
+                    param: '10'
+                -
+                    value: cd
+                    param: '23'
+                -
+                    value: net
+                    param: '28'
+                -
+                    value: usb
+                    param: '29'
+                -
+                    value: xm
+                    param: '31'
+                -
+                    value: sirius
+                    param: '32'
         commands:
+            toggle_mute:
+                code: AMTTG
             mute:
                 code: AMT
                 value_set: on_off
@@ -682,10 +718,19 @@ drivers:
             set_volume:
                 code: MVL
                 acceptsHex: true
+            select_input:
+                code: SLI
+                value_set: inputs
+            current_input_source:
+                code: SLIQSTN
+                result: true
+                value_set: inputs_reverse
         commandGroups:
             zone2:
                 suffix: _z2
                 commands:
+                    toggle_mute:
+                        code: ZMTTG
                     mute:
                         code: ZMT
                         value_set: on_off
@@ -710,9 +755,18 @@ drivers:
                     set_volume:
                         code: ZVL
                         acceptsHex: true
+                    select_input:
+                        code: SLZ
+                        value_set: inputs
+                    current_input_source:
+                        code: SLZQSTN
+                        result: true
+                        value_set: inputs_reverse
             zone3:
                 suffix: _z3
                 commands:
+                    toggle_mute:
+                        code: MT3TG
                     mute:
                         code: MT3
                         value_set: on_off
@@ -737,8 +791,15 @@ drivers:
                     set_volume:
                         code: VL3
                         acceptsHex: true
+                    select_input:
+                        code: SL3
+                        value_set: inputs
+                    current_input_source:
+                        code: SL3QSTN
+                        result: true
+                        value_set: inputs_reverse
     esp8266:
-        description: Generic IR Controller (ESP8266)
+        description: Most IR devices
         moduleName: ESP8266
         commands:
             power:
@@ -842,6 +903,11 @@ poly:
                     driver:
                         name: GV1
                         input: current_mute
+                select_input:
+                    driver:
+                        name: GV2
+                        description: Input
+                        input: current_input_source
         web_os:
             commands:
                 set_volume:
