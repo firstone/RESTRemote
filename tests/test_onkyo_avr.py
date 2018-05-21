@@ -14,10 +14,12 @@ class UtilsTester(unittest.TestCase):
             cls.config = yaml.load(configFile)
 
     def test_simple(self):
+        response = 'ISCP\x00\x00\x00\x10\x00\x00\x00\n\x01\x00\x00\x00!1MVL14\x1a\r\n'
+
         config = UtilsTester.config['onkyo']
         driver = OnkyoAVR(config, Mock())
         driver.conn = Mock()
-        driver.conn.recv = Mock(return_value=bytearray())
+        driver.conn.recv = Mock(return_value=response.encode())
         driver.connected = True
         driver.sendCommandRaw('command1', config['commands']['command1'], '01')
         message = struct.Struct(">4sIIB3x8s")
@@ -25,13 +27,35 @@ class UtilsTester(unittest.TestCase):
             1, '!1MVL01\r'.encode()))
 
     def test_output(self):
+        response = 'ISCP\x00\x00\x00\x10\x00\x00\x00\n\x01\x00\x00\x00!1MVL14\x1a\r\n'
         config = UtilsTester.config['onkyo']
         driver = OnkyoAVR(config, Mock())
-        message = struct.Struct(">4sIIB3x8s")
-        result = { 'output': message.pack('ISCP'.encode(), 16, 8, 1,
-            '!1MVL0a\r'.encode()) }
-        driver.process_result('command1', config['commands']['command1'], result)
-        self.assertEqual(result['result'], 10)
+        result = { 'output': response }
+        driver.process_result('command2', config['commands']['command2'], result)
+        self.assertEqual(result['result'], 20)
+
+    def test_long_response(self):
+        response = (
+            'ISCP\x00\x00\x00\x10\x00\x00\x00\n\x01\x00\x00\x00!1MVL14\x1a\r\n'
+            'ISCP\x00\x00\x00\x10\x00\x00\x00\n\x01\x00\x00\x00!1PWR01\x1a\r\n'
+            'ISCP\x00\x00\x00\x10\x00\x00\x00\n\x01\x00\x00\x00!1ZPW00\x1a\r\n'
+            'ISCP\x00\x00\x00\x10\x00\x00\x00\n\x01\x00\x00\x00!1PW301\x1a\r\n'
+            'ISCP\x00\x00\x00\x10\x00\x00\x00\n\x01\x00\x00\x00!1PWR01\x1a\r\n'
+            'ISCP\x00\x00\x00\x10\x00\x00\x00\n\x01\x00\x00\x00!1PW301\x1a\r\n'
+            'ISCP\x00\x00\x00\x10\x00\x00\x00\n\x01\x00\x00\x00!1SLI23\x1a\r\n'
+            'ISCP\x00\x00\x00\x10\x00\x00\x00\n\x01\x00\x00\x00!1ZPW00\x1a\r\n'
+            'ISCP\x00\x00\x00\x10\x00\x00\x00\n\x01\x00\x00\x00!1AMT00\x1a\r\n'
+            'ISCP\x00\x00\x00\x10\x00\x00\x00\n\x01\x00\x00\x00!1MVL2A\x1a\r\n'
+            'ISCP\x00\x00\x00\x10\x00\x00\x00\n\x01\x00\x00\x00!1SL302\x1a\r\n'
+            'ISCP\x00\x00\x00\x10\x00\x00\x00\n\x01\x00\x00\x00!1SLI23\x1a\r\n'
+        )
+
+        config = UtilsTester.config['onkyo']
+        driver = OnkyoAVR(config, Mock())
+        result = { 'output': response }
+        driver.process_result('command2', config['commands']['command2'], result)
+        self.assertEqual(result['result'], 42)
+
 
 if __name__ == '__main__':
     unittest.main()

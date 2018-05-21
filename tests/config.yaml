@@ -119,6 +119,10 @@ onkyo:
         command1:
             code: MVL
             acceptsHex: true
+        command2:
+            code: MVLQSTN
+            result: true
+            acceptsHex: true
 numberParams:
     commands:
         boolCommand:

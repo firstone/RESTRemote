@@ -2,12 +2,14 @@ import socket
 import time
 
 from drivers.base_driver import BaseDriver
+import utils
 
 
 class DenonAVR(BaseDriver):
 
     BUF_SIZE = 4096
     RESPONSE_DELAY = 1
+    SEARCH_SUFFIX = '?'
 
     def __init__(self, config, logger, use_numeric_key=False):
         super(DenonAVR, self).__init__(config, logger, use_numeric_key)
@@ -45,7 +47,8 @@ class DenonAVR(BaseDriver):
             return
 
         if commandName.startswith('current_volume'):
-            output = self.get_last_output(command, result['output'])
+            output = utils.get_last_output(command, result['output'],
+                self.paramParser.value_sets, DenonAVR.SEARCH_SUFFIX)
             if len(output) > 2:
                 output = output[:2] + '.5'
             else:
@@ -53,28 +56,8 @@ class DenonAVR(BaseDriver):
             output = float(output)
         else:
             output = self.paramParser.translate_param(command,
-                self.get_last_output(command, result['output']))
+                utils.get_last_output(command, result['output'],
+                    self.paramParser.value_sets, DenonAVR.SEARCH_SUFFIX))
 
         if output:
             result['result'] = output
-
-    def get_last_output(self, command, output):
-        prefix = command['code'].replace('?', '')
-        keys = self.paramParser.value_sets.get(command.get('value_set', ''), {})
-        output.reverse()
-
-        for line in output:
-            if line.startswith(prefix):
-                value = line[len(prefix):]
-                if (command.get('acceptsNumber', False) or
-                    command.get('acceptsFloat', False) or
-                    command.get('acceptsHex', False)):
-                    try:
-                        float(value)
-                        return value
-                    except:
-                        pass
-                elif keys.get(value) is not None:
-                    return value
-
-        return ''

@@ -38,3 +38,30 @@ def create_dir(fileName):
         except OSError as error:
             if error.errno != errno.EEXIST:
                 raise
+
+
+def get_last_output(command, output, value_sets, searchSuffix):
+    prefix = command['code'].replace(searchSuffix, '')
+    keys = value_sets.get(command.get('value_set', ''), {})
+    output.reverse()
+
+    for line in output:
+        if line.startswith(prefix):
+            value = line[len(prefix):]
+            if (command.get('acceptsNumber', False) or
+                command.get('acceptsFloat', False)):
+                try:
+                    float(value)
+                    return value
+                except:
+                    pass
+            if command.get('acceptsHex', False):
+                try:
+                    int(value, 16)
+                    return value
+                except:
+                    pass
+            elif keys.get(value) is not None:
+                return value
+
+    return ''
