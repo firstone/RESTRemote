@@ -44,6 +44,28 @@ prefix:
                             name: GV0
                             description: Input
                             input: command2
+last_output:
+    values:
+        some_value_set:
+            key1: value1
+            key2: value2
+
+    commands:
+        intCommand:
+            code: cmd
+            acceptsNumber: true
+        floatCommand:
+            code: cmd
+            acceptsFloat: true
+        hexCommand:
+            code: cmd
+            acceptsHex: true
+        valueCommand:
+            code: cmd
+            value_set: some_value_set
+        suffixCommand:
+            code: cmdn
+            acceptsNumber: true
 state:
     commands:
         command1: value1

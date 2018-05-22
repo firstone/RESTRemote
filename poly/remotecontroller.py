@@ -46,7 +46,7 @@ class RemoteController(Controller):
                     deviceData.get('moduleName', driverName.capitalize()))(
                         utils.merge_commands(deviceData), LOGGER, True)
 
-                nodeAddress = self.configData['poly']['devices'][deviceName]['address']
+                nodeAddress = deviceData['poly_address']
                 nodeName = deviceData.get('name', utils.name_to_desc(deviceName))
                 primaryDevice = PrimaryRemoteDevice(self, nodeAddress,
                     driverName, nodeName, deviceData, deviceDriver)

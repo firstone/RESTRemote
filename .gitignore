@@ -1,6 +1,7 @@
 *.pyc
 cfg/lgtvClientKey.yaml
 cfg/lgtvMac.yaml
+cfg/config.yaml
 profile/
 server.json
 logs/

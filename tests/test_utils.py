@@ -38,5 +38,65 @@ class UtilsTester(unittest.TestCase):
         self.assertTrue('g1_command1' in config['commands'])
         self.assertTrue('g1_command2' in config['commands'])
 
+    def test_last_output_number(self):
+        config = UtilsTester.config['last_output']
+        output = utils.get_last_output(config['commands']['intCommand'],
+            [ 'cmd123' ], {}, '')
+        self.assertEquals(output, '123')
+
+    def test_last_output_number_multi_line(self):
+        config = UtilsTester.config['last_output']
+        output = utils.get_last_output(config['commands']['intCommand'],
+            [ 'cmd123', 'cmd234' ], {}, '')
+        self.assertEquals(output, '234')
+
+    def test_last_output_number_multi_prefix(self):
+        config = UtilsTester.config['last_output']
+        output = utils.get_last_output(config['commands']['intCommand'],
+            [ 'cmd123', 'cmdn234' ], {}, '')
+        self.assertEquals(output, '123')
+
+    def test_last_output_float(self):
+        config = UtilsTester.config['last_output']
+        output = utils.get_last_output(config['commands']['floatCommand'],
+            [ 'cmd123' ], {}, '')
+        self.assertEquals(output, '123')
+
+    def test_last_output_float_multi_line(self):
+        config = UtilsTester.config['last_output']
+        output = utils.get_last_output(config['commands']['floatCommand'],
+            [ 'cmd123', 'cmd234' ], {}, '')
+        self.assertEquals(output, '234')
+
+    def test_last_output_hex(self):
+        config = UtilsTester.config['last_output']
+        output = utils.get_last_output(config['commands']['hexCommand'],
+            [ 'cmdcaca' ], {}, '')
+        self.assertEquals(output, 'caca')
+
+    def test_last_output_hex_multi_line(self):
+        config = UtilsTester.config['last_output']
+        output = utils.get_last_output(config['commands']['hexCommand'],
+            [ 'cmdbaba', 'cmdcaca' ], {}, '')
+        self.assertEquals(output, 'caca')
+
+    def test_last_output_values(self):
+        config = UtilsTester.config['last_output']
+        output = utils.get_last_output(config['commands']['valueCommand'],
+            [ 'cmdkey1' ], config['values'], '')
+        self.assertEquals(output, 'key1')
+
+    def test_last_output_values_multi_line(self):
+        config = UtilsTester.config['last_output']
+        output = utils.get_last_output(config['commands']['valueCommand'],
+            [ 'cmd123', 'cmdkey1' ], config['values'], '')
+        self.assertEquals(output, 'key1')
+
+    def test_last_output_suffix(self):
+        config = UtilsTester.config['last_output']
+        output = utils.get_last_output(config['commands']['suffixCommand'],
+            [ 'cmd123' ], {}, 'n')
+        self.assertEquals(output, '123')
+
 if __name__ == '__main__':
     unittest.main()

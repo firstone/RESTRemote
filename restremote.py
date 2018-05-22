@@ -56,12 +56,14 @@ def get_device_list():
 
 @click.command()
 @click.option('-c', '--config', help='Config file', type=click.File('r'), required=True)
+@click.option('-sc', '--serverConfig', help='Server config file', type=click.File('r'), required=True)
 @click.option('-d', '--debug', help='Run server in debug mode', default=False, is_flag=True)
-def RESTRemote(config, debug):
+def RESTRemote(config, serverconfig, debug):
     logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s')
     logger.setLevel('DEBUG')
     logger.info('Starting with config file %s', config.name)
     configData = yaml.load(config)
+    configData.update(yaml.load(serverconfig))
     sys.path.append(configData['driversPath'])
     for deviceName, deviceData in configData['devices'].items():
         if deviceData.get('enable', True):

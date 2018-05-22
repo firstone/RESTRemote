@@ -1,0 +1,246 @@
+<html>
+    <head>
+        <title>REST Remote IR Module</title>
+        <style>
+            .controls {
+                margin: 20px;
+                padding: 10px;
+                font-size: larger;
+            }
+            .commandTable {
+                border: 1px solid black;
+                font-size: larger;
+                margin: 20px;
+            }
+            .commandTable td {
+                padding: 10px;
+            }
+            button {
+                border: none;
+                color: white;
+                padding: 10px 20px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                border-radius: 8px;
+                background-color: #666666;
+            }
+            .send {
+                background-color: #4CAF50;
+            }
+            .send:active {
+                background-color: #2C8F30;
+            }
+            .delete {
+                background-color: #F44336;
+            }
+            .delete:active {
+                background-color: #D42326;
+            }
+            .learn {
+                background-color: #008CBA;
+            }
+            .learn:active {
+                background-color: #006C9A;
+            }
+            .clear {
+                background-color: #333333;
+            }
+            .clear:active {
+                background-color: #111111;
+            }
+            button:active {
+                background-color: #464646;
+                box-shadow: inset 0 0 5px 2px #555555;
+            }
+            button:focus {
+                outline: none;
+            }
+            .modal {
+                display: none;
+                position: fixed;
+                z-index: 1;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                overflow: auto;
+                background-color: rgb(0,0,0);
+                background-color: rgba(0,0,0,0.4);
+            }
+            .modal-content {
+                background-color: #fefefe;
+                margin: 15% auto;
+                padding: 20px;
+                border: 3px solid #888;
+                width: 60%;
+                font-size: larger;
+            }
+            input {
+                font-size: larger;
+                border: none;
+                border-bottom: 1px solid black;
+            }
+            select {
+                font-size: larger;
+            }
+            .inputLabel {
+                display: block;
+            }
+        </style>
+    </head>
+    <body>
+        <span class="controls">
+            <label>IR emitter</label>
+            <select id="irEmitter">
+                <option>0</option>
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+            </select>
+        </span>
+        <table class='commandTable'>
+            <tr>
+                <td>command1</td>
+                <td>
+                    <button class="send" onclick="sendCode('test')">Send</button>
+                </td>
+                <td>
+                    <button class="delete" onclick="confirmDeleteCode('command1')">Delete</button>
+                </td>
+            </tr>
+            <tr>
+                <td>command2</td>
+                <td>
+                    <button class="send" onclick="sendCode('tv_volume_down')">Send</button>
+                </td>
+                <td>
+                    <button class="delete">Delete</button>
+                </td>
+            </tr>
+            <tr>
+                <td>command3</td>
+                <td>
+                    <button class="send" onclick="sendCode('command3')">Send</button>
+                </td>
+                <td>
+                    <button class="delete">Delete</button>
+                </td>
+            </tr>
+        </table>
+        <span class="controls">
+            <span>
+                <label class="inputLabel">New Code Name</label>
+                <input id="codeName" type="text">
+            </span>
+            <button class="learn" onclick="learnCode()">Learn</button>
+            <button class="clear" onclick="confirmClearCodes()">Clear All Codes</button>
+        </span>
+        <div id="dialog" class="modal">
+            <div class="modal-content">
+                <p id="dialogText"></p>
+                <span id="dialogOkCancel">
+                    <button onclick="confirmAction()">Ok</button>
+                    <button onclick="cancelAction()">Cancel</button>
+                </span>
+                <span id="dialogOk">
+                    <button onclick="hideDialog()">Ok</button>
+                </span>
+            </div>
+        </div>
+    </body>
+    <script>
+        var SERVER = "http://192.168.10.81/";
+        var dialog = document.getElementById('dialog');
+        var dialogText = document.getElementById('dialogText');
+        var dialogOkCancel = document.getElementById('dialogOkCancel');
+        var dialogOk = document.getElementById('dialogOk');
+        var irEmitter = document.getElementById('irEmitter');
+        var codeName = document.getElementById('codeName');
+        var currentAction;
+
+        function sendCode(code) {
+            sendRequest(SERVER + "send/" + irEmitter.selectedIndex + "/" + code,
+                processResponse);
+        }
+
+        function learnCode() {
+            sendRequest(SERVER + "learn/" + codeName.value, processResponse);
+        }
+
+        function processResponse(response) {
+            if (response.result === 'failure') {
+                showMessage("Error learning code: " + response.error);
+            } else if (typeof response.message !== 'undefined') {
+                showMessage(response.message);
+            }
+        }
+
+        function sendRequest(uri, callback) {
+            var request = new XMLHttpRequest();
+            request.open("POST", uri, true);
+            request.setRequestHeader("Content-type", "application/json");
+            request.onloadend = function() {
+                    if (request.status == 0) {
+                        callback({ result: 'failure', error: 'Network error'});
+                    } else {
+                        callback(JSON.parse(request.responseText));
+                    }
+            };
+            request.send();
+        }
+
+        function confirmDeleteCode(code) {
+            currentAction = deleteCode(code);
+            showDialog("Are you sure you want to delete code " + code + "?");
+        }
+
+        function confirmClearCodes() {
+            currentAction = clearCodes;
+            showDialog("Are you sure you want to delete all codes?");
+        }
+
+        function deleteCode(code) {
+            return function() {
+                sendRequest(SERVER + "remove/" + code, processResponse);
+            }
+        }
+
+        function clearCodes() {
+            sendRequest(SERVER + "clear", processResponse);
+        }
+
+        function showDialog(text) {
+            dialogText.innerHTML = text;
+            dialogOkCancel.style.display = "block";
+            dialogOk.style.display = "none";
+            dialog.style.display = "block";
+        }
+
+        function showMessage(text) {
+            dialogText.innerHTML = text;
+            dialogOkCancel.style.display = "none";
+            dialogOk.style.display = "block";
+            dialog.style.display = "block";
+        }
+
+        function confirmAction() {
+            hideDialog();
+            if (typeof currentAction !== "undefined") {
+                currentAction();
+                currentAction = null;
+            }
+        }
+
+        function cancelAction() {
+            hideDialog();
+            currentAction = null;
+        }
+
+        function hideDialog() {
+            dialog.style.display = "none";
+        }
+
+    </script>
+</html>

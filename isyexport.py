@@ -32,6 +32,8 @@ curResourceID = 0
 @click.command()
 @click.option('-c', '--config', help='Config file', type=click.File('r'),
     required=True)
+@click.option('-sc', '--serverConfig', help='Config file', type=click.File('r'),
+    required=True)
 @click.option('-d', '--destination', help='Config file',
     type=click.Path(writable=True), required=True)
 @click.option('-o', '--output', help='Output file name', required=True)
@@ -39,8 +41,9 @@ curResourceID = 0
     type=click.File('r'))
 @click.option('-h', '--host', help='Host running RESTRemote', required=True)
 @click.option('-t', '--temp', help='Do not remote temp files', is_flag=True)
-def ISYExport(config, destination, output, input, host, temp):
+def ISYExport(config, serverconfig, destination, output, input, host, temp):
     configData = yaml.load(config)
+    configData.update(yaml.load(serverconfig))
     configData['host'] = host
 
     if input:
