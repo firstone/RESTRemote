@@ -26,12 +26,6 @@ class WebOS(BaseDriver):
         except:
             pass
 
-        try:
-            with open(config['macFile'], 'r') as macInput:
-                self.config.update(yaml.load(macInput))
-        except:
-            pass
-
         self.client.sock.settimeout(config['timeout'])
 
         logger.info('Loaded %s driver', self.__class__.__name__)
@@ -76,8 +70,12 @@ class WebOS(BaseDriver):
 
     def sendCommandRaw(self, commandName, command, args=None, shouldWait=True):
         if commandName == 'power_on':
-            self.logger.debug('Sending wake up command to %s', self.config['mac'])
-            wakeonlan.send_magic_packet(self.config['mac'])
+            mac = self.config.get('mac')
+            if mac is None:
+                self.logger.debug('Error sending power on command. MAC is not set up')
+            else:
+                self.logger.debug('Sending wake up command to %s', mac)
+                wakeonlan.send_magic_packet(mac)
             return ''
         elif commandName == 'toggle_mute':
             output = self.sendCommandRaw('status', self.config['commands']['status'])

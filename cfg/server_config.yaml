@@ -134,8 +134,8 @@ drivers:
                 name: port
                 default: 3000
             -
-                name: macFile
-                default: cfg/lgtvMac.yaml
+                name: mac
+                default: ''
             -
                 name: clientKeyFile
                 default: cfg/lgtvClientKey.yaml

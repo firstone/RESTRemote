@@ -1,38 +1,38 @@
 devices:
     living_tivo:
-        enable: true
+        enable: false
         name: Living Room Tivo
         driver: tivo_ip
         hostName: tivo
         port: 31339
     shield:
-        enable: true
+        enable: false
         name: nVidia Shield
         driver: android
         hostName: shield
         port: 5555
     living_tv:
-        enable: true
+        enable: false
         name: Living Room TV
         driver: web_os
         hostName: lgwebostv
         port: 3000
-        macFile: cfg/lgtvMac.yaml
+        mac: AA:BB:CC:DD:EE:FF
         clientKeyFile: cfg/lgtvClientKey.yaml
     living_receiver:
-        enable: true
+        enable: false
         name: Living Room Receiver
         driver: denon_avr
         hostName: denon
         port: 23
     onkyo_receiver:
-        enable: true
+        enable: false
         name: Onkyo Receiver
         driver: onkyo_avr
         hostName: onkyo_ip
         port: 60128
     kitchen_tv:
-        enable: true
+        enable: false
         name: Kitchen TV
         driver: esp8266
         hostName: esp8266_ip

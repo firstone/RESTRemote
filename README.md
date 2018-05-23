@@ -8,20 +8,19 @@ Simple REST service that allows multiple devices control via similar interface. 
 * Tivo (via Tivo IP interface)
 * nVidia Shield (and probably other Android devices, via adb debug capability)
 * Denon AVR (via Denon IP interface)
+* Most IR devices (via ESP8266 board)
 
 ## Getting Started
 
-You need to have python and the following modules:
+Install python3 and run *install.sh*
 
-* click
-* pyyaml
-* ws4py
-
-Everything can be installed globally or using **virtualenv**
-
-Configuration is done via configuration file (*cfg/config.yaml*), which is specified on command line.
+Configuration is done via configuration file (*cfg/config.yaml*). If you don't have one, it will be copied from *cfg/config_sample.yaml*.
 
 If you don't have a particular device and don't want to load its driver, you can turn disable it by changing `enabled: false`.
+
+Most devices require only host name defined.
+
+You need to specify both, config file and server config file (*cfg/server_config.yaml*) in the command line. Run `restremote.py --help` for command line options.
 
 Once service is running, you can execute GET calls via browser:
 
@@ -78,3 +77,16 @@ If you're getting *unauthorized* errors, try `adb kill-server`, followed by `adb
 If commands don't work, run `adb devices`. If device is listed *offline*, reboot it, run `adb kill-server` and run `adb connect <host name>:5555`. After that, `adb devices` should show status as *online*. It appears that only one MAC address can control Android device at a time. So every time you connect from another MAC, this needs to be repeated to switch to a new MAC.
 
 In order to configure launching apps, issue command to list installed apps (it takes a while). This will return list off apps and launch activities.
+
+### ESP8266
+
+This one requires most work. Schematics can be obtained here:
+
+https://github.com/mdhiggins/ESP8266-HTTP-IR-Blaster
+
+Do not load firmware from that page. Instead load firmware from esp8266 directory. You need Arduino IDE, ESP8266 libraries, ESPWebServer and IRRemoteESP8266.
+
+*DO THIS STEP BEFORE YOU TEACH ANY CODES. IT WILL REMOVE ANY EXISTING CODES*
+Follow instruction for ESP8266 to setup file system transfer in Arduino IDE. After that, transfer files. It will pick up files in data directory. You don't need to specify them.
+
+Connect to the blaster via browser and teach IR commands. After that you need to edit *cfg/server_config.yaml* file and assign command names to driver commands. At that point you should be able to send them though RESTRemote server.
