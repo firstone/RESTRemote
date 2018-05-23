@@ -12,14 +12,12 @@ from drivers.param_parser import ParamParser
 @click.command()
 @click.option('-c', '--config', help='Config file', type=click.File('r'),
     required=True)
-@click.option('-sc', '--serverConfig', help='Server config file', type=click.File('r'),
-    required=True)
 @click.option('-d', '--destination', help='Polygrlot profile distination directory',
     type=click.Path(writable=True), required=True)
-def PolyRemote(config, serverconfig, destination):
+def PolyRemote(config, destination):
     print("Generating Polyglot profile")
 
-    factory = ProfileFactory(destination, config, serverconfig)
+    factory = ProfileFactory(destination, config)
     factory.create()
     factory.write()
 
@@ -35,12 +33,10 @@ class ProfileFactory(object):
     NLS_FILE = [ 'nls', 'en_us.txt' ]
     NODES_FILE = [ 'nodedef', 'nodedefs.xml' ]
 
-    def __init__(self, destination, config_file, server_config_file):
+    def __init__(self, destination, config_file):
         self.destination = destination
         self.config = yaml.load(config_file)
-        self.config.update(yaml.load(server_config_file))
         self.config_file_name = config_file.name
-        self.server_config_file_name = server_config_file.name
 
         self.nodeTree = ET.Element('nodeDefs')
         self.editorTree = ET.Element('editors')
@@ -125,7 +121,6 @@ class ProfileFactory(object):
         with open('server.yaml', 'r') as serverInfo:
             serverData = yaml.load(serverInfo)
         serverData['executable'] += ' --config ' + self.config_file_name
-        serverData['executable'] += ' --serverConfig ' + self.server_config_file_name
         serverData['credits'][0]['version'] = version
 
         description = ''

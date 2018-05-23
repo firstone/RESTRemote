@@ -2,11 +2,11 @@
     "name": "AVRemote",
     "docs": "https://github.com/firstone/RESTRemote/blob/master/README.md",
     "type": "python3",
-    "executable": "polyrestremote.py --config cfg/config.yaml --serverConfig cfg/server_config.yaml",
+    "executable": "polyrestremote.py --config cfg/server_config.yaml",
     "install": "install.sh",
     "shortPoll": 15,
     "longPoll": 60,
-    "description": "Universal A/V remote control. Supported: nVidia Shield, LG TVs, Tivo, Denon AVR, Onkyo AVR, Most IR devices",
+    "description": "Universal A/V remote control. Supported: nVidia Shield, LG TV, Tivo, Denon AVR, Onkyo AVR, Most IR device",
     "notice": "https://github.com/firstone/RESTRemote/blob/master/LICENSE",
     "credits": [
         {
@@ -14,7 +14,7 @@
             "author": "FirstOne",
             "source": "https://github.com/firstone/RESTRemote",
             "license": "https://github.com/firstone/RESTRemote/blob/master/LICENSE",
-            "version": "0.2.3"
+            "version": "0.3.0"
         },
         {
             "title": "udi-poly-template-python: A Polyglot v2 Poly template",

@@ -5,14 +5,12 @@ devices:
         driver: tivo_ip
         hostName: tivo
         port: 31339
-        poly_address: lv_tivo
     shield:
         enable: true
         name: nVidia Shield
         driver: android
         hostName: shield
         port: 5555
-        poly_address: shield
     living_tv:
         enable: true
         name: Living Room TV
@@ -21,21 +19,18 @@ devices:
         port: 3000
         macFile: cfg/lgtvMac.yaml
         clientKeyFile: cfg/lgtvClientKey.yaml
-        poly_address: lv_tv
     living_receiver:
         enable: true
         name: Living Room Receiver
         driver: denon_avr
         hostName: denon
         port: 23
-        poly_address: lv_avr
     onkyo_receiver:
         enable: true
         name: Onkyo Receiver
         driver: onkyo_avr
         hostName: onkyo_ip
         port: 60128
-        poly_address: onk_avr
     kitchen_tv:
         enable: true
         name: Kitchen TV
@@ -43,4 +38,3 @@ devices:
         hostName: esp8266_ip
         port: 80
         ir_emitter: 0
-        poly_address: kit_tv

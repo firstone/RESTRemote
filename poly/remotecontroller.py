@@ -16,8 +16,7 @@ class RemoteController(Controller):
 
     def start(self):
         LOGGER.info('Started %s Controller', self.id)
-        # self.addNotice('Hello')
-        # self.removeNotice(0)
+
         self.setDriver('ST', 1)
         self.discover()
 
@@ -32,10 +31,54 @@ class RemoteController(Controller):
     def query(self):
         pass
 
+    def processParams(self, config):
+        params = {}
+        devicesConfig = {}
+        for driverName, driverData in self.configData['drivers'].items():
+            paramName = driverName + '_count'
+            if paramName not in config:
+                params[paramName] = 0
+            else:
+                for i in range(0, int(config[paramName])):
+                    deviceConfig = {}
+                    deviceName = driverName + "_" + str(i)
+                    for param in driverData['parameters']:
+                        paramName = deviceName + "_" + param['name']
+                        if paramName not in config:
+                            params[paramName] = param['default']
+                        else:
+                            deviceConfig[param['name']] = config[paramName]
+                    deviceConfig['driver'] = driverName
+                    devicesConfig[deviceName] = deviceConfig
+
+        self.configData['devices'] = devicesConfig
+        return params
+
+    def isDeviceConfigured(self, device):
+        for param in self.configData['drivers'][device['driver']]['parameters']:
+            if param.get('required', False) and (device[param['name']] == 0 or
+                device[param['name']] == '0' or device[param['name']] == ''):
+                return False
+        return True
+
+    def getDeviceAddress(self, deviceName, addressMap):
+        address = addressMap.get(deviceName)
+        if not address:
+            address = "d_" + str(len(addressMap))
+            addressMap[deviceName] = address
+
+        return address
+
     def discover(self, *args, **kwargs):
         time.sleep(1)
+
+        addressMap = self.polyConfig.get('customData', {}).get('addressMap', {})
+        customParams = self.processParams(self.polyConfig.get('customParams', {}))
+        if len(customParams) > 0:
+            self.addCustomParam(customParams)
+
         for deviceName, deviceData in self.configData['devices'].items():
-            if deviceData.get('enable', True):
+            if self.isDeviceConfigured(deviceData):
                 driverName = deviceData['driver']
                 deviceData.update(self.configData['drivers'][driverName])
                 polyData = self.configData['poly']['drivers'].get(driverName, {})
@@ -46,7 +89,7 @@ class RemoteController(Controller):
                     deviceData.get('moduleName', driverName.capitalize()))(
                         utils.merge_commands(deviceData), LOGGER, True)
 
-                nodeAddress = deviceData['poly_address']
+                nodeAddress = self.getDeviceAddress(deviceName, addressMap)
                 nodeName = deviceData.get('name', utils.name_to_desc(deviceName))
                 primaryDevice = PrimaryRemoteDevice(self, nodeAddress,
                     driverName, nodeName, deviceData, deviceDriver)
@@ -58,11 +101,14 @@ class RemoteController(Controller):
                         commandGroup)
                     if groupConfig:
                         groupDriverName = driverName + '_' + commandGroup
-                        groupNodeAddress = nodeAddress + '_' + groupConfig['address']
+                        groupNodeAddress = self.getDeviceAddress(
+                            deviceName + '_' + commandGroup, addressMap)
                         self.addNode(RemoteDevice(self, primaryDevice, nodeAddress,
                             groupNodeAddress, groupDriverName,
                                 utils.name_to_desc(commandGroup),
                                 commandGroupData, deviceDriver))
+
+        self.saveCustomData({'addressMap': addressMap})
 
     def delete(self):
         pass

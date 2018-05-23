@@ -8,6 +8,17 @@ drivers:
     android:
         description: nVidia Shield
         executable: adb
+        parameters:
+            -
+                name: name
+                default: ''
+            -
+                name: hostName
+                default: ''
+                required: true
+            -
+                name: port
+                default: 5555
         values:
             activities:
                 -
@@ -108,10 +119,26 @@ drivers:
             power:
                 code: 26
     web_os:
-        description: LG TVs
+        description: LG TV
         moduleName: WebOS
         timeout: 5
         promptTimeout: 60
+        parameters:
+            -
+                name: name
+                default: ''
+            -
+                name: hostName
+                default: lgwebostv
+            -
+                name: port
+                default: 3000
+            -
+                name: macFile
+                default: cfg/lgtvMac.yaml
+            -
+                name: clientKeyFile
+                default: cfg/lgtvClientKey.yaml
         values:
             inputs:
                 -
@@ -315,6 +342,17 @@ drivers:
         description: Tivo
         moduleName: TivoIP
         timeout: 5
+        parameters:
+            -
+                name: name
+                default: ''
+            -
+                name: hostName
+                default: ''
+                required: true
+            -
+                name: port
+                default: 31339
         commandGroups:
             channels:
                 commands:
@@ -449,6 +487,17 @@ drivers:
         description: Denon AVR
         moduleName: DenonAVR
         timeout: 10
+        parameters:
+            -
+                name: name
+                default: ''
+            -
+                name: hostName
+                default: ''
+                required: true
+            -
+                name: port
+                default: 23
         values:
             inputs:
                 -
@@ -600,6 +649,17 @@ drivers:
         description: Onkyo AVR
         moduleName: OnkyoAVR
         timeout: 10
+        parameters:
+            -
+                name: name
+                default: ''
+            -
+                name: hostName
+                default: ''
+                required: true
+            -
+                name: port
+                default: 60128
         values:
             on_off:
                 -
@@ -757,8 +817,22 @@ drivers:
                         result: true
                         value_set: inputs_reverse
     esp8266:
-        description: Most IR devices
+        description: Most IR device
         moduleName: ESP8266
+        parameters:
+            -
+                name: name
+                default: ''
+            -
+                name: hostName
+                default: ''
+                required: true
+            -
+                name: port
+                default: 80
+            -
+                name: ir_emitter
+                default: 0
         commands:
             power:
                 code: tv_power_
@@ -774,31 +848,22 @@ drivers:
 poly:
     commandGroups:
         channels:
-            address: ch
             nls: CH
         content:
-            address: cn
             nls: CN
         navigation:
-            address: n
             nls: N
         audio:
-            address: a
             nls: A
         basic_media:
-            address: b
             nls: B
         media:
-            address: m
             nls: M
         inputs:
-            address: i
             nls: I
         zone2:
-            address: z2
             nls: Z2
         zone3:
-            address: z3
             nls: Z3
     drivers:
         denon_avr:
