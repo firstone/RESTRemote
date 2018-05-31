@@ -2,7 +2,7 @@ bindHost: 0.0.0.0
 port: 5000
 driversPath: ./drivers
 controller:
-    name: RESTRemote
+    name: AVRemote
     description: IP Remote Controller
 drivers:
     android:
