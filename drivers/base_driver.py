@@ -53,9 +53,14 @@ class BaseDriver(object):
         result = {
             'driver': self.__class__.__name__,
             'command': commandName,
-            'output': self.sendCommandRaw(commandName, command)
         }
-        self.process_result(commandName, command, result)
+
+        try:
+            result['output'] = self.sendCommandRaw(commandName, command)
+            self.process_result(commandName, command, result)
+        except:
+            self.connected = False
+            raise
         return result
 
     def sendCommandRaw(self, commandName, command, args=None):
@@ -79,13 +84,17 @@ class BaseDriver(object):
         result = {
             'driver': __name__,
             'command': commandName,
-            'output': self.sendCommandRaw(commandName, command, args)
         }
+
+        try:
+            result['output'] = self.sendCommandRaw(commandName, command, args)
+            self.process_result(commandName, command, result)
+        except:
+            self.connected = False
+            raise
 
         if args:
             result['args'] = args
-
-        self.process_result(commandName, command, result)
 
         return result
 

@@ -11,11 +11,6 @@ class WebOS(BaseDriver):
 
     def __init__(self, config, logger, use_numeric_key=False):
         super(WebOS, self).__init__(config, logger, use_numeric_key)
-        self.client = WebSocketClient("ws://" + config['hostName'] + ':' +
-            str(config['port']),  exclude_headers=["Origin"])
-        self.client.opened = self.on_open
-        self.client.closed = self.on_close
-        self.client.received_message = self.on_message
         self.connectEvent = Event()
         self.curID = 0
         self.callbacks = {}
@@ -25,8 +20,6 @@ class WebOS(BaseDriver):
                 self.clientKey = yaml.load(clientKeyInput)
         except:
             pass
-
-        self.client.sock.settimeout(config['timeout'])
 
         logger.info('Loaded %s driver', self.__class__.__name__)
 
@@ -64,15 +57,24 @@ class WebOS(BaseDriver):
             callback['event'].set()
 
     def connect(self):
-        self.client.connect()
-        self.connectEvent.wait(self.config['timeout']
-            if self.clientKey else self.config['promptTimeout'])
+        try:
+            self.client = WebSocketClient("ws://" + self.config['hostName'] + ':' +
+                str(self.config['port']),  exclude_headers=["Origin"])
+            self.client.opened = self.on_open
+            self.client.closed = self.on_close
+            self.client.received_message = self.on_message
+            self.client.sock.settimeout(self.config['timeout'])
+            self.client.connect()
+            self.connectEvent.wait(self.config['timeout']
+                if self.clientKey else self.config['promptTimeout'])
+        except:
+            pass
 
     def sendCommandRaw(self, commandName, command, args=None, shouldWait=True):
         if commandName == 'power_on':
             mac = self.config.get('mac')
             if mac is None:
-                self.logger.debug('Error sending power on command. MAC is not set up')
+                self.logger.error('Error sending power on command. MAC is not set up')
             else:
                 self.logger.debug('Sending wake up command to %s', mac)
                 wakeonlan.send_magic_packet(mac)
