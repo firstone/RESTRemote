@@ -99,15 +99,19 @@ class BaseDriver(object):
         return result
 
     def process_result(self, commandName, command, result):
-        if command.get('acceptsNumber'):
-            output = int(result['output'])
-        elif command.get('acceptsFloat'):
-            output = float(result['output'])
-        elif command.get('acceptsHex'):
-            output = int(result['output'], 16)
-        else:
-            output = self.paramParser.translate_param(command, result['output'],
-                None, False)
+        output = None
+        try:
+            if command.get('acceptsNumber'):
+                output = int(result['output'])
+            elif command.get('acceptsFloat'):
+                output = float(result['output'])
+            elif command.get('acceptsHex'):
+                output = int(result['output'], 16)
+            else:
+                output = self.paramParser.translate_param(command, result['output'],
+                    None, False)
+        except:
+            pass
 
-        if output:
+        if output is not None:
             result['result'] = output

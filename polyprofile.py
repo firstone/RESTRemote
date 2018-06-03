@@ -120,7 +120,7 @@ class ProfileFactory(object):
 
         with open('server.yaml', 'r') as serverInfo:
             serverData = yaml.load(serverInfo)
-        serverData['executable'] += ' --config ' + self.config_file_name
+        serverData['executable'] += ' --serverConfig ' + self.config_file_name
         serverData['credits'][0]['version'] = version
 
         description = ''

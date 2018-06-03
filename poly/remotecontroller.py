@@ -10,9 +10,10 @@ from poly.primaryremotedevice import PrimaryRemoteDevice
 
 class RemoteController(Controller):
 
-    def __init__(self, polyglot, config):
+    def __init__(self, polyglot, config, has_devices=False):
         super(RemoteController, self).__init__(polyglot)
         self.configData = config
+        self.has_devices = has_devices
 
     def start(self):
         LOGGER.info('Started %s Controller', self.id)
@@ -73,12 +74,13 @@ class RemoteController(Controller):
         time.sleep(1)
 
         addressMap = self.polyConfig.get('customData', {}).get('addressMap', {})
-        customParams = self.processParams(self.polyConfig.get('customParams', {}))
-        if len(customParams) > 0:
-            self.addCustomParam(customParams)
+        if not self.has_devices:
+            customParams = self.processParams(self.polyConfig.get('customParams', {}))
+            if len(customParams) > 0:
+                self.addCustomParam(customParams)
 
         for deviceName, deviceData in self.configData['devices'].items():
-            if self.isDeviceConfigured(deviceData):
+            if self.isDeviceConfigured(deviceData) and deviceData.get('enable', True):
                 driverName = deviceData['driver']
                 deviceData.update(self.configData['drivers'][driverName])
                 polyData = self.configData['poly']['drivers'].get(driverName, {})

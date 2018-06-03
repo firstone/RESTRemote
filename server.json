@@ -2,7 +2,7 @@
     "name": "AVRemote",
     "docs": "https://github.com/firstone/RESTRemote/blob/master/README.md",
     "type": "python3",
-    "executable": "polyrestremote.py --config cfg/server_config.yaml",
+    "executable": "polyrestremote.py --serverConfig cfg/server_config.yaml",
     "install": "install.sh",
     "shortPoll": 15,
     "longPoll": 60,
@@ -14,7 +14,7 @@
             "author": "FirstOne",
             "source": "https://github.com/firstone/RESTRemote",
             "license": "https://github.com/firstone/RESTRemote/blob/master/LICENSE",
-            "version": "0.3.2"
+            "version": "0.3.3"
         },
         {
             "title": "udi-poly-template-python: A Polyglot v2 Poly template",

@@ -56,6 +56,13 @@ class UtilsTester(unittest.TestCase):
         driver.process_result('command2', config['commands']['command2'], result)
         self.assertEqual(result['result'], 42)
 
+    def test_na_response(self):
+        response = 'ISCP\x00\x00\x00\x10\x00\x00\x00\x0b\x01\x00\x00\x00!1MVLN/A\x1a\r\n'
+        config = UtilsTester.config['onkyo']
+        driver = OnkyoAVR(config, Mock())
+        result = { 'output': response }
+        driver.process_result('command2', config['commands']['command2'], result)
+        self.assertNotIn('result', result)
 
 if __name__ == '__main__':
     unittest.main()

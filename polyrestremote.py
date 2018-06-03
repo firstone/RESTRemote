@@ -7,14 +7,17 @@ import yaml
 
 
 @click.command()
-@click.option('-c', '--config', help='Config file', type=click.File('r'),
-    required=True)
-def PolyRemote(config):
-    configData = yaml.load(config)
+@click.option('-sc', '--serverConfig', help='Server config file', type=click.File('r'), required=True)
+@click.option('-c', '--config', help='Config file', type=click.File('r'), required=False)
+def PolyRemote(serverconfig, config):
+    configData = yaml.load(serverconfig)
+    if config:
+        configData.update(yaml.load(config))
+
     try:
         polyglot = polyinterface.Interface(configData['controller']['name'])
         polyglot.start()
-        controller = RemoteController(polyglot, configData)
+        controller = RemoteController(polyglot, configData, config is not None)
         controller.name = configData['controller']['name']
         controller.runForever()
     except (KeyboardInterrupt, SystemExit):

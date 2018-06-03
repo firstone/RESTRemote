@@ -64,4 +64,4 @@ def get_last_output(command, output, value_sets, searchSuffix):
             elif keys.get(value) is not None:
                 return value
 
-    return ''
+    return None
