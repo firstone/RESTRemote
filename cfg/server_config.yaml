@@ -11,14 +11,19 @@ drivers:
         parameters:
             -
                 name: name
-                default: ''
+                title: Name
+                desc: Display name in ISY Admin Console
+                defaultValue: ''
             -
                 name: hostName
-                default: ''
-                required: true
+                title: Host Name
+                defaultValue: ''
+                isRequired: true
             -
                 name: port
-                default: 5555
+                title: Port
+                defaultValue: 5555
+                type: NUMBER
         values:
             activities:
                 -
@@ -35,7 +40,7 @@ drivers:
                     param: com.netflix.ninja
                 -
                     value: etv
-                    param: com.etvnet.tv
+                    param: com.etvnet.etvnetandroidapp
         commandGroups:
             navigation:
                 commands:
@@ -114,7 +119,7 @@ drivers:
                                 param: com.netflix.ninja/.MainActivity
                             -
                                 value: etv
-                                param: com.etvnet.tv/.TvMainActivity
+                                param: com.etvnet.etvnetandroidapp/.MainActivity
         commands:
             power:
                 code: 26
@@ -126,19 +131,28 @@ drivers:
         parameters:
             -
                 name: name
-                default: ''
+                title: Name
+                desc: Display name in ISY Admin Console
+                defaultValue: ''
             -
                 name: hostName
-                default: lgwebostv
+                title: Host Name
+                defaultValue: lgwebostv
             -
                 name: port
-                default: 3000
+                title: Port
+                defaultValue: 3000
+                type: NUMBER
             -
                 name: mac
-                default: ''
+                title: MAC
+                desc: LG Device MAC Address (used for Wake On LAN)
+                defaultValue: ''
             -
                 name: clientKeyFile
-                default: cfg/lgtvClientKey.yaml
+                title: Client Key File
+                desc: Used to save pairing data
+                defaultValue: cfg/lgtvClientKey.yaml
         values:
             inputs:
                 -
@@ -345,14 +359,19 @@ drivers:
         parameters:
             -
                 name: name
-                default: ''
+                title: Name
+                desc: Display name in ISY Admin Console
+                defaultValue: ''
             -
                 name: hostName
-                default: ''
-                required: true
+                title: Host Name
+                defaultValue: ''
+                isRequired: true
             -
                 name: port
-                default: 31339
+                title: Port
+                defaultValue: 31339
+                type: NUMBER
         commandGroups:
             channels:
                 commands:
@@ -490,14 +509,19 @@ drivers:
         parameters:
             -
                 name: name
-                default: ''
+                title: Name
+                desc: Display name in ISY Admin Console
+                defaultValue: ''
             -
                 name: hostName
-                default: ''
-                required: true
+                title: Host Name
+                defaultValue: ''
+                isRequired: true
             -
                 name: port
-                default: 23
+                title: Port
+                defaultValue: 23
+                type: NUMBER
         values:
             inputs:
                 -
@@ -652,14 +676,19 @@ drivers:
         parameters:
             -
                 name: name
-                default: ''
+                title: Name
+                desc: Display name in ISY Admin Console
+                defaultValue: ''
             -
                 name: hostName
-                default: ''
-                required: true
+                title: Host Name
+                defaultValue: ''
+                isRequired: true
             -
                 name: port
-                default: 60128
+                title: Port
+                defaultValue: 60128
+                type: NUMBER
         values:
             on_off:
                 -
@@ -817,22 +846,30 @@ drivers:
                         result: true
                         value_set: inputs_reverse
     esp8266:
-        description: Most IR device
+        description: ESP8266 IR
         moduleName: ESP8266
         parameters:
             -
                 name: name
-                default: ''
+                title: Name
+                desc: Display name in ISY Admin Console
+                defaultValue: ''
             -
                 name: hostName
-                default: ''
-                required: true
+                title: Host Name
+                defaultValue: ''
+                isRequired: true
             -
                 name: port
-                default: 80
+                title: Port
+                defaultValue: 80
+                type: NUMBER
             -
                 name: ir_emitter
-                default: 0
+                title: IR Emitter
+                desc: Emitter Number (0 - 3)
+                defaultValue: 0
+                type: NUMBER
         commands:
             power:
                 code: tv_power_
@@ -845,6 +882,66 @@ drivers:
                         param: 'off'
             tv_volume_up: {}
             tv_volume_down: {}
+    chromecast:
+        description: Chromecast
+        experimental: true
+        driverParameters:
+            -
+                name: chromecastPlaylists
+                title: Chromecast Play Lists
+                isList: true
+                params:
+                    -
+                        name: name
+                        title: Name
+                        isRequired: true
+                    -
+                        name: url
+                        title: URL
+                        isRequired: true
+                    -
+                        name: type
+                        title: Type
+                        desc: mime type, for example 'video/mp4'
+                        isRequired: true
+        values:
+            chromecastPlaylists:
+            status:
+                -
+                    value: unknown
+                    param: UNKNOWN
+                -
+                    value: playing
+                    param: PLAYING
+                -
+                    value: buffering
+                    param: BUFFERING
+                -
+                    value: paused
+                    param: PAUSED
+                -
+                    value: idle
+                    param: IDLE
+        commands:
+            play_list:
+                code: play_media
+                value_set: chromecastPlaylists
+            play:
+                code: play
+            pause:
+                code: pause
+            stop:
+                code: stop
+            skip:
+                code: skip
+            rewind:
+                code: rewind
+            current_status:
+                result: true
+                readOnly: true
+                code: status
+                argKey: player_state
+                value_set: status_reverse
 poly:
     commandGroups:
         channels:
@@ -955,3 +1052,9 @@ poly:
                         name: GV0
                         description: Current Activity
                         input: get_current_activity
+        chromecast:
+            commands:
+                current_status:
+                    driver:
+                        name: GV0
+                        description: Status

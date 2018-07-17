@@ -19,13 +19,15 @@ class RemoteDevice(Node):
 
             polyData = config['poly'].get('commands', {}).get(commandName)
             if polyData and 'driver' in polyData:
+                command = deviceDriver.getCommand(self.prefix + commandName + self.suffix)
                 self.drivers.append({
                     'driver': polyData['driver']['name'],
                     'value': 0,
                     'uom': polyData.get('param', {}).get('uom', 25)
                 })
-
-                if 'input' in polyData['driver'] and deviceDriver.hasCommand(self.prefix + polyData['driver']['input'] + self.suffix):
+                if command is not None and command.get('readOnly', False):
+                    self.driverSetters[polyData['driver']['name']] = self.prefix + commandName + self.suffix
+                elif 'input' in polyData['driver'] and deviceDriver.hasCommand(self.prefix + polyData['driver']['input'] + self.suffix):
                     self.driverSetters[polyData['driver']['name']] = self.prefix + polyData['driver']['input'] + self.suffix
 
         self.primaryDevice = primaryDevice

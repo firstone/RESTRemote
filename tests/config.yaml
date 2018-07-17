@@ -87,6 +87,13 @@ driver:
             -
                 value: key2
                 param: value2
+        some_map2:
+            -
+                value: key3
+                param: value3
+            -
+                value: key4
+                param: value4
     commands:
         command1:
             code: value1
@@ -100,6 +107,10 @@ driver:
             result: True
             code: value4
             value_set: some_map_reverse
+        command5:
+            result: True
+            code: value5
+            value_set: some_map2_reverse
 denon:
     values:
         some_map:

@@ -1,6 +1,7 @@
 import sys
 import unittest
 from unittest.mock import Mock
+from unittest.mock import MagicMock
 import yaml
 
 import polyinterface
@@ -22,6 +23,7 @@ class PolyTester(unittest.TestCase):
     def test_simple(self):
         driver = Mock()
         primaryDevice = Mock()
+        driver.getCommand = MagicMock(return_value=None)
         device = RemoteDevice(None, primaryDevice, None, None, None, "test device",
             PolyTester.config['simple'], driver)
         device.runCmd({'cmd': 'command1'})
@@ -31,6 +33,7 @@ class PolyTester(unittest.TestCase):
         driver = Mock()
         driver.getData = Mock(return_value={ 'result': 1 })
         primaryDevice = Mock()
+        driver.getCommand = MagicMock(return_value=None)
         primaryDevice.connected = True
         device = RemoteDevice(None, primaryDevice, None, None, None, "test device",
             PolyTester.config['state'], driver)
@@ -42,6 +45,7 @@ class PolyTester(unittest.TestCase):
         driver = Mock()
         driver.getData = Mock(return_value={ 'result': 1 })
         primaryDevice = Mock()
+        driver.getCommand = MagicMock(return_value=None)
         primaryDevice.connected = True
         device = RemoteDevice(None, primaryDevice, None, None, None, "test device",
             PolyTester.config['suffix']['commandGroups']['group1'], driver)
@@ -53,6 +57,7 @@ class PolyTester(unittest.TestCase):
         driver = Mock()
         driver.getData = Mock(return_value={ 'result': 1 })
         primaryDevice = Mock()
+        driver.getCommand = MagicMock(return_value=None)
         primaryDevice.connected = True
         device = RemoteDevice(None, primaryDevice, None, None, None, "test device",
             PolyTester.config['prefix']['commandGroups']['group1'], driver)
@@ -65,6 +70,7 @@ class PolyTester(unittest.TestCase):
         driver.getData = Mock(return_value={ 'result': 1 })
         driver.hasCommand = Mock(return_value=False)
         primaryDevice = Mock()
+        driver.getCommand = MagicMock(return_value=None)
         primaryDevice.connected = True
         device = RemoteDevice(None, primaryDevice, None, None, None, "test device",
             PolyTester.config['state'], driver)

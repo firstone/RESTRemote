@@ -4,8 +4,9 @@ from polyinterface import Controller
 import time
 import utils
 
-from poly.remotedevice import RemoteDevice
+from polyprofile import ProfileFactory
 from poly.primaryremotedevice import PrimaryRemoteDevice
+from poly.remotedevice import RemoteDevice
 
 
 class RemoteController(Controller):
@@ -14,9 +15,66 @@ class RemoteController(Controller):
         super(RemoteController, self).__init__(polyglot)
         self.configData = config
         self.has_devices = has_devices
+        self.deviceDrivers = {}
+        self.deviceDriverInstances = {}
+        self.poly.onConfig(self.process_config)
+
+    def supports_feature(self, feature):
+        if hasattr(self.poly, 'supports_feature'):
+            return self.poly.supports_feature(feature)
+
+        return False
+
+    def process_config(self, config):
+        if not self.has_devices and not self.supports_feature('typedParams'):
+            customParams = self.processParams(self.polyConfig.get('customParams', {}))
+            if len(customParams) > 0:
+                self.addCustomParam(customParams)
+
+        typedConfig = config.get('typedCustomData')
+        if typedConfig is not None:
+            needChanges = False
+            devicesConfig = self.configData.get('devices', {})
+            for driverName, paramList in typedConfig.items():
+                if driverName in self.configData['drivers']:
+                    for index, params in enumerate(paramList):
+                        params['driver'] = driverName
+                        devicesConfig[driverName + '_' + str(100 - index)] = params
+                else:
+                    for deviceDriverName, driverData in self.configData['drivers'].items():
+                        if self.get_device_driver(deviceDriverName, driverData).processParams(
+                            driverData, { driverName: paramList }):
+                            needChanges = True
+                            for deviceDriver in self.deviceDriverInstances[deviceDriverName]:
+                                deviceDriver.configure(driverData)
+
+            self.configData['devices'] = devicesConfig
+            if needChanges:
+                LOGGER.debug('Regenerating profile')
+                factory = ProfileFactory('.', self.configData)
+                factory.create()
+                if factory.write():
+                    LOGGER.debug('Profile has changed. Updating')
+                    self.poly.installprofile()
+                else:
+                    LOGGER.debug('Profile not changed. Skipping')
 
     def start(self):
-        LOGGER.info('Started %s Controller', self.id)
+        if self.supports_feature('typedParams'):
+            params = []
+            for driverName, driverData in self.configData['drivers'].items():
+                LOGGER.info("Processing %s", driverName)
+                values = driverData.get('parameters')
+                if values:
+                    param = {
+                        'name': driverName,
+                        'title': driverData.get('description', ''),
+                        'isList': True,
+                        'params': values
+                    }
+                    params.append(param)
+                params.extend(driverData.get('driverParameters', []))
+            self.poly.save_typed_params(params)
 
         self.setDriver('ST', 1)
         self.discover()
@@ -46,7 +104,7 @@ class RemoteController(Controller):
                     for param in driverData['parameters']:
                         paramName = deviceName + "_" + param['name']
                         if paramName not in config:
-                            params[paramName] = param['default']
+                            params[paramName] = param['defaultValue']
                         else:
                             deviceConfig[param['name']] = config[paramName]
                     deviceConfig['driver'] = driverName
@@ -56,8 +114,8 @@ class RemoteController(Controller):
         return params
 
     def isDeviceConfigured(self, device):
-        for param in self.configData['drivers'][device['driver']]['parameters']:
-            if param.get('required', False) and (device[param['name']] == 0 or
+        for param in self.configData['drivers'][device['driver']].get('parameters', []):
+            if param.get('isRequired', False) and (device[param['name']] == 0 or
                 device[param['name']] == '0' or device[param['name']] == ''):
                 return False
         return True
@@ -74,22 +132,25 @@ class RemoteController(Controller):
         time.sleep(1)
 
         addressMap = self.polyConfig.get('customData', {}).get('addressMap', {})
-        if not self.has_devices:
-            customParams = self.processParams(self.polyConfig.get('customParams', {}))
-            if len(customParams) > 0:
-                self.addCustomParam(customParams)
 
-        for deviceName, deviceData in self.configData['devices'].items():
+        devicesConfig = self.configData.get('devices', {})
+        for driverName, driverData in self.configData['drivers'].items():
+            devices = self.get_device_driver(driverName,
+                driverData).discoverDevices(driverData)
+            if devices is not None:
+                devicesConfig.update(devices)
+
+        self.configData['devices'] = devicesConfig
+        for deviceName, deviceData in devicesConfig.items():
             if self.isDeviceConfigured(deviceData) and deviceData.get('enable', True):
                 driverName = deviceData['driver']
                 deviceData.update(self.configData['drivers'][driverName])
                 polyData = self.configData['poly']['drivers'].get(driverName, {})
                 deviceData['poly'] = polyData
 
-                driverModule = importlib.import_module('drivers.' + driverName)
-                deviceDriver = getattr(driverModule,
-                    deviceData.get('moduleName', driverName.capitalize()))(
+                deviceDriver = self.get_device_driver(driverName, deviceData)(
                         utils.merge_commands(deviceData), LOGGER, True)
+                self.deviceDriverInstances[driverName].append(deviceDriver)
 
                 nodeAddress = self.getDeviceAddress(deviceName, addressMap)
                 nodeName = deviceData.get('name', utils.name_to_desc(deviceName))
@@ -120,6 +181,17 @@ class RemoteController(Controller):
 
     def refresh_state(self):
         pass
+
+    def get_device_driver(self, driverName, deviceData):
+        deviceDriver = self.deviceDrivers.get(driverName)
+        if deviceDriver is None:
+            driverModule = importlib.import_module('drivers.' + driverName)
+            deviceDriver = getattr(driverModule,
+                deviceData.get('moduleName', driverName.capitalize()))
+            self.deviceDrivers[driverName] = deviceDriver
+            self.deviceDriverInstances[driverName] = []
+
+        return deviceDriver
 
     id = 'controller'
     commands = { 'DISCOVER': discover }

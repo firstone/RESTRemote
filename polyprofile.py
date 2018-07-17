@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import click
+import hashlib
 import json
 import os
 import utils
@@ -12,14 +13,15 @@ from drivers.param_parser import ParamParser
 @click.command()
 @click.option('-c', '--config', help='Config file', type=click.File('r'),
     required=True)
-@click.option('-d', '--destination', help='Polygrlot profile distination directory',
+@click.option('-d', '--destination', help='Polyglot profile destination directory',
     type=click.Path(writable=True), required=True)
 def PolyRemote(config, destination):
     print("Generating Polyglot profile")
 
-    factory = ProfileFactory(destination, config)
+    factory = ProfileFactory(destination, yaml.load(config))
     factory.create()
     factory.write()
+    factory.write_server_info(config.name)
 
 
 class ProfileFactory(object):
@@ -33,10 +35,9 @@ class ProfileFactory(object):
     NLS_FILE = [ 'nls', 'en_us.txt' ]
     NODES_FILE = [ 'nodedef', 'nodedefs.xml' ]
 
-    def __init__(self, destination, config_file):
+    def __init__(self, destination, config):
         self.destination = destination
-        self.config = yaml.load(config_file)
-        self.config_file_name = config_file.name
+        self.config = config
 
         self.nodeTree = ET.Element('nodeDefs')
         self.editorTree = ET.Element('editors')
@@ -91,25 +92,48 @@ class ProfileFactory(object):
                         groupData)
 
     def write(self):
+        has_changed = False
+
         nlsFile = os.path.join(self.destination, self.PROFILE_DIR, *self.NLS_FILE)
         utils.create_dir(nlsFile)
+
+        hash = self.get_hash(nlsFile)
+
         with open(nlsFile, 'w') as output:
             for line in self.nlsData:
                 output.write(line)
                 output.write('\n')
 
+        if hash != self.get_hash(nlsFile):
+            has_changed = True
+
         nodesFile = os.path.join(self.destination, self.PROFILE_DIR,
             *self.NODES_FILE)
         utils.create_dir(nodesFile)
+
+        hash = self.get_hash(nodesFile)
+
         with open(nodesFile, 'w') as output:
             output.write(ET.tostring(self.nodeTree).decode())
+
+        if hash != self.get_hash(nodesFile):
+            has_changed = True
 
         editorFile = os.path.join(self.destination, self.PROFILE_DIR,
             *self.EDITOR_FILE)
         utils.create_dir(editorFile)
+
+        hash = self.get_hash(editorFile)
+
         with open(editorFile, 'w') as output:
             output.write(ET.tostring(self.editorTree).decode())
 
+        if hash != self.get_hash(editorFile):
+            has_changed = True
+
+        return has_changed
+
+    def write_server_info(self, config_file_name):
         with open('version.txt', 'r') as versionFile:
             version = versionFile.read().strip()
 
@@ -120,7 +144,7 @@ class ProfileFactory(object):
 
         with open('server.yaml', 'r') as serverInfo:
             serverData = yaml.load(serverInfo)
-        serverData['executable'] += ' --serverConfig ' + self.config_file_name
+        serverData['executable'] += ' --serverConfig ' + config_file_name
         serverData['credits'][0]['version'] = version
 
         description = ''
@@ -148,15 +172,16 @@ class ProfileFactory(object):
         ET.SubElement(cmds, 'sends')
         accepts = ET.SubElement(cmds, 'accepts')
         for commandName, commandData in nodeData['commands'].items():
+            commandKey = nodeName + '_' + commandName
+            nlsCommand = utils.name_to_nls(commandKey)
+            polyData = polyCommandsData.get(commandName, {})
+            polyDriverName = None
             if not commandData.get('result'):
-                commandKey = nodeName + '_' + commandName
                 self.nlsData.append(self.COMMAND_NAME.format(
                     nlsName + '-' + commandName,
                     commandData.get('description', utils.name_to_desc(commandName))))
                 cmd = ET.SubElement(accepts, 'cmd', id=commandName)
                 param = None
-                nlsCommand = utils.name_to_nls(commandKey)
-                polyData = polyCommandsData.get(commandName, {})
                 if (commandData.get('acceptsNumber') or
                     commandData.get('acceptsHex') or
                     commandData.get('acceptsFloat')):
@@ -166,29 +191,52 @@ class ProfileFactory(object):
                     for rangeKey, rangeValue in polyData['param'].items():
                         range.set(rangeKey, str(rangeValue))
                 elif 'value_set' in commandData:
-                    names = paramParser.value_sets[commandData['value_set'] + '_names']
                     param = ET.SubElement(cmd, 'p', id='', editor=nlsCommand)
-                    editor = ET.SubElement(self.editorTree, 'editor', id=nlsCommand)
-                    ET.SubElement(editor, 'range', uom='25',
-                        subset='0-' + str(len(names) - 1), nls=nlsCommand + '_I')
-                    for key, value in names.items():
-                        self.nlsData.append(nlsCommand + '_I-' + str(key) +
-                            ' = ' + value)
+                    self.add_driver_desc(nlsCommand,
+                        paramParser.value_sets[commandData['value_set'] + '_names'])
 
                 if 'driver' in polyData:
                     polyDriverName = polyData['driver']['name']
                     if param is None:
                         raise RuntimeError('Driver configured but command is not configured for parameters: ' + commandName)
                     param.set('init', polyDriverName)
-                    ET.SubElement(states, 'st', id=polyDriverName,
-                        editor=nlsCommand)
-                    self.nlsData.append(self.STATUS_NAME.format(nlsName,
-                        polyDriverName,
-                        polyData['driver'].get('description',
-                            utils.name_to_desc(commandName))))
+
+            elif commandData.get('readOnly', False) and 'value_set' in commandData:
+                self.add_driver_desc(nlsCommand,
+                    paramParser.value_sets[commandData['value_set'].replace('_reverse', '') + '_names'])
+                if 'driver' in polyData:
+                    polyDriverName = polyData['driver']['name']
+
+            if polyDriverName is not None:
+                ET.SubElement(states, 'st', id=polyDriverName,
+                    editor=nlsCommand)
+
+                self.nlsData.append(self.STATUS_NAME.format(nlsName,
+                    polyDriverName,
+                    polyData['driver'].get('description',
+                        utils.name_to_desc(commandName))))
 
         self.nlsData.append('')
         return states
+
+    def add_driver_desc(self, nlsCommand, names):
+        editor = ET.SubElement(self.editorTree, 'editor', id=nlsCommand)
+        maxIndex = len(names) - 1 if len(names) else 0
+        ET.SubElement(editor, 'range', uom='25',
+            subset='0-' + str(maxIndex), nls=nlsCommand + '_I')
+        for key, value in names.items():
+            self.nlsData.append(nlsCommand + '_I-' + str(key) +
+                ' = ' + value)
+
+    def get_hash(self, file_name):
+        if not os.path.isfile(file_name):
+            return ''
+
+        hash = hashlib.sha256()
+        with open(file_name, 'rb') as file:
+            hash.update(file.read())
+
+        return hash.hexdigest()
 
 if __name__ == '__main__':
     PolyRemote()

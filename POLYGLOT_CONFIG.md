@@ -1,9 +1,9 @@
-### Configure number of devices
+### Configure devices
 
-For each device, increase count to match number of physical devices you have. If you don't have any devices of that type, leave it as *0*.
+For each device you have, click Add for appropriate device type and configure devices parameters.
+Usually only *host name* is needed. *description* is optional but will help in ISY Admin Console.
+Then restart the server or run *Re-Discover* command in AVRemote controller.
 
-Click "Save Changes". Then restart the server or run *Re-Discover* command in AVRemote controller.
+### Chromecast
 
-### Configure individual devices
-
-Once the number of devices is configured, set individual devices parameters. Usually only *host name* is needed. *description* is optional but will help in ISY Admin Console.
+Chromecast are auto detected. Chromecast devices require playlists configuration. Parmeters needed are *name* - appearts in drop down list in Admin console, *URL* and *type* - which is a mime type of the URL. Could be *video/mp4* or *audio/mp3* or any other valid mime type.

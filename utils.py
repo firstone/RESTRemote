@@ -31,6 +31,12 @@ def name_to_nls(name):
     return nls
 
 
+def desc_to_name(desc):
+    name = '_'.join(desc.split(' ')).lower()
+
+    return name
+
+
 def create_dir(fileName):
     if not os.path.exists(os.path.dirname(fileName)):
         try:

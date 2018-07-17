@@ -5,10 +5,19 @@ class BaseDriver(object):
 
     def __init__(self, config, logger, use_numeric_key=False):
         self.config = config
-        self.paramParser = ParamParser(config, use_numeric_key)
+        self.use_numeric_key = use_numeric_key
         self.connected = False
         self.logger = logger
-        self.connectionDescription = config.get('hostName', '') + ':' + str(config.get('port', 0))
+        self.configure()
+
+    def configure(self, data=None):
+        if data is not None:
+            self.config.update(data)
+
+        # self.logger.info("Config called %s", self.config)
+        self.paramParser = ParamParser(self.config, self.use_numeric_key)
+        self.connectionDescription = (self.config.get('hostName', '') + ':' +
+            str(self.config.get('port', 0)))
 
     def start(self):
         try:
@@ -31,6 +40,9 @@ class BaseDriver(object):
 
     def hasCommand(self, commandName):
         return commandName in self.config['commands']
+
+    def getCommand(self, commandName):
+        return self.config['commands'].get(commandName)
 
     def getData(self, commandName, args=None):
         if commandName == 'commands':
@@ -115,3 +127,11 @@ class BaseDriver(object):
 
         if output is not None:
             result['result'] = output
+
+    @staticmethod
+    def processParams(config, param):
+        return False
+
+    @staticmethod
+    def discoverDevices(config):
+        return None

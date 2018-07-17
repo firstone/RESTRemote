@@ -16,7 +16,7 @@ class UtilsTester(unittest.TestCase):
     def test_simple(self):
         config = UtilsTester.config['driver']
         driver = BaseDriver(config, None)
-        self.assertEqual(len(driver.getData('commands')['commands']), 4)
+        self.assertEqual(len(driver.getData('commands')['commands']), 5)
 
     def test_execute_command(self):
         config = UtilsTester.config['driver']
@@ -95,6 +95,17 @@ class UtilsTester(unittest.TestCase):
         self.assertEqual(response['result'], 'key1')
         driver.sendCommandRaw.assert_called_with('command4',
             config['commands']['command4'])
+
+    def test_get_data_translate_one_way(self):
+        config = UtilsTester.config['driver']
+        driver = BaseDriver(config, None)
+        driver.sendCommandRaw = MagicMock(return_value='value3')
+
+        response = driver.getData('command5')
+        self.assertEqual(response['output'], 'value3')
+        self.assertEqual(response['result'], 'key3')
+        driver.sendCommandRaw.assert_called_with('command5',
+            config['commands']['command5'])
 
     def test_get_data_translate_numeric(self):
         config = UtilsTester.config['driver']

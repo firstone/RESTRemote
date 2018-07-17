@@ -1,3 +1,6 @@
+import collections
+
+
 class ParamParser(object):
     '''Performs input values to device parameters (and reverse)
     translations. Input value can be string or numeric'''
@@ -34,12 +37,14 @@ class ParamParser(object):
         value_sets[value_set_key] = forward_set = {}
         value_sets[value_set_key + '_reverse'] = reverse_set = {}
         value_sets[value_set_key + '_names'] = name_set = {}
-        for numeric_value, item in enumerate(value_set_data):
-            key = str(numeric_value) if use_numeric_key else item['value']
-            param = item.get('param', item['value'])
-            forward_set[self.url_encode(key)] = param
-            reverse_set[param] = key
-            name_set[key] = item['value']
+        if value_set_data:
+            for numeric_value, item in enumerate(value_set_data):
+                key = str(numeric_value) if use_numeric_key else item['value']
+                param = item.get('param', item['value'])
+                forward_set[self.url_encode(key)] = param
+                if isinstance(param, collections.Hashable):
+                    reverse_set[param] = key
+                name_set[key] = item['value']
 
     def translate_param(self, command, value, defaultValue=None, returnValue=True):
         if value is not None and 'value_set' in command:
