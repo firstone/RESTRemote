@@ -18,6 +18,8 @@ class RemoteController(Controller):
         self.deviceDrivers = {}
         self.deviceDriverInstances = {}
         self.poly.onConfig(self.process_config)
+        self.needDiscover = False
+        self.currentConfig = None
 
     def supports_feature(self, feature):
         if hasattr(self.poly, 'supports_feature'):
@@ -32,7 +34,8 @@ class RemoteController(Controller):
                 self.addCustomParam(customParams)
 
         typedConfig = config.get('typedCustomData')
-        if typedConfig is not None:
+        if self.currentConfig != typedConfig:
+            self.currentConfig = typedConfig
             needChanges = False
             devicesConfig = self.configData.get('devices', {})
             for driverName, paramList in typedConfig.items():
@@ -48,7 +51,6 @@ class RemoteController(Controller):
                             for deviceDriver in self.deviceDriverInstances[deviceDriverName]:
                                 deviceDriver.configure(driverData)
 
-            self.configData['devices'] = devicesConfig
             if needChanges:
                 LOGGER.debug('Regenerating profile')
                 factory = ProfileFactory('.', self.configData)
@@ -59,11 +61,13 @@ class RemoteController(Controller):
                 else:
                     LOGGER.debug('Profile not changed. Skipping')
 
+            self.configData['devices'] = devicesConfig
+            self.needDiscover = True
+
     def start(self):
         if self.supports_feature('typedParams'):
             params = []
             for driverName, driverData in self.configData['drivers'].items():
-                LOGGER.info("Processing %s", driverName)
                 values = driverData.get('parameters')
                 if values:
                     param = {
@@ -80,6 +84,10 @@ class RemoteController(Controller):
         self.discover()
 
     def shortPoll(self):
+        if self.needDiscover:
+            self.needDiscover = False
+            self.discover()
+
         for node in self.nodes.values():
             node.refresh_state()
         pass
@@ -171,7 +179,8 @@ class RemoteController(Controller):
                                 utils.name_to_desc(commandGroup),
                                 commandGroupData, deviceDriver))
 
-        self.saveCustomData({'addressMap': addressMap})
+        if self.polyConfig.get('customData', {}).get('addressMap') != addressMap:
+            self.saveCustomData({'addressMap': addressMap})
 
     def delete(self):
         pass

@@ -86,7 +86,7 @@ class WebOS(BaseDriver):
                 return output
 
             return self.sendCommandRaw('mute', self.config['commands']['mute'],
-                'off' if output['output']['payload']['mute'] else 'on')
+                False if output['payload']['mute'] else True)
 
         if not self.connected:
             try:
@@ -101,15 +101,15 @@ class WebOS(BaseDriver):
         if commandName == 'register':
             message['type'] = 'register'
             message['payload'] = command
-        else:
             id = 'register' + id
+        else:
             message['type'] = 'request'
 
         message['id'] = id
 
         argKey = command.get('argKey')
         argData = None
-        if args:
+        if args is not None:
             if not argKey:
                 raise Exception('Command in ' + __name__ +
                     ': ' + commandName + ' isn''t configured for arguments')
@@ -140,5 +140,6 @@ class WebOS(BaseDriver):
 
     def process_result(self, commandName, command, result):
         if 'argKey' in command:
-            param = result['output']['payload'][command['argKey']]
-            result['result'] = self.paramParser.translate_param(command, param)
+            param = result['output']['payload'].get(command['argKey'])
+            if param is not None:
+                result['result'] = self.paramParser.translate_param(command, param)

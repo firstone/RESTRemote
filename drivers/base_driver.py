@@ -81,7 +81,9 @@ class BaseDriver(object):
     def executeCommand(self, commandName, args=None):
         command = self.config['commands'][commandName]
 
-        if args:
+        if args is not None:
+            args = self.paramParser.translate_param(command, str(args))
+
             if command.get('acceptsBool') and type(args) is not bool:
                 args = args == 'true' or args == 'on'
             elif command.get('acceptsNumber'):
@@ -90,8 +92,6 @@ class BaseDriver(object):
                 args = '{0:g}'.format(float(args))
             elif command.get('acceptsHex'):
                 args = hex(int(args))[2:]
-            else:
-                args = self.paramParser.translate_param(command, args)
 
         result = {
             'driver': __name__,
@@ -105,7 +105,7 @@ class BaseDriver(object):
             self.connected = False
             raise
 
-        if args:
+        if args is not None:
             result['args'] = args
 
         return result
