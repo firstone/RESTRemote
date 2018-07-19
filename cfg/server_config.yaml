@@ -945,7 +945,7 @@ drivers:
             quit_app:
                 code: quit_app
             volume_up:
-                code: volume_app
+                code: volume_up
             volue_down:
                 code: volume_down
 
