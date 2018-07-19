@@ -65,16 +65,28 @@ def RESTRemote(config, serverconfig, debug):
     configData = yaml.load(config)
     configData.update(yaml.load(serverconfig))
     sys.path.append(configData['driversPath'])
+
+    drivers = {}
+    devicesConfig = configData.get('devices', {})
+    for driverName, driverData in configData['drivers'].items():
+        module = importlib.import_module('drivers.' + driverName)
+        driver = getattr(module, driverData.get(
+            'moduleName', driverName.capitalize()))
+        drivers[driverName] = driver
+        deviceData = driver.discoverDevices(driverData)
+        if deviceData is not None:
+            devicesConfig.update(deviceData)
+
+    configData['devices'] = devicesConfig
     for deviceName, deviceData in configData['devices'].items():
         if deviceData.get('enable', True):
             driverName = deviceData['driver']
             logger.info('Loading device %s using driver %s', deviceName, driverName)
-            driver = importlib.import_module('drivers.' + driverName)
-            deviceData.update(configData['drivers'][driverName])
+            driverData = configData['drivers'][driverName]
+            deviceData.update(driverData)
+            deviceData.get('values', {}).update(configData.get('driverConfig', {}).get(driverName, {}).get('values', {}))
             utils.flatten_commands(deviceData)
-            devices[deviceName] = getattr(driver,
-                deviceData.get('moduleName', driverName.capitalize()))(
-                    deviceData, logger)
+            devices[deviceName] = drivers[driverName](deviceData, logger)
             devices[deviceName].start()
 
     app.run(host=configData.get('bindHost', '0.0.0.0'), port=configData.get('port', 5000),

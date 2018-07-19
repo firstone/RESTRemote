@@ -1,3 +1,5 @@
+import time
+
 from polyinterface import LOGGER
 from polyinterface import Node
 
@@ -40,6 +42,7 @@ class RemoteDevice(Node):
         try:
             self.deviceDriver.executeCommand(self.prefix + command['cmd'] + self.suffix,
                 command.get('value'))
+            time.sleep(1)
             self.refresh_state()
         except:
             LOGGER.exception('Error sending command to ' + self.name)

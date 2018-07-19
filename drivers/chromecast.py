@@ -41,7 +41,10 @@ class Chromecast(BaseDriver):
             self.cast = Chromecast.CAST_LIST.get(self.config['name'])
 
         if self.cast:
-            self.connected = True
+            if not self.cast.socket_client.is_connected:
+                self.cast.socket_client.initialize_connection()
+
+            self.connected = self.cast.socket_client.is_connected
 
     @staticmethod
     def processParams(config, param):
