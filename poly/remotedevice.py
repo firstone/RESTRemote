@@ -37,7 +37,6 @@ class RemoteDevice(Node):
         pass
 
     def execute_command(self, command):
-        LOGGER.debug('executing %s', command)
         try:
             self.deviceDriver.executeCommand(self.prefix + command['cmd'] + self.suffix,
                 command.get('value'))

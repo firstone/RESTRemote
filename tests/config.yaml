@@ -3,6 +3,7 @@ simple:
         command1: value1
         command2: value2
     poly: {}
+
 sub_group:
     commands:
         command1: value1
@@ -11,6 +12,18 @@ sub_group:
         group1:
             commands:
                 command3: value3
+
+read_only:
+    commands:
+        command3:
+            readOnly: true
+    poly:
+        commands:
+            command3:
+                driver:
+                    name: GV0
+                    description: Input
+
 no_main:
     commandGroups:
         group1:
@@ -30,6 +43,21 @@ suffix:
                             name: GV0
                             description: Input
                             input: command2
+
+read_only_suffix:
+    commandGroups:
+        group1:
+            suffix: _r1
+            commands:
+                command1:
+                    readOnly: true
+            poly:
+                commands:
+                    command1:
+                        driver:
+                            name: GV0
+                            description: Input
+
 prefix:
     commandGroups:
         group1:
@@ -44,6 +72,21 @@ prefix:
                             name: GV0
                             description: Input
                             input: command2
+
+read_only_prefix:
+    commandGroups:
+        group1:
+            prefix: r1_
+            commands:
+                command1:
+                    readOnly: true
+            poly:
+                commands:
+                    command1:
+                        driver:
+                            name: GV0
+                            description: Input
+
 last_output:
     values:
         some_value_set:
@@ -157,10 +200,22 @@ onkyo:
             result: true
             acceptsHex: true
 numberParams:
+    values:
+        bool_map:
+            -
+                value: '0'
+                param: false
+            -
+                value: '1'
+                param: true
     commands:
         boolCommand:
             code: value1
             acceptsBool: true
+        boolCommandTranslate:
+            code: value1
+            acceptsBool: true
+            value_set: bool_map
         intCommand:
             code: value2
             acceptsNumber: true

@@ -175,7 +175,7 @@ class ProfileFactory(object):
             commandKey = nodeName + '_' + commandName
             nlsCommand = utils.name_to_nls(commandKey)
             polyData = polyCommandsData.get(commandName, {})
-            polyDriverName = None
+            polyDriverName = polyData.get('driver', {}).get('name')
             if not commandData.get('result'):
                 self.nlsData.append(self.COMMAND_NAME.format(
                     nlsName + '-' + commandName,
@@ -195,8 +195,7 @@ class ProfileFactory(object):
                     self.add_driver_desc(nlsCommand,
                         paramParser.value_sets[commandData['value_set'] + '_names'])
 
-                if 'driver' in polyData:
-                    polyDriverName = polyData['driver']['name']
+                if polyDriverName:
                     if param is None:
                         raise RuntimeError('Driver configured but command is not configured for parameters: ' + commandName)
                     param.set('init', polyDriverName)
@@ -204,10 +203,8 @@ class ProfileFactory(object):
             elif commandData.get('readOnly', False) and 'value_set' in commandData:
                 self.add_driver_desc(nlsCommand,
                     paramParser.value_sets[commandData['value_set'].replace('_reverse', '') + '_names'])
-                if 'driver' in polyData:
-                    polyDriverName = polyData['driver']['name']
 
-            if polyDriverName is not None:
+            if polyDriverName:
                 ET.SubElement(states, 'st', id=polyDriverName,
                     editor=nlsCommand)
 

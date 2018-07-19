@@ -8,15 +8,23 @@ class Chromecast(BaseDriver):
 
     PLAYLISTS_KEY_NAME = 'chromecastPlaylists'
 
+    CAST_LIST = {}
+
     def __init__(self, config, logger, use_numeric_key=False):
         super(Chromecast, self).__init__(config, logger, use_numeric_key)
 
-        self.media_controller = None
+        self.cast = None
 
         logger.info('Loaded %s driver', self.__class__.__name__)
 
     def sendCommandRaw(self, commandName, command, args=None):
-        attr = getattr(self.media_controller, command['code'])
+        attr = None
+
+        if 'mediaCode' in command:
+            attr = getattr(self.cast.media_controller, command['mediaCode'])
+        else:
+            attr = getattr(self.cast, command['code'])
+
         if command.get('result', False):
             result = getattr(attr, command['argKey'])
             return result
@@ -27,14 +35,12 @@ class Chromecast(BaseDriver):
         return ''
 
     def connect(self):
-        self.connected = False
-        if self.media_controller is None:
-            casts = pychromecast.get_chromecasts()
-            for cast in casts:
-                if cast.device.friendly_name == self.config['name']:
-                    self.media_controller = cast.media_controller
-                    self.connected = True
-                    return
+        if self.cast is None:
+            Chromecast.discoverDevices(None)
+
+            self.cast = Chromecast.CAST_LIST.get(self.config['name'])
+            if self.cast:
+                self.connected = True
 
     @staticmethod
     def processParams(config, param):
@@ -57,12 +63,17 @@ class Chromecast(BaseDriver):
 
     @staticmethod
     def discoverDevices(config):
+        if len(Chromecast.CAST_LIST) == 0:
+            casts = pychromecast.get_chromecasts()
+
+            for cast in casts:
+                friendly_name = cast.device.friendly_name
+                Chromecast.CAST_LIST[friendly_name] = cast
+
         result = {}
-        casts = pychromecast.get_chromecasts()
-        for cast in casts:
-            friendly_name = cast.device.friendly_name
-            result[utils.desc_to_name(friendly_name)] = {
-                'name': friendly_name,
+        for name in Chromecast.CAST_LIST.keys():
+            result[utils.desc_to_name(name)] = {
+                'name': name,
                 'driver': 'chromecast'
             }
 

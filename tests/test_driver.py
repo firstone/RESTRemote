@@ -127,6 +127,15 @@ class UtilsTester(unittest.TestCase):
         driver.sendCommandRaw.assert_called_with('boolCommand',
             config['commands']['boolCommand'], True)
 
+    def test_execute_command_bool_param_translate(self):
+        config = UtilsTester.config['numberParams']
+        driver = BaseDriver(config, None)
+        driver.sendCommandRaw = MagicMock()
+
+        driver.executeCommand('boolCommandTranslate', '1')
+        driver.sendCommandRaw.assert_called_with('boolCommandTranslate',
+            config['commands']['boolCommandTranslate'], True)
+
     def test_execute_command_int_param(self):
         config = UtilsTester.config['numberParams']
         driver = BaseDriver(config, None)

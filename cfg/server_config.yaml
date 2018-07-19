@@ -927,21 +927,28 @@ drivers:
                 code: play_media
                 value_set: chromecastPlaylists
             play:
-                code: play
+                mediaCode: play
             pause:
-                code: pause
+                mediaCode: pause
             stop:
-                code: stop
+                mediaCode: stop
             skip:
-                code: skip
+                mediaCode: skip
             rewind:
-                code: rewind
+                mediaCode: rewind
             current_status:
                 result: true
                 readOnly: true
-                code: status
+                mediaCode: status
                 argKey: player_state
                 value_set: status_reverse
+            quit_app:
+                code: quit_app
+            volume_up:
+                code: volume_app
+            volue_down:
+                code: volume_down
+
 poly:
     commandGroups:
         channels:

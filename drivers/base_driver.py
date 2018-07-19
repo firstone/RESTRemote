@@ -14,7 +14,6 @@ class BaseDriver(object):
         if data is not None:
             self.config.update(data)
 
-        # self.logger.info("Config called %s", self.config)
         self.paramParser = ParamParser(self.config, self.use_numeric_key)
         self.connectionDescription = (self.config.get('hostName', '') + ':' +
             str(self.config.get('port', 0)))
