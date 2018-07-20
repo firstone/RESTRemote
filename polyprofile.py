@@ -69,6 +69,9 @@ class ProfileFactory(object):
         accepts = ET.SubElement(cmds, 'accepts')
         ET.SubElement(accepts, 'cmd', id='DISCOVER')
 
+        editor = ET.SubElement(self.editorTree, 'editor', id='bool')
+        ET.SubElement(editor, 'range', uom='2', subset='0,1')
+
         # Write primary devices
         for driverName, driverData in self.config['drivers'].items():
             polyCommandsData = self.config['poly']['drivers'].get(driverName, {}).get('commands', {})
