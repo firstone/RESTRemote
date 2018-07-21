@@ -15,13 +15,16 @@ from drivers.param_parser import ParamParser
     required=True)
 @click.option('-d', '--destination', help='Polyglot profile destination directory',
     type=click.Path(writable=True), required=True)
-def PolyRemote(config, destination):
+@click.option('-s', '--serverInfo', help='Generate server info', default=False,
+    is_flag=True)
+def PolyRemote(config, destination, serverinfo):
     print("Generating Polyglot profile")
 
     factory = ProfileFactory(destination, yaml.load(config))
     factory.create()
     factory.write()
-    factory.write_server_info(config.name)
+    if serverinfo:
+        factory.write_server_info(config.name)
 
 
 class ProfileFactory(object):
