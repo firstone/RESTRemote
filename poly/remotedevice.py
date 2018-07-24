@@ -35,9 +35,6 @@ class RemoteDevice(Node):
         self.primaryDevice = primaryDevice
         self.deviceDriver = deviceDriver
 
-    def query(self):
-        pass
-
     def execute_command(self, command):
         try:
             self.deviceDriver.executeCommand(self.prefix + command['cmd'] + self.suffix,

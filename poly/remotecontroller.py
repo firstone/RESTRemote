@@ -90,12 +90,11 @@ class RemoteController(Controller):
 
         for node in self.nodes.values():
             node.refresh_state()
-        pass
 
     def longPoll(self):
         pass
 
-    def query(self):
+    def refresh_state(self):
         pass
 
     def processParams(self, config):
@@ -181,15 +180,6 @@ class RemoteController(Controller):
 
         if self.polyConfig.get('customData', {}).get('addressMap') != addressMap:
             self.saveCustomData({'addressMap': addressMap})
-
-    def delete(self):
-        pass
-
-    def stop(self):
-        pass
-
-    def refresh_state(self):
-        pass
 
     def get_device_driver(self, driverName, deviceData):
         deviceDriver = self.deviceDrivers.get(driverName)
