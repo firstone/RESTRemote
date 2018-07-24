@@ -1,6 +1,6 @@
 click>=6.7
 flask>=0.12.2
-polyinterface>=2.0.26
+polyinterface>=2.0.28
 pyyaml>=3.12
 pychromecast>=2.2.0
 requests>=2.18.4
