@@ -884,7 +884,6 @@ drivers:
             tv_volume_down: {}
     chromecast:
         description: Chromecast
-        experimental: true
         driverParameters:
             -
                 name: chromecastPlaylists
@@ -906,6 +905,13 @@ drivers:
                         isRequired: true
         values:
             chromecastPlaylists:
+            on_off:
+                -
+                    value: Off
+                    param: false
+                -
+                    value: On
+                    param: true
             status:
                 -
                     value: unknown
@@ -922,24 +928,49 @@ drivers:
                 -
                     value: idle
                     param: IDLE
+            apps:
+                -
+                    value: None
+                    param: null
+                -
+                    value: Spotify
+                    param: CC32E753
+                -
+                    value: Netflix
+                    param: CA5E8412
+                -
+                    value: YouTube
+                    param: 233637DE
+                -
+                    value: Google Play Music
+                    param: '2872939A'
+                -
+                    value: Default Media Receiver
+                    param: CC1AD845
         commands:
             play_list:
                 code: play_media
                 value_set: chromecastPlaylists
             play:
-                mediaCode: play
+                code: play
+                controller: media_controller
             pause:
-                mediaCode: pause
+                code: pause
+                controller: media_controller
             stop:
-                mediaCode: stop
+                code: stop
+                controller: media_controller
             skip:
-                mediaCode: skip
+                code: skip
+                controller: media_controller
             rewind:
-                mediaCode: rewind
+                code: rewind
+                controller: media_controller
             current_status:
                 result: true
                 readOnly: true
-                mediaCode: status
+                code: status
+                controller: media_controller
                 argKey: player_state
                 value_set: status_reverse
             quit_app:
@@ -948,7 +979,34 @@ drivers:
                 code: volume_up
             volue_down:
                 code: volume_down
-
+            set_volume:
+                code: set_volume
+                acceptsPct: true
+            current_volume:
+                result: true
+                acceptsPct: true
+                code: status
+                argKey: volume_level
+            set_mute:
+                acceptsBool: true
+                code: set_volume_muted
+                value_set: on_off
+            toggle_mute: {}
+            current_mute:
+                result: true
+                code: status
+                value_set: on_off_reverse
+                code: status
+                argKey: volume_muted
+            start_app:
+                code: start_app
+                value_set: apps
+            current_app:
+                result: true
+                code: set_volume_muted
+                value_set: apps_reverse
+                code: status
+                argKey: app_id
 poly:
     commandGroups:
         channels:
@@ -1065,3 +1123,18 @@ poly:
                     driver:
                         name: GV0
                         description: Status
+                set_volume:
+                    param:
+                        uom: 51
+                        subset: 0-100
+                    driver:
+                        name: SVOL
+                        input: current_volume
+                set_mute:
+                    driver:
+                        name: GV1
+                        input: current_mute
+                start_app:
+                    driver:
+                        name: GV2
+                        input: current_app

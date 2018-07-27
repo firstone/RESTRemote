@@ -190,6 +190,7 @@ class ProfileFactory(object):
                 param = None
                 if (commandData.get('acceptsNumber') or
                     commandData.get('acceptsHex') or
+                    commandData.get('acceptsPct') or
                     commandData.get('acceptsFloat')):
                     param = ET.SubElement(cmd, 'p', id='', editor=nlsCommand)
                     editor = ET.SubElement(self.editorTree, 'editor', id=nlsCommand)
@@ -229,7 +230,7 @@ class ProfileFactory(object):
             subset='0-' + str(maxIndex), nls=nlsCommand + '_I')
         for key, value in names.items():
             self.nlsData.append(nlsCommand + '_I-' + str(key) +
-                ' = ' + value)
+                ' = ' + str(value))
 
     def get_hash(self, file_name):
         if not os.path.isfile(file_name):

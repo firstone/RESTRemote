@@ -5,6 +5,8 @@ class ParamParser(object):
     '''Performs input values to device parameters (and reverse)
     translations. Input value can be string or numeric'''
 
+    DEFAULT_VALUE = 'THIS SHOULD NEVER BE USED AS VALUE'
+
     REPLACE_CHARS = [
         { 'match': ' ', 'replace': '_' },
         { 'match': '()', 'replace': '' }
@@ -47,13 +49,17 @@ class ParamParser(object):
                 name_set[key] = item['value']
 
     def translate_param(self, command, value, defaultValue=None, returnValue=True):
-        if value is not None and 'value_set' in command:
-            result = self.value_sets[command['value_set']].get(value)
-        else:
-            result = defaultValue
+        result = None
+        if 'value_set' in command:
+            result = self.value_sets[command['value_set']].get(value,
+                ParamParser.DEFAULT_VALUE)
 
-        if result:
-            return result
+            if result is not ParamParser.DEFAULT_VALUE:
+                return result
+
+        if (result is ParamParser.DEFAULT_VALUE or result is None) and defaultValue is not None:
+            return defaultValue
+
         return value if returnValue else None
 
     def url_encode(self, value):

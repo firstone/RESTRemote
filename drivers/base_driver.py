@@ -87,6 +87,8 @@ class BaseDriver(object):
                 args = args == 'true' or args == 'on'
             elif command.get('acceptsNumber'):
                 args = str(int(args))
+            elif command.get('acceptsPct'):
+                args = float(args)/100
             elif command.get('acceptsFloat'):
                 args = '{0:g}'.format(float(args))
             elif command.get('acceptsHex'):
@@ -116,6 +118,8 @@ class BaseDriver(object):
                 output = int(result['output'])
             elif command.get('acceptsFloat'):
                 output = float(result['output'])
+            elif command.get('acceptsPct'):
+                output = int(float(result['output']) * 100)
             elif command.get('acceptsHex'):
                 output = int(result['output'], 16)
             else:

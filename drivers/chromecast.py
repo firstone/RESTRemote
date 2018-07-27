@@ -20,18 +20,26 @@ class Chromecast(BaseDriver):
         logger.info('Loaded %s driver', self.__class__.__name__)
 
     def sendCommandRaw(self, commandName, command, args=None):
-        attr = None
+        if commandName == 'start_app' and not args:
+            return self.sendCommandRaw('quit_app', self.config['commands']['quit_app'])
+        elif commandName == 'toggle_mute':
+            currentMute = self.sendCommandRaw('current_mute',
+                self.config['commands']['current_mute'])
+            return self.sendCommandRaw('set_mute',
+                self.config['commands']['set_mute'], not currentMute)
 
-        if 'mediaCode' in command:
-            attr = getattr(self.cast.media_controller, command['mediaCode'])
-        else:
-            attr = getattr(self.cast, command['code'])
+        controllerName = command.get('controller')
+        controller = getattr(self.cast, controllerName) if controllerName else self.cast
+        attr = getattr(controller, command['code'])
 
         if command.get('result', False):
-            result = getattr(attr, command['argKey'])
+            result = getattr(attr, command['argKey'], '')
             return result
         elif args is not None:
-            attr(*args)
+            if type(args) == list:
+                attr(*args)
+            else:
+                attr(args)
         else:
             attr()
         return ''

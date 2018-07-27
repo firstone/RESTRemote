@@ -6,7 +6,7 @@
     "install": "install.sh",
     "shortPoll": 15,
     "longPoll": 60,
-    "description": "Universal A/V remote control. Supported: nVidia Shield, LG TV, Tivo, Denon AVR, Onkyo AVR, ESP8266 IR, Chromecast (exp)",
+    "description": "Universal A/V remote control. Supported: nVidia Shield, LG TV, Tivo, Denon AVR, Onkyo AVR, ESP8266 IR, Chromecast",
     "notice": "https://github.com/firstone/RESTRemote/blob/master/LICENSE",
     "credits": [
         {
@@ -14,7 +14,7 @@
             "author": "FirstOne",
             "source": "https://github.com/firstone/RESTRemote",
             "license": "https://github.com/firstone/RESTRemote/blob/master/LICENSE",
-            "version": "0.4.8"
+            "version": "0.5.0"
         },
         {
             "title": "udi-poly-template-python: A Polyglot v2 Poly template",
