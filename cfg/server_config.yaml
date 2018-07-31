@@ -727,8 +727,11 @@ drivers:
                     value: cd
                     param: '23'
                 -
-                    value: net
+                    value: net_radio
                     param: '28'
+                -
+                    value: net
+                    param: '2B'
                 -
                     value: usb
                     param: '29'
@@ -738,6 +741,12 @@ drivers:
                 -
                     value: sirius
                     param: '32'
+                -
+                    value: am
+                    param: '25'
+                -
+                    value: fm
+                    param: '24'
         commands:
             toggle_mute:
                 code: AMTTG
@@ -977,7 +986,7 @@ drivers:
                 code: quit_app
             volume_up:
                 code: volume_up
-            volue_down:
+            volume_down:
                 code: volume_down
             set_volume:
                 code: set_volume
@@ -1129,12 +1138,15 @@ poly:
                         subset: 0-100
                     driver:
                         name: SVOL
+                        description: Volume
                         input: current_volume
                 set_mute:
                     driver:
                         name: GV1
+                        description: Mute
                         input: current_mute
                 start_app:
                     driver:
                         name: GV2
+                        description: Current App
                         input: current_app
