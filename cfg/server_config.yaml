@@ -956,6 +956,9 @@ drivers:
                 -
                     value: Default Media Receiver
                     param: CC1AD845
+                -
+                    value: Backdrop
+                    param: E8C28D3C
         commands:
             play_list:
                 code: play_media
