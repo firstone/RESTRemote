@@ -37,6 +37,7 @@ class ProfileFactory(object):
     EDITOR_FILE = [ 'editor', 'editors.xml' ]
     NLS_FILE = [ 'nls', 'en_us.txt' ]
     NODES_FILE = [ 'nodedef', 'nodedefs.xml' ]
+    COMMAND_LIST_THRESHOLD = 5
 
     def __init__(self, destination, config):
         self.destination = destination
@@ -177,6 +178,7 @@ class ProfileFactory(object):
         cmds = ET.SubElement(nodeDef, 'cmds')
         ET.SubElement(cmds, 'sends')
         accepts = ET.SubElement(cmds, 'accepts')
+        cmd_list = []
         for commandName, commandData in nodeData['commands'].items():
             commandKey = nodeName + '_' + commandName
             nlsCommand = utils.name_to_nls(commandKey)
@@ -201,6 +203,8 @@ class ProfileFactory(object):
                     param = ET.SubElement(cmd, 'p', id='', editor=nlsCommand)
                     self.add_driver_desc(nlsCommand,
                         paramParser.value_sets[commandData['value_set'] + '_names'])
+                else:
+                    cmd_list.append(commandName)
 
                 if polyDriverName:
                     if param is None:
@@ -220,17 +224,36 @@ class ProfileFactory(object):
                     polyData['driver'].get('description',
                         utils.name_to_desc(commandName))))
 
+        if len(cmd_list) > self.COMMAND_LIST_THRESHOLD:
+            nlsCommand = nlsName + '_C'
+            for cmd_index, commandName in enumerate(cmd_list):
+                self.nlsData.append(nlsCommand + '-' + str(cmd_index) +
+                    ' = ' + commandData.get('description',
+                        utils.name_to_desc(commandName)))
+            self.nlsData.append(self.COMMAND_NAME.format(nlsName + '-execute',
+                'Send Command'))
+            cmd = ET.SubElement(accepts, 'cmd', id='execute')
+            param = ET.SubElement(cmd, 'p', id='', editor=nlsCommand)
+            editor = ET.SubElement(self.editorTree, 'editor', id=nlsCommand)
+            range = ET.SubElement(editor, 'range')
+            range.set('nls', nlsCommand)
+            range.set('uom', '25')
+            range.set('subset', '0-' + str(len(cmd_list) - 1))
+
         self.nlsData.append('')
         return states
 
     def add_driver_desc(self, nlsCommand, names):
         editor = ET.SubElement(self.editorTree, 'editor', id=nlsCommand)
-        maxIndex = len(names) - 1 if len(names) else 0
+        maxIndex = 0
+        for key, value in names.items():
+            if key.isdigit():
+                maxIndex += 1
+                self.nlsData.append(nlsCommand + '_I-' + str(key) +
+                    ' = ' + str(value))
+        maxIndex = maxIndex - 1 if maxIndex else 0
         ET.SubElement(editor, 'range', uom='25',
             subset='0-' + str(maxIndex), nls=nlsCommand + '_I')
-        for key, value in names.items():
-            self.nlsData.append(nlsCommand + '_I-' + str(key) +
-                ' = ' + str(value))
 
     def get_hash(self, file_name):
         if not os.path.isfile(file_name):

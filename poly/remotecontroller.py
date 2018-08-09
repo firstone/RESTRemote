@@ -153,7 +153,7 @@ class RemoteController(Controller):
                 driverName = deviceData['driver']
                 deviceData.update(self.configData['drivers'][driverName])
                 polyData = self.configData['poly']['drivers'].get(driverName, {})
-                deviceData['poly'] = polyData
+                deviceData['poly'].update(polyData)
 
                 deviceDriver = self.get_device_driver(driverName, deviceData)(
                         utils.merge_commands(deviceData), LOGGER, True)

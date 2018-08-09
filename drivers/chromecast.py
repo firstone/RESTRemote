@@ -7,6 +7,7 @@ import utils
 
 class Chromecast(BaseDriver):
 
+    APPS_KEY_NAME = 'chromecastApps'
     PLAYLISTS_KEY_NAME = 'chromecastPlaylists'
     CAST_LIST = {}
     CAST_CONNECT_TRIES = 1
@@ -20,8 +21,12 @@ class Chromecast(BaseDriver):
         logger.info('Loaded %s driver', self.__class__.__name__)
 
     def sendCommandRaw(self, commandName, command, args=None):
-        if commandName == 'start_app' and not args:
-            return self.sendCommandRaw('quit_app', self.config['commands']['quit_app'])
+        if commandName == 'start_app':
+            if args == '':
+                return ''
+            elif not args:
+                return self.sendCommandRaw('quit_app',
+                    self.config['commands']['quit_app'])
         elif commandName == 'toggle_mute':
             currentMute = self.sendCommandRaw('current_mute',
                 self.config['commands']['current_mute'])
@@ -77,22 +82,40 @@ class Chromecast(BaseDriver):
 
     @staticmethod
     def processParams(config, param):
-        playlists = param.get(Chromecast.PLAYLISTS_KEY_NAME)
-        if playlists is None:
-            return False
-
-        values = []
-        for playlist in playlists:
-            values.append({
-                'value': playlist['name'],
-                'param': [ playlist['url'], playlist['type'] ]
-            })
+        config_changed = False
         config.setdefault('values', {})
-        if config['values'].get(Chromecast.PLAYLISTS_KEY_NAME) == values:
-            return False
 
-        config['values'][Chromecast.PLAYLISTS_KEY_NAME] = values
-        return True
+        playlists = param.get(Chromecast.PLAYLISTS_KEY_NAME)
+        if playlists is not None:
+            values = []
+            for playlist in playlists:
+                values.append({
+                    'value': playlist['name'],
+                    'param': [ playlist['url'], playlist['type'] ]
+                })
+            if config['values'].get(Chromecast.PLAYLISTS_KEY_NAME) != values:
+                config['values'][Chromecast.PLAYLISTS_KEY_NAME] = values
+                config_changed = True
+
+        apps = param.get(Chromecast.APPS_KEY_NAME)
+        if apps is not None:
+            values = list(config.get('coreApps', []))
+
+            for app in apps:
+                values.append({
+                    'value': app['name'],
+                    'param': app['app_id']
+                })
+
+            defaultApp = config.get('defaultApp')
+            if defaultApp:
+                values.append(defaultApp)
+
+            if config['values'].get(Chromecast.APPS_KEY_NAME) != values:
+                config['values'][Chromecast.APPS_KEY_NAME] = values
+                config_changed = True
+
+        return config_changed
 
     @staticmethod
     def discoverDevices(config):

@@ -1,7 +1,7 @@
 simple:
     commands:
-        command1: value1
-        command2: value2
+        command1: {}
+        command2: {}
     poly: {}
 
 sub_group:
@@ -34,8 +34,8 @@ suffix:
         group1:
             suffix: _g1
             commands:
-                command1: value1
-                command2: value2
+                command1: {}
+                command2: {}
             poly:
                 commands:
                     command1:
@@ -63,8 +63,8 @@ prefix:
         group1:
             prefix: g1_
             commands:
-                command1: value1
-                command2: value2
+                command1: {}
+                command2: {}
             poly:
                 commands:
                     command1:
@@ -111,8 +111,8 @@ last_output:
             acceptsNumber: true
 state:
     commands:
-        command1: value1
-        command2: value2
+        command1: {}
+        command2: {}
     poly:
         commands:
             command1:
@@ -137,6 +137,14 @@ driver:
             -
                 value: key4
                 param: value4
+        some_map3:
+            -
+                value: key5
+                param: value5
+            -
+                value: key6
+                param: value6
+                isDefault: true
     commands:
         command1:
             code: value1
@@ -154,6 +162,10 @@ driver:
             result: True
             code: value5
             value_set: some_map2_reverse
+        command6:
+            result: True
+            code: value6
+            value_set: some_map3_reverse
 denon:
     values:
         some_map:

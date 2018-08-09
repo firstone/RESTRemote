@@ -5,7 +5,7 @@ class ParamParser(object):
     '''Performs input values to device parameters (and reverse)
     translations. Input value can be string or numeric'''
 
-    DEFAULT_VALUE = 'THIS SHOULD NEVER BE USED AS VALUE'
+    DEFAULT_KEY_VALUE = '\u0001THIS SHOULD NEVER BE USED AS KEY OR VALUE\u0001'
 
     REPLACE_CHARS = [
         { 'match': ' ', 'replace': '_' },
@@ -47,17 +47,25 @@ class ParamParser(object):
                 if isinstance(param, collections.Hashable):
                     reverse_set[param] = key
                 name_set[key] = item['value']
+                if item.get('isDefault', False):
+                    forward_set[ParamParser.DEFAULT_KEY_VALUE] = param
+                    reverse_set[ParamParser.DEFAULT_KEY_VALUE] = key
+                    name_set[ParamParser.DEFAULT_KEY_VALUE] = item['value']
 
     def translate_param(self, command, value, defaultValue=None, returnValue=True):
         result = None
         if 'value_set' in command:
-            result = self.value_sets[command['value_set']].get(value,
-                ParamParser.DEFAULT_VALUE)
+            value_set = self.value_sets[command['value_set']]
+            result = value_set.get(value, ParamParser.DEFAULT_KEY_VALUE)
 
-            if result is not ParamParser.DEFAULT_VALUE:
+            if result is not ParamParser.DEFAULT_KEY_VALUE:
                 return result
 
-        if (result is ParamParser.DEFAULT_VALUE or result is None) and defaultValue is not None:
+            result = value_set.get(ParamParser.DEFAULT_KEY_VALUE)
+            if result is not None:
+                return result
+
+        if (result is ParamParser.DEFAULT_KEY_VALUE or result is None) and defaultValue is not None:
             return defaultValue
 
         return value if returnValue else None

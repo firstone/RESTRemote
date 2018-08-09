@@ -1,6 +1,5 @@
 import unittest
 from unittest.mock import MagicMock
-from unittest.mock import Mock
 import yaml
 
 from drivers.base_driver import BaseDriver
@@ -16,7 +15,7 @@ class UtilsTester(unittest.TestCase):
     def test_simple(self):
         config = UtilsTester.config['driver']
         driver = BaseDriver(config, None)
-        self.assertEqual(len(driver.getData('commands')['commands']), 5)
+        self.assertEqual(len(driver.getData('commands')['commands']), 6)
 
     def test_execute_command(self):
         config = UtilsTester.config['driver']
@@ -84,6 +83,17 @@ class UtilsTester(unittest.TestCase):
         self.assertNotIn('result', response)
         driver.sendCommandRaw.assert_called_with('command4',
             config['commands']['command4'])
+
+    def test_get_data_translate_default(self):
+        config = UtilsTester.config['driver']
+        driver = BaseDriver(config, None)
+        driver.sendCommandRaw = MagicMock(return_value='some_value')
+
+        response = driver.getData('command6')
+        self.assertEqual(response['output'], 'some_value')
+        self.assertEqual(response['result'], 'key6')
+        driver.sendCommandRaw.assert_called_with('command6',
+            config['commands']['command6'])
 
     def test_get_data_translate(self):
         config = UtilsTester.config['driver']

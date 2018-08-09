@@ -140,6 +140,11 @@ class WebOS(BaseDriver):
 
     def process_result(self, commandName, command, result):
         if 'argKey' in command:
-            param = result['output']['payload'].get(command['argKey'])
+            payload = result['output'].get('payload')
+            if not payload:
+                self.logger.warning("Missing payload for command %s: %s",
+                    commandName, result['output'])
+                return
+            param = payload.get(command['argKey'])
             if param is not None:
                 result['result'] = self.paramParser.translate_param(command, param)

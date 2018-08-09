@@ -8,6 +8,8 @@ drivers:
     android:
         description: nVidia Shield
         executable: adb
+        poly:
+            hint: [ 1, 6, 7, 0 ]
         parameters:
             -
                 name: name
@@ -128,6 +130,8 @@ drivers:
         moduleName: WebOS
         timeout: 5
         promptTimeout: 60
+        poly:
+            hint: [ 1, 6, 3, 0 ]
         parameters:
             -
                 name: name
@@ -156,7 +160,7 @@ drivers:
         values:
             inputs:
                 -
-                    value: hdmi1
+                    value: hdmi1 
                     param: com.webos.app.hdmi1
                 -
                     value: hdmi2
@@ -167,6 +171,9 @@ drivers:
                 -
                     value: hdmi4
                     param: com.webos.app.hdmi4
+                -
+                    value: live_tv
+                    param: com.webos.app.livetv
                 -
                     value: netflix
                 -
@@ -356,6 +363,8 @@ drivers:
         description: Tivo
         moduleName: TivoIP
         timeout: 5
+        poly:
+            hint: [ 1, 6, 6, 0 ]
         parameters:
             -
                 name: name
@@ -506,6 +515,8 @@ drivers:
         description: Denon AVR
         moduleName: DenonAVR
         timeout: 10
+        poly:
+            hint: [ 1, 6, 5, 0 ]
         parameters:
             -
                 name: name
@@ -673,6 +684,8 @@ drivers:
         description: Onkyo AVR
         moduleName: OnkyoAVR
         timeout: 10
+        poly:
+            hint: [ 1, 6, 5, 0 ]
         parameters:
             -
                 name: name
@@ -893,6 +906,8 @@ drivers:
             tv_volume_down: {}
     chromecast:
         description: Chromecast
+        poly:
+            hint: [ 1, 6, 7, 0 ]
         driverParameters:
             -
                 name: chromecastPlaylists
@@ -912,8 +927,45 @@ drivers:
                         title: Type
                         desc: mime type, for example 'video/mp4'
                         isRequired: true
+            -
+                name: chromecastApps
+                title: Chromecast Apps
+                isList: true
+                params:
+                    -
+                        name: name
+                        title: Name
+                        isRequired: true
+                    -
+                        name: app_id
+                        title: App ID
+                        isRequired: true
+        coreApps:
+            -
+                value: None
+                param: null
+            -
+                value: Spotify
+                param: CC32E753
+            -
+                value: Netflix
+                param: CA5E8412
+            -
+                value: YouTube
+                param: 233637DE
+            -
+                value: Google Play Music
+                param: '2872939A'
+            -
+                value: Default Media Receiver
+                param: CC1AD845
+        defaultApp:
+            value: Other
+            param: ''
+            isDefault: true
         values:
             chromecastPlaylists:
+            chromecastApps:
             on_off:
                 -
                     value: Off
@@ -937,28 +989,6 @@ drivers:
                 -
                     value: idle
                     param: IDLE
-            apps:
-                -
-                    value: None
-                    param: null
-                -
-                    value: Spotify
-                    param: CC32E753
-                -
-                    value: Netflix
-                    param: CA5E8412
-                -
-                    value: YouTube
-                    param: 233637DE
-                -
-                    value: Google Play Music
-                    param: '2872939A'
-                -
-                    value: Default Media Receiver
-                    param: CC1AD845
-                -
-                    value: Backdrop
-                    param: E8C28D3C
         commands:
             play_list:
                 code: play_media
@@ -1012,11 +1042,11 @@ drivers:
                 argKey: volume_muted
             start_app:
                 code: start_app
-                value_set: apps
+                value_set: chromecastApps
             current_app:
                 result: true
                 code: set_volume_muted
-                value_set: apps_reverse
+                value_set: chromecastApps_reverse
                 code: status
                 argKey: app_id
 poly:

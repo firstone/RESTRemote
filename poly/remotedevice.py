@@ -16,7 +16,10 @@ class RemoteDevice(Node):
         self.driverSetters = {}
         self.suffix = config.get('suffix', '')
         self.prefix = config.get('prefix', '')
-        for commandName in config.get('commands', {}).keys():
+        self.command_list = []
+        self.commands['execute'] = RemoteDevice.execute_command_by_index
+
+        for commandName, commandData in config.get('commands', {}).items():
             self.commands[commandName] = RemoteDevice.execute_command
 
             polyData = config['poly'].get('commands', {}).get(commandName)
@@ -32,8 +35,23 @@ class RemoteDevice(Node):
                 elif 'input' in polyData['driver'] and deviceDriver.hasCommand(self.prefix + polyData['driver']['input'] + self.suffix):
                     self.driverSetters[polyData['driver']['name']] = self.prefix + polyData['driver']['input'] + self.suffix
 
+            if (not commandData.get('result') and
+                not commandData.get('acceptsNumber') and
+                not commandData.get('acceptsHex') and
+                not commandData.get('acceptsPct') and
+                not commandData.get('acceptsFloat') and
+                'value_set' not in commandData):
+                self.command_list.append(commandName)
+
+        hint = config['poly'].get('hint')
+        if hint:
+            self.hint = hint
+
         self.primaryDevice = primaryDevice
         self.deviceDriver = deviceDriver
+
+    def execute_command_by_index(self, command):
+        self.execute_command({'cmd': self.command_list[int(command['value'])]})
 
     def execute_command(self, command):
         try:
