@@ -15,6 +15,7 @@ class WebOS(BaseDriver):
         self.curID = 0
         self.callbacks = {}
         self.clientKey = None
+        self.client = None
         try:
             with open(config['clientKeyFile'], 'r') as clientKeyInput:
                 self.clientKey = yaml.load(clientKeyInput)
