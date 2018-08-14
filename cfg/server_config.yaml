@@ -160,7 +160,7 @@ drivers:
         values:
             inputs:
                 -
-                    value: hdmi1 
+                    value: hdmi1
                     param: com.webos.app.hdmi1
                 -
                     value: hdmi2
@@ -175,11 +175,16 @@ drivers:
                     value: live_tv
                     param: com.webos.app.livetv
                 -
+                    value: youtube
+                    param: youtube.leanback.v4
+                -
                     value: netflix
                 -
                     value: amazon
                 -
                     value: vudu
+                -
+                    value: hulu
             on_off:
                 -
                     value: 'off'

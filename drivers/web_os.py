@@ -58,6 +58,11 @@ class WebOS(BaseDriver):
 
     def connect(self):
         try:
+            if self.client:
+                try:
+                    self.client.close()
+                except:
+                    pass
             self.client = WebSocketClient("ws://" + self.config['hostName'] + ':' +
                 str(self.config['port']),  exclude_headers=["Origin"])
             self.client.opened = self.on_open

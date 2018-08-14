@@ -22,6 +22,11 @@ class OnkyoAVR(BaseDriver):
         logger.info('Loaded %s driver', self.__class__.__name__)
 
     def connect(self):
+        if self.conn:
+            try:
+                self.conn.close()
+            except:
+                pass
         self.conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.conn.connect((self.config['hostName'], self.config['port']))
         self.conn.settimeout(self.config['timeout'])

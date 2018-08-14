@@ -1,3 +1,4 @@
+import copy
 import importlib
 from polyinterface import LOGGER
 from polyinterface import Controller
@@ -138,7 +139,7 @@ class RemoteController(Controller):
     def discover(self, *args, **kwargs):
         time.sleep(1)
 
-        addressMap = self.polyConfig.get('customData', {}).get('addressMap', {})
+        addressMap = copy.deepcopy(self.polyConfig.get('customData', {}).get('addressMap', {}))
 
         devicesConfig = self.configData.get('devices', {})
         for driverName, driverData in self.configData['drivers'].items():
