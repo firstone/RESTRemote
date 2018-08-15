@@ -43,6 +43,7 @@ class WebOS(BaseDriver):
         self.logger.warn('LG TV Connection closed %s, %s', code, reason)
 
     def on_message(self, data):
+        self.logger.debug('Received %s', data)
         message = json.loads(str(data))
         if message['id'] == 'register0':
             if message['type'] == 'error':
@@ -128,6 +129,7 @@ class WebOS(BaseDriver):
         if 'uri' in command:
             message['uri'] = 'ssap://' + command['uri']
 
+        self.logger.debug('Sending %s', message)
         self.client.send(json.dumps(message))
         self.curID += 1
         event = Event()

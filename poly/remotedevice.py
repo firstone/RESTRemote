@@ -55,6 +55,7 @@ class RemoteDevice(Node):
 
     def execute_command(self, command):
         try:
+            LOGGER.debug('Device %s executig command %s', self.name, command['cmd'])
             self.deviceDriver.executeCommand(self.prefix + command['cmd'] + self.suffix,
                 command.get('value'))
             time.sleep(1)
@@ -64,6 +65,7 @@ class RemoteDevice(Node):
 
     def refresh_state(self):
         if self.primaryDevice.connected:
+            LOGGER.debug('Refreshing state for %s', self.name)
             try:
                 for driverName, commandName in self.driverSetters.items():
                     output = self.deviceDriver.getData(commandName)
@@ -71,4 +73,4 @@ class RemoteDevice(Node):
                     if result is not None:
                         self.setDriver(driverName, float(result))
             except:
-                LOGGER.exception('Error refreshing ' + self.name + ' device state')
+                LOGGER.exception('Error refreshing %s device state', self.name)
