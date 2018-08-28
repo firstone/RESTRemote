@@ -162,7 +162,7 @@ class UtilsTester(unittest.TestCase):
 
         driver.executeCommand('hexCommand', '11')
         driver.sendCommandRaw.assert_called_with('hexCommand',
-            config['commands']['hexCommand'], 'b')
+            config['commands']['hexCommand'], 'B')
 
     def test_execute_command_float_param(self):
         config = UtilsTester.config['numberParams']

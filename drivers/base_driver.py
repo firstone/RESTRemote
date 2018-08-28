@@ -92,7 +92,7 @@ class BaseDriver(object):
             elif command.get('acceptsFloat'):
                 args = '{0:g}'.format(float(args))
             elif command.get('acceptsHex'):
-                args = hex(int(args))[2:]
+                args = hex(int(args))[2:].upper()
 
         result = {
             'driver': __name__,
