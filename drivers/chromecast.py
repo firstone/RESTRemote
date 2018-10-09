@@ -37,16 +37,20 @@ class Chromecast(BaseDriver):
         controller = getattr(self.cast, controllerName) if controllerName else self.cast
         attr = getattr(controller, command['code'])
 
-        if command.get('result', False):
-            result = getattr(attr, command['argKey'], '')
-            return result
-        elif args is not None:
-            if type(args) == list:
-                attr(*args)
+        try:
+            if command.get('result', False):
+                result = getattr(attr, command['argKey'], '')
+                return result
+            elif args is not None:
+                if type(args) == list:
+                    attr(*args)
+                else:
+                    attr(args)
             else:
-                attr(args)
-        else:
-            attr()
+                attr()
+        except:
+            self.disconnect()
+
         return ''
 
     def is_connected(self):
@@ -76,9 +80,12 @@ class Chromecast(BaseDriver):
         if self.cast:
             self.connected = self.cast.socket_client.is_connected
             if not self.connected:
-                self.cast.disconnect()
-                self.cast = None
-                Chromecast.CAST_LIST[self.config['name']] = None
+                self.disconnect()
+
+    def disconnect(self):
+        self.cast.disconnect()
+        self.cast = None
+        Chromecast.CAST_LIST[self.config['name']] = None
 
     @staticmethod
     def processParams(config, param):
