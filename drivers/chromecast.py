@@ -9,9 +9,12 @@ class Chromecast(BaseDriver):
 
     APPS_KEY_NAME = 'chromecastApps'
     PLAYLISTS_KEY_NAME = 'chromecastPlaylists'
+    ENABLED_KEY_NAME = 'enableChromecastSupport'
     CAST_LIST = {}
     CAST_CONNECT_TRIES = 1
     FRIENDLY_NAME_OFFSET = 4
+
+    enabled = False
 
     def __init__(self, config, logger, use_numeric_key=False):
         super(Chromecast, self).__init__(config, logger, use_numeric_key)
@@ -122,10 +125,17 @@ class Chromecast(BaseDriver):
                 config['values'][Chromecast.APPS_KEY_NAME] = values
                 config_changed = True
 
+        enabled = param.get(Chromecast.ENABLED_KEY_NAME)
+        if enabled is not None:
+            Chromecast.enabled = enabled
+
         return config_changed
 
     @staticmethod
     def discoverDevices(config):
+        if not Chromecast.enabled:
+            return
+
         if len(Chromecast.CAST_LIST) == 0:
             casts = pychromecast.get_chromecasts(Chromecast.CAST_CONNECT_TRIES)
 

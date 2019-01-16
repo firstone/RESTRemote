@@ -19,21 +19,9 @@ class RemoteController(Controller):
         self.deviceDrivers = {}
         self.deviceDriverInstances = {}
         self.poly.onConfig(self.process_config)
-        self.needDiscover = False
         self.currentConfig = None
 
-    def supports_feature(self, feature):
-        if hasattr(self.poly, 'supports_feature'):
-            return self.poly.supports_feature(feature)
-
-        return False
-
     def process_config(self, config):
-        if not self.has_devices and not self.supports_feature('typedParams'):
-            customParams = self.processParams(self.polyConfig.get('customParams', {}))
-            if len(customParams) > 0:
-                self.addCustomParam(customParams)
-
         typedConfig = config.get('typedCustomData')
         if self.currentConfig != typedConfig:
             self.currentConfig = typedConfig
@@ -63,32 +51,25 @@ class RemoteController(Controller):
                     LOGGER.debug('Profile not changed. Skipping')
 
             self.configData['devices'] = devicesConfig
-            self.needDiscover = True
 
     def start(self):
-        if self.supports_feature('typedParams'):
-            params = []
-            for driverName, driverData in self.configData['drivers'].items():
-                values = driverData.get('parameters')
-                if values:
-                    param = {
-                        'name': driverName,
-                        'title': driverData.get('description', ''),
-                        'isList': True,
-                        'params': values
-                    }
-                    params.append(param)
-                params.extend(driverData.get('driverParameters', []))
-            self.poly.save_typed_params(params)
+        params = []
+        for driverName, driverData in self.configData['drivers'].items():
+            values = driverData.get('parameters')
+            if values:
+                param = {
+                    'name': driverName,
+                    'title': driverData.get('description', ''),
+                    'isList': True,
+                    'params': values
+                }
+                params.append(param)
+            params.extend(driverData.get('driverParameters', []))
+        self.poly.save_typed_params(params)
 
         self.setDriver('ST', 1)
-        self.discover()
 
     def shortPoll(self):
-        if self.needDiscover:
-            self.needDiscover = False
-            self.discover()
-
         for node in self.nodes.values():
             node.refresh_state()
 

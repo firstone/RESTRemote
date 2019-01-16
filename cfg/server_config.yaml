@@ -128,7 +128,7 @@ drivers:
     web_os:
         description: LG TV
         moduleName: WebOS
-        timeout: 5
+        timeout: 1
         promptTimeout: 60
         poly:
             hint: [ 1, 6, 3, 0 ]
@@ -914,6 +914,11 @@ drivers:
         poly:
             hint: [ 1, 6, 7, 0 ]
         driverParameters:
+            -
+                name: enableChromecastSupport
+                title: Enable Chromecast Support
+                defaultValue: False
+                type: BOOL
             -
                 name: chromecastPlaylists
                 title: Chromecast Play Lists
