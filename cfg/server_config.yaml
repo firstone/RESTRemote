@@ -128,7 +128,7 @@ drivers:
     web_os:
         description: LG TV
         moduleName: WebOS
-        timeout: 1
+        timeout: 5
         promptTimeout: 60
         poly:
             hint: [ 1, 6, 3, 0 ]
