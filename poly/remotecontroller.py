@@ -20,8 +20,12 @@ class RemoteController(Controller):
         self.deviceDriverInstances = {}
         self.poly.onConfig(self.process_config)
         self.currentConfig = None
+        time.sleep(1)
+        self.createDevices()
 
     def process_config(self, config):
+        self.remove_stale_nodes(config)
+
         typedConfig = config.get('typedCustomData')
         if self.currentConfig != typedConfig:
             self.currentConfig = typedConfig
@@ -51,6 +55,34 @@ class RemoteController(Controller):
                     LOGGER.debug('Profile not changed. Skipping')
 
             self.configData['devices'] = devicesConfig
+
+    def remove_stale_nodes(self, config):
+        # Remove node not present in config
+        existingNodes = {}
+        for node in config['nodes']:
+            existingNodes[node['address']] = 1
+
+        staleNodes = {}
+        for nodeAddress, node in self.nodes.items():
+            if nodeAddress not in existingNodes:
+                staleNodes[nodeAddress] = 1
+
+        customData = self.polyConfig.get('customData', {})
+        addressMap = customData.get('addressMap', {})
+        discoveredDevices = copy.deepcopy(customData.get('discoveredDevices', {}))
+
+        for nodeAddress in staleNodes.keys():
+            LOGGER.debug('Removing stale node ' + nodeAddress)
+            for deviceName, deviceAddress in addressMap.items():
+                if deviceAddress == nodeAddress:
+                    del discoveredDevices[deviceName]
+            del self.nodes[nodeAddress]
+
+        if customData.get('discoveredDevices') != discoveredDevices:
+            self.saveCustomData({
+                'addressMap': addressMap,
+                'discoveredDevices': discoveredDevices
+            })
 
     def start(self):
         params = []
@@ -118,16 +150,31 @@ class RemoteController(Controller):
         return address
 
     def discover(self, *args, **kwargs):
-        time.sleep(1)
+        customData = self.polyConfig.get('customData', {})
+        addressMap = customData.get('addressMap', {})
+        discoveredDevices = copy.deepcopy(customData.get('discoveredDevices', {}))
 
-        addressMap = copy.deepcopy(self.polyConfig.get('customData', {}).get('addressMap', {}))
-
-        devicesConfig = self.configData.get('devices', {})
         for driverName, driverData in self.configData['drivers'].items():
             devices = self.get_device_driver(driverName,
                 driverData).discoverDevices(driverData)
             if devices is not None:
-                devicesConfig.update(devices)
+                discoveredDevices.update(devices)
+
+        LOGGER.debug('Finished device discovery')
+        self.saveCustomData({
+            'addressMap': addressMap,
+            'discoveredDevices': discoveredDevices
+        })
+        self.createDevices()
+
+    def createDevices(self):
+        customData = self.polyConfig.get('customData', {})
+        addressMap = copy.deepcopy(customData.get('addressMap', {}))
+        discoveredDevices = customData.get('discoveredDevices')
+
+        devicesConfig = self.configData.get('devices', {})
+        if discoveredDevices is not None:
+                devicesConfig.update(discoveredDevices)
 
         self.configData['devices'] = devicesConfig
         for deviceName, deviceData in devicesConfig.items():
@@ -160,8 +207,11 @@ class RemoteController(Controller):
                                 utils.name_to_desc(commandGroup),
                                 commandGroupData, deviceDriver))
 
-        if self.polyConfig.get('customData', {}).get('addressMap') != addressMap:
-            self.saveCustomData({'addressMap': addressMap})
+        if customData.get('addressMap') != addressMap:
+            self.saveCustomData({
+                'addressMap': addressMap,
+                'discoveredDevices': discoveredDevices
+            })
 
     def get_device_driver(self, driverName, deviceData):
         deviceDriver = self.deviceDrivers.get(driverName)
