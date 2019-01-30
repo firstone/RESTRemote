@@ -56,7 +56,12 @@ class RemoteController(Controller):
 
             self.configData['devices'] = devicesConfig
 
+        self.createDevices()
+
     def remove_stale_nodes(self, config):
+        if len(config['nodes']) == 0:
+            return
+
         # Remove node not present in config
         existingNodes = {}
         for node in config['nodes']:
@@ -150,6 +155,7 @@ class RemoteController(Controller):
         return address
 
     def discover(self, *args, **kwargs):
+        LOGGER.debug('Starting device discovery')
         customData = self.polyConfig.get('customData', {})
         addressMap = customData.get('addressMap', {})
         discoveredDevices = copy.deepcopy(customData.get('discoveredDevices', {}))
@@ -165,12 +171,11 @@ class RemoteController(Controller):
             'addressMap': addressMap,
             'discoveredDevices': discoveredDevices
         })
-        self.createDevices()
 
     def createDevices(self):
         customData = self.polyConfig.get('customData', {})
         addressMap = copy.deepcopy(customData.get('addressMap', {}))
-        discoveredDevices = customData.get('discoveredDevices')
+        discoveredDevices = customData.get('discoveredDevices', {})
 
         devicesConfig = self.configData.get('devices', {})
         if discoveredDevices is not None:
