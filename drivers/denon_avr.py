@@ -41,9 +41,11 @@ class DenonAVR(BaseDriver):
                 else:
                     commandStr += args
             commandStr += '\n'
+            self.logger.debug("%s sending %s", self.__class__.__name__, commandStr)
             self.conn.send(commandStr.encode())
             time.sleep(self.RESPONSE_DELAY)
             result = self.conn.recv(self.BUF_SIZE).decode()
+            self.logger.debug("%s received %s", self.__class__.__name__, result)
         except socket.timeout:
             pass
         return result[:-1].split('\r') if result else result
