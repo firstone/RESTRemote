@@ -8,7 +8,7 @@ import utils
 class DenonAVR(BaseDriver):
 
     BUF_SIZE = 4096
-    RESPONSE_DELAY = 1
+    RESPONSE_DELAY = .15
     SEARCH_SUFFIX = '?'
 
     def __init__(self, config, logger, use_numeric_key=False):
@@ -24,6 +24,8 @@ class DenonAVR(BaseDriver):
             except:
                 pass
         self.conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.logger.debug("Connecting to %s:%s", self.config['hostName'],
+            self.config['port'])
         self.conn.connect((self.config['hostName'], self.config['port']))
         self.conn.settimeout(self.config['timeout'])
         self.connected = True
@@ -40,12 +42,16 @@ class DenonAVR(BaseDriver):
                     commandStr += '{0:g}'.format(float(args)).replace('.', '')
                 else:
                     commandStr += args
+            # self.logger.debug("%s sending %s", self.__class__.__name__, commandStr)
             commandStr += '\n'
-            self.logger.debug("%s sending %s", self.__class__.__name__, commandStr)
             self.conn.send(commandStr.encode())
             time.sleep(self.RESPONSE_DELAY)
             result = self.conn.recv(self.BUF_SIZE).decode()
-            self.logger.debug("%s received %s", self.__class__.__name__, result)
+            if self.config.get('connectOnDemand', False):
+                self.conn.close()
+                self.connected = False
+            # self.logger.debug("%s received %s", self.__class__.__name__,
+            #    result.replace('\r', '\\r'))
         except socket.timeout:
             pass
         return result[:-1].split('\r') if result else result
@@ -57,6 +63,10 @@ class DenonAVR(BaseDriver):
         if commandName.startswith('current_volume'):
             output = utils.get_last_output(command, result['output'],
                 self.paramParser.value_sets, DenonAVR.SEARCH_SUFFIX)
+
+            if output is None:
+                return
+
             if len(output) > 2:
                 output = output[:2] + '.5'
             else:

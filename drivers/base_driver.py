@@ -20,7 +20,8 @@ class BaseDriver(object):
 
     def start(self):
         try:
-            self.connect()
+            if not self.connected:
+                self.connect()
         except:
             self.logger.exception('Connection to %s failed',
                 self.connectionDescription)

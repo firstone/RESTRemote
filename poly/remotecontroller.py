@@ -41,7 +41,7 @@ class RemoteController(Controller):
                         if self.get_device_driver(deviceDriverName, driverData).processParams(
                             driverData, { driverName: paramList }):
                             needChanges = True
-                            for deviceDriver in self.deviceDriverInstances[deviceDriverName]:
+                            for deviceDriver in self.deviceDriverInstances[deviceDriverName].items():
                                 deviceDriver.configure(driverData)
 
             if needChanges:
@@ -75,18 +75,22 @@ class RemoteController(Controller):
         customData = self.polyConfig.get('customData', {})
         addressMap = customData.get('addressMap', {})
         discoveredDevices = copy.deepcopy(customData.get('discoveredDevices', {}))
+        removedDevices = copy.deepcopy(customData.get('removedDevices', {}))
 
         for nodeAddress in staleNodes.keys():
             LOGGER.debug('Removing stale node ' + nodeAddress)
             for deviceName, deviceAddress in addressMap.items():
                 if deviceAddress == nodeAddress:
-                    del discoveredDevices[deviceName]
+                    discoveredDevices.pop(deviceName, None)
+            removedDevices[nodeAddress] = 1
             del self.nodes[nodeAddress]
 
-        if customData.get('discoveredDevices') != discoveredDevices:
+        if (customData.get('discoveredDevices') != discoveredDevices or
+            customData.get('removedDevices') != removedDevices):
             self.saveCustomData({
                 'addressMap': addressMap,
-                'discoveredDevices': discoveredDevices
+                'discoveredDevices': discoveredDevices,
+                'removedDevices': removedDevices
             })
 
     def start(self):
@@ -107,11 +111,11 @@ class RemoteController(Controller):
         self.setDriver('ST', 1)
 
     def shortPoll(self):
-        for node in self.nodes.values():
-            node.refresh_state()
+        pass
 
     def longPoll(self):
-        pass
+        for node in self.nodes.values():
+            node.refresh_state()
 
     def refresh_state(self):
         pass
@@ -169,13 +173,15 @@ class RemoteController(Controller):
         LOGGER.debug('Finished device discovery')
         self.saveCustomData({
             'addressMap': addressMap,
-            'discoveredDevices': discoveredDevices
+            'discoveredDevices': discoveredDevices,
+            'removedDevices': {}
         })
 
     def createDevices(self):
         customData = self.polyConfig.get('customData', {})
         addressMap = copy.deepcopy(customData.get('addressMap', {}))
         discoveredDevices = customData.get('discoveredDevices', {})
+        removedDevices = customData.get('removedDevices', {})
 
         devicesConfig = self.configData.get('devices', {})
         if discoveredDevices is not None:
@@ -189,15 +195,19 @@ class RemoteController(Controller):
                 polyData = self.configData['poly']['drivers'].get(driverName, {})
                 deviceData['poly'].update(polyData)
 
-                deviceDriver = self.get_device_driver(driverName, deviceData)(
+                deviceDriver = self.deviceDriverInstances[driverName].get(
+                    deviceName)
+                if deviceDriver is None:
+                    deviceDriver = self.get_device_driver(driverName, deviceData)(
                         utils.merge_commands(deviceData), LOGGER, True)
-                self.deviceDriverInstances[driverName].append(deviceDriver)
+                    self.deviceDriverInstances[driverName][deviceName] = deviceDriver
 
                 nodeAddress = self.getDeviceAddress(deviceName, addressMap)
-                nodeName = deviceData.get('name', utils.name_to_desc(deviceName))
-                primaryDevice = PrimaryRemoteDevice(self, nodeAddress,
-                    driverName, nodeName, deviceData, deviceDriver)
-                self.addNode(primaryDevice)
+                if nodeAddress not in removedDevices:
+                    nodeName = deviceData.get('name', utils.name_to_desc(deviceName))
+                    primaryDevice = PrimaryRemoteDevice(self, nodeAddress,
+                        driverName, nodeName, deviceData, deviceDriver)
+                    self.addNode(primaryDevice)
                 for commandGroup, commandGroupData in deviceData.get(
                     'commandGroups', {}).items():
                     commandGroupData['poly'] = polyData
@@ -207,15 +217,17 @@ class RemoteController(Controller):
                         groupDriverName = driverName + '_' + commandGroup
                         groupNodeAddress = self.getDeviceAddress(
                             deviceName + '_' + commandGroup, addressMap)
-                        self.addNode(RemoteDevice(self, primaryDevice, nodeAddress,
-                            groupNodeAddress, groupDriverName,
-                                utils.name_to_desc(commandGroup),
-                                commandGroupData, deviceDriver))
+                        if groupNodeAddress not in removedDevices:
+                            self.addNode(RemoteDevice(self, primaryDevice, nodeAddress,
+                                groupNodeAddress, groupDriverName,
+                                    utils.name_to_desc(commandGroup),
+                                    commandGroupData, deviceDriver))
 
         if customData.get('addressMap') != addressMap:
             self.saveCustomData({
                 'addressMap': addressMap,
-                'discoveredDevices': discoveredDevices
+                'discoveredDevices': discoveredDevices,
+                'removedDevices': removedDevices
             })
 
     def get_device_driver(self, driverName, deviceData):
@@ -225,7 +237,7 @@ class RemoteController(Controller):
             deviceDriver = getattr(driverModule,
                 deviceData.get('moduleName', driverName.capitalize()))
             self.deviceDrivers[driverName] = deviceDriver
-            self.deviceDriverInstances[driverName] = []
+            self.deviceDriverInstances[driverName] = {}
 
         return deviceDriver
 

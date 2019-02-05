@@ -538,6 +538,12 @@ drivers:
                 title: Port
                 defaultValue: 23
                 type: NUMBER
+            -
+                name: connectOnDemand
+                title: Connect On Demand
+                desc: Close connection after command is sent
+                defaultValue: false
+                type: BOOL
         values:
             inputs:
                 -
