@@ -42,7 +42,7 @@ class DenonAVR(BaseDriver):
                     commandStr += '{0:g}'.format(float(args)).replace('.', '')
                 else:
                     commandStr += args
-            # self.logger.debug("%s sending %s", self.__class__.__name__, commandStr)
+            self.logger.debug("%s sending %s", self.__class__.__name__, commandStr)
             commandStr += '\n'
             self.conn.send(commandStr.encode())
             time.sleep(self.RESPONSE_DELAY)
@@ -50,11 +50,11 @@ class DenonAVR(BaseDriver):
             if self.config.get('connectOnDemand', False):
                 self.conn.close()
                 self.connected = False
-            # self.logger.debug("%s received %s", self.__class__.__name__,
-            #    result.replace('\r', '\\r'))
+            self.logger.debug("%s received %s", self.__class__.__name__,
+                result.replace('\r', '\\r'))
         except socket.timeout:
             pass
-        return result[:-1].split('\r') if result else result
+        return result[:-1].split('\r') if result else [result]
 
     def process_result(self, commandName, command, result):
         if len(result) == 0:
