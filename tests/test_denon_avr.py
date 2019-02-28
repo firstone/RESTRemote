@@ -19,7 +19,7 @@ class UtilsTester(unittest.TestCase):
         driver.conn.recv = Mock(return_value=bytearray())
         driver.connected = True
         driver.sendCommandRaw('command1', config['commands']['command1'])
-        driver.conn.send.assert_called_with('VL\n'.encode())
+        driver.conn.send.assert_called_with('VL\r\n'.encode())
 
     def test_send_with_args(self):
         config = UtilsTester.config['denon']
@@ -28,7 +28,7 @@ class UtilsTester(unittest.TestCase):
         driver.conn.recv = Mock(return_value=bytearray())
         driver.connected = True
         driver.sendCommandRaw('command1', config['commands']['command1'], '12')
-        driver.conn.send.assert_called_with('VL12\n'.encode())
+        driver.conn.send.assert_called_with('VL12\r\n'.encode())
 
     def test_send_float_even(self):
         config = UtilsTester.config['denon']
@@ -37,7 +37,7 @@ class UtilsTester(unittest.TestCase):
         driver.conn.recv = Mock(return_value=bytearray())
         driver.connected = True
         driver.sendCommandRaw('command3', config['commands']['command3'], '12')
-        driver.conn.send.assert_called_with('MV12\n'.encode())
+        driver.conn.send.assert_called_with('MV12\r\n'.encode())
 
     def test_send_float_fract(self):
         config = UtilsTester.config['denon']
@@ -46,7 +46,7 @@ class UtilsTester(unittest.TestCase):
         driver.conn.recv = Mock(return_value=bytearray())
         driver.connected = True
         driver.sendCommandRaw('command3', config['commands']['command3'], '12.0')
-        driver.conn.send.assert_called_with('MV12\n'.encode())
+        driver.conn.send.assert_called_with('MV12\r\n'.encode())
 
     def test_send_with_args_decimal(self):
         config = UtilsTester.config['denon']
@@ -55,7 +55,7 @@ class UtilsTester(unittest.TestCase):
         driver.conn.recv = Mock(return_value=bytearray())
         driver.connected = True
         driver.sendCommandRaw('command1', config['commands']['command1'], '12.5')
-        driver.conn.send.assert_called_with('VL125\n'.encode())
+        driver.conn.send.assert_called_with('VL125\r\n'.encode())
 
     def test_output_simple(self):
         config = UtilsTester.config['denon']
