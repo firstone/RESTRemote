@@ -62,31 +62,38 @@ class RemoteController(Controller):
         if len(config['nodes']) == 0:
             return
 
-        # Remove node not present in config
+        customData = self.polyConfig.get('customData', {})
+        addressMap = copy.deepcopy(customData.get('addressMap', {}))
+        discoveredDevices = copy.deepcopy(customData.get('discoveredDevices', {}))
+        removedDevices = copy.deepcopy(customData.get('removedDevices', {}))
+
+        # enumerate existing nodes
         existingNodes = {}
         for node in config['nodes']:
             existingNodes[node['address']] = 1
 
+        # mark nodes in address map as known
+        for item in addressMap.values():
+            if item['address'] in existingNodes:
+                item['known'] = True
+
+        # enumerate stale / non-existing nodes
         staleNodes = {}
         for nodeAddress, node in self.nodes.items():
             if nodeAddress not in existingNodes:
                 staleNodes[nodeAddress] = 1
 
-        customData = self.polyConfig.get('customData', {})
-        addressMap = customData.get('addressMap', {})
-        discoveredDevices = copy.deepcopy(customData.get('discoveredDevices', {}))
-        removedDevices = copy.deepcopy(customData.get('removedDevices', {}))
-
-        for nodeAddress in staleNodes.keys():
-            LOGGER.debug('Removing stale node ' + nodeAddress)
-            for deviceName, deviceAddress in addressMap.items():
-                if deviceAddress == nodeAddress:
-                    discoveredDevices.pop(deviceName, None)
-            removedDevices[nodeAddress] = 1
-            del self.nodes[nodeAddress]
+        # remove known but stale nodes
+        for deviceName, item in addressMap.items():
+            if item['known'] and item['address'] in staleNodes:
+                LOGGER.debug('Removing stale node ' + item['address'])
+                discoveredDevices.pop(deviceName, None)
+                removedDevices[item['address']] = 1
+                del self.nodes[item['address']]
 
         if (customData.get('discoveredDevices') != discoveredDevices or
-            customData.get('removedDevices') != removedDevices):
+            customData.get('removedDevices') != removedDevices or
+            customData.get('addressMap') != addressMap):
             self.saveCustomData({
                 'addressMap': addressMap,
                 'discoveredDevices': discoveredDevices,
@@ -151,12 +158,21 @@ class RemoteController(Controller):
         return True
 
     def getDeviceAddress(self, deviceName, addressMap):
-        address = addressMap.get(deviceName)
-        if not address:
-            address = "d_" + str(len(addressMap))
-            addressMap[deviceName] = address
+        item = addressMap.get(deviceName)
+        if not item:
+            item = {
+                'address': "d_" + str(len(addressMap)),
+                'known': False
+            }
+            addressMap[deviceName] = item
+        elif not isinstance(item, dict):
+            item = {
+                'address': item,
+                'known': False
+            }
+            addressMap[deviceName] = item
 
-        return address
+        return item['address']
 
     def discover(self, *args, **kwargs):
         LOGGER.debug('Starting device discovery')

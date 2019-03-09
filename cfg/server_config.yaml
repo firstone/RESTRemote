@@ -62,6 +62,10 @@ drivers:
                         code: 22
                     center:
                         code: 23
+                    page_up:
+                        code: 92
+                    page_down:
+                        code: 93
             audio:
                 commands:
                     volume_up:
@@ -96,6 +100,8 @@ drivers:
                         code: 275
                     step_forward:
                         code: 274
+                    info:
+                        code: 165
             setup:
                 commands:
                     get_app_list:
@@ -122,6 +128,187 @@ drivers:
                             -
                                 value: etv
                                 param: com.etvnet.etvnetandroidapp/.MainActivity
+            keyboard:
+                commands:
+                    send_key:
+                        values:
+                            -
+                                value: A
+                                param: 29
+                            -
+                                value: B
+                                param: 30
+                            -
+                                value: C
+                                code: 31
+                            -
+                                value: D
+                                param: 32
+                            -
+                                value: E
+                                param: 33
+                            -
+                                value: F
+                                param: 34
+                            -
+                                value: G
+                                param: 35
+                            -
+                                value: H
+                                param: 36
+                            -
+                                value: I
+                                param: 37
+                            -
+                                value: J
+                                param: 38
+                            -
+                                value: K
+                                param: 39
+                            -
+                                value: L
+                                param: 40
+                            -
+                                value: M
+                                param: 41
+                            -
+                                value: N
+                                param: 42
+                            -
+                                value: O
+                                param: 43
+                            -
+                                value: P
+                                param: 44
+                            -
+                                value: Q
+                                param: 45
+                            -
+                                value: R
+                                param: 46
+                            -
+                                value: S
+                                param: 47
+                            -
+                                value: T
+                                param: 48
+                            -
+                                value: U
+                                param: 49
+                            -
+                                value: V
+                                param: 50
+                            -
+                                value: W
+                                param: 51
+                            -
+                                value: X
+                                param: 52
+                            -
+                                value: Y
+                                param: 53
+                            -
+                                value: Z
+                                param: 54
+                            -
+                                value: Space
+                                param: 62
+                            -
+                                value: Semicolon
+                                param: 74
+                            -
+                                value: Slash
+                                param: 76
+                            -
+                                value: Backslash
+                                param: 73
+                            -
+                                value: At
+                                param: 77
+                            -
+                                value: Delete
+                                param: 67
+                            -
+                                value: Period
+                                param: 56
+                            -
+                                value: Comma
+                                param: 55
+                            -
+                                value: Enter
+                                param: 66
+                            -
+                                value: Plus
+                                param: 81
+                            -
+                                value: Minus
+                                param: 69
+                            -
+                                value: Star
+                                param: 17
+                            -
+                                value: Pound
+                                param: 18
+                            -
+                                value: Shift
+                                param: 59
+                            -
+                                value: Caps Lock
+                                param: 115
+                            -
+                                value: Alt
+                                param: 57
+                            -
+                                value: Equals
+                                param: 70
+                            -
+                                value: Left Bracket
+                                param: 71
+                            -
+                                value: Right Bracket
+                                param: 72
+                            -
+                                value: Left Parenthesis
+                                param: 162
+                            -
+                                value: Right Parenthesis
+                                param: 163
+                            -
+                                value: Quote
+                                param: 75
+                            -
+                                value: Underscore
+                                param: 95
+                            -
+                                value: 0
+                                param: 7
+                            -
+                                value: 1
+                                param: 8
+                            -
+                                value: 2
+                                param: 9
+                            -
+                                value: 3
+                                param: 10
+                            -
+                                value: 4
+                                param: 11
+                            -
+                                value: 5
+                                param: 12
+                            -
+                                value: 6
+                                param: 13
+                            -
+                                value: 7
+                                param: 14
+                            -
+                                value: 8
+                                param: 15
+                            -
+                                value: 9
+                                param: 16
         commands:
             power:
                 code: 26
@@ -1085,6 +1272,8 @@ poly:
             nls: Z2
         zone3:
             nls: Z3
+        keyboard:
+            nls: K
     drivers:
         denon_avr:
             commands:

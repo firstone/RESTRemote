@@ -39,8 +39,9 @@ class Android(BaseDriver):
         elif commandName == 'get_current_activity':
             result = self.getCurrentActivity()
         else:
+            code = args if args else self.config['commands'][commandName]['code']
             result = subprocess.check_output([self.executable, 'shell', 'input',
-                'keyevent', str(self.config['commands'][commandName]['code'])]).decode()
+                'keyevent', str(code)]).decode()
 
         return result
 

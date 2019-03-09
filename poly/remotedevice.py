@@ -68,7 +68,7 @@ class RemoteDevice(Node):
 
     def refresh_state(self):
         if self.primaryDevice.connected:
-            LOGGER.debug('Refreshing state for %ss', self.name)
+            LOGGER.debug('Refreshing state for %s', self.name)
             try:
                 for driverName, commandName in self.driverSetters.items():
                     output = self.deviceDriver.getData(commandName)
