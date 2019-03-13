@@ -86,7 +86,10 @@ class Chromecast(BaseDriver):
                 self.disconnect()
 
     def disconnect(self):
-        self.cast.disconnect()
+        try:
+            self.cast.disconnect()
+        except:
+            pass
         self.cast = None
         Chromecast.CAST_LIST[self.config['name']] = None
 
