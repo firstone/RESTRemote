@@ -81,6 +81,7 @@ class Chromecast(BaseDriver):
 
         self.connected = False
         if self.cast:
+            self.cast.wait()
             self.connected = self.cast.socket_client.is_connected
             if not self.connected:
                 self.disconnect()
