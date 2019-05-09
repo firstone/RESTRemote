@@ -211,7 +211,7 @@ class RemoteController(Controller):
                 polyData = self.configData['poly']['drivers'].get(driverName, {})
                 deviceData['poly'].update(polyData)
 
-                deviceDriver = self.deviceDriverInstances[driverName].get(
+                deviceDriver = self.deviceDriverInstances.get(driverName, {}).get(
                     deviceName)
                 if deviceDriver is None:
                     deviceDriver = self.get_device_driver(driverName, deviceData)(
