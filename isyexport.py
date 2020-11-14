@@ -31,19 +31,19 @@ curResourceID = 0
 
 @click.command()
 @click.option('-c', '--config', help='Config file', type=click.File('r'),
-    required=True)
+              required=True)
 @click.option('-sc', '--serverConfig', help='Config file', type=click.File('r'),
-    required=True)
+              required=True)
 @click.option('-d', '--destination', help='Config file',
-    type=click.Path(writable=True), required=True)
+              type=click.Path(writable=True), required=True)
 @click.option('-o', '--output', help='Output file name', required=True)
 @click.option('-i', '--input', help='Input file (existing network resources backup)',
-    type=click.File('r'))
+              type=click.File('r'))
 @click.option('-h', '--host', help='Host running RESTRemote', required=True)
 @click.option('-t', '--temp', help='Do not remote temp files', is_flag=True)
 def ISYExport(config, serverconfig, destination, output, input, host, temp):
-    configData = yaml.load(config)
-    configData.update(yaml.load(serverconfig))
+    configData = yaml.safe_load(config)
+    configData.update(yaml.safe_load(serverconfig))
     configData['host'] = host
 
     if input:
@@ -56,7 +56,7 @@ def ISYExport(config, serverconfig, destination, output, input, host, temp):
     commands = {}
     maxResourceID = 0
     outputFileName = os.path.join(destination, ISY_CONF_FOLDER, ISY_NET_FOLDER,
-        'RES.CFG')
+                                  'RES.CFG')
     try:
         with open(outputFileName, 'r') as resourceFile:
             resourceTree = ET.parse(resourceFile).getroot()
@@ -74,7 +74,8 @@ def ISYExport(config, serverconfig, destination, output, input, host, temp):
     print('Found', maxResourceID, 'existing resources')
     curResourceID = maxResourceID + 1
 
-    print("Exporting ISY network resources from", config.name, "to", destination)
+    print("Exporting ISY network resources from",
+          config.name, "to", destination)
 
     for deviceName, deviceData in configData['devices'].items():
         deviceData.update(configData['drivers'][deviceData['driver']])
@@ -88,24 +89,24 @@ def ISYExport(config, serverconfig, destination, output, input, host, temp):
                 if commandData.get('acceptsNumber'):
                     print('Create state variable for', resourceName)
                     resourceID = addResource(configData, resources, resourceTree,
-                        resourceName)
+                                             resourceName)
                     commands[resourceID] = command + STATE_VAR_MESSAGE
                     simpleCommand = False
 
                 if 'value_set' in commandData:
                     for value in paramParser.value_sets[commandData['value_set']].keys():
                         resourceID = addResource(configData, resources,
-                            resourceTree, resourceName + '/' + value)
+                                                 resourceTree, resourceName + '/' + value)
                         commands[resourceID] = command + '/' + value
                     simpleCommand = False
 
                 if simpleCommand:
                     resourceID = addResource(configData, resources, resourceTree,
-                        resourceName)
+                                             resourceName)
                     commands[resourceID] = command
 
     outputFileName = os.path.join(destination, ISY_CONF_FOLDER, ISY_NET_FOLDER,
-        'RES.CFG')
+                                  'RES.CFG')
     if not os.path.exists(os.path.dirname(outputFileName)):
         try:
             os.makedirs(os.path.dirname(outputFileName))
@@ -120,20 +121,20 @@ def ISYExport(config, serverconfig, destination, output, input, host, temp):
 
         # Add main resources file to zip
         outputFile.write(outputFileName,
-            os.path.relpath(outputFileName, destination))
+                         os.path.relpath(outputFileName, destination))
 
         # Add RES files to zip
         for resourceID in range(1, curResourceID):
             command = commands.get(resourceID)
             outputFileName = os.path.join(destination, ISY_CONF_FOLDER,
-                ISY_NET_FOLDER, str(resourceID) + '.RES')
+                                          ISY_NET_FOLDER, str(resourceID) + '.RES')
             if command:
                 with open(outputFileName, 'w') as output:
                     output.write(REQUEST.format(DEFAULT_METHOD, command,
-                        configData['host'], configData['port']))
+                                                configData['host'], configData['port']))
 
             outputFile.write(outputFileName,
-                os.path.relpath(outputFileName, destination))
+                             os.path.relpath(outputFileName, destination))
 
     if not temp:
         shutil.rmtree(os.path.join(destination, ISY_CONF_FOLDER))
@@ -145,7 +146,7 @@ def addResource(configData, resources, parent, resourceName):
         resource = addNewResource(parent, resourceName)
 
     updateResource(resource, configData['host'], configData['port'],
-        DEFAULT_METHOD)
+                   DEFAULT_METHOD)
 
     for id in resource.iter('id'):
         return int(id.text)
@@ -189,6 +190,7 @@ def updateResource(resource, host, port, method):
 def addElement(parent, name, value):
     element = ET.SubElement(parent, name)
     element.text = value
+
 
 if __name__ == '__main__':
     ISYExport()

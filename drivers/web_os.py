@@ -18,7 +18,7 @@ class WebOS(BaseDriver):
         self.client = None
         try:
             with open(config['clientKeyFile'], 'r') as clientKeyInput:
-                self.clientKey = yaml.load(clientKeyInput)
+                self.clientKey = yaml.safe_load(clientKeyInput)
         except:
             pass
 
@@ -27,7 +27,7 @@ class WebOS(BaseDriver):
     def saveClientKey(self):
         with open(self.config['clientKeyFile'], 'w') as clientKeyOutput:
             yaml.safe_dump(self.clientKey, clientKeyOutput, allow_unicode=True,
-                encoding='utf-8')
+                           encoding='utf-8')
             clientKeyOutput.close()
 
     def on_open(self):
@@ -35,7 +35,7 @@ class WebOS(BaseDriver):
         if self.clientKey:
             self.config['registerCommand'].update(self.clientKey)
         self.sendCommandRaw('register', self.config['registerCommand'], None,
-            False)
+                            False)
 
     def on_close(self, code, reason=None):
         self.connected = False
@@ -66,14 +66,14 @@ class WebOS(BaseDriver):
                 except:
                     pass
             self.client = WebSocketClient("ws://" + self.config['hostName'] + ':' +
-                str(self.config['port']),  exclude_headers=["Origin"])
+                                          str(self.config['port']),  exclude_headers=["Origin"])
             self.client.opened = self.on_open
             self.client.closed = self.on_close
             self.client.received_message = self.on_message
             self.client.sock.settimeout(self.config['timeout'])
             self.client.connect()
             self.connectEvent.wait(self.config['timeout']
-                if self.clientKey else self.config['promptTimeout'])
+                                   if self.clientKey else self.config['promptTimeout'])
         except:
             pass
 
@@ -81,26 +81,28 @@ class WebOS(BaseDriver):
         if commandName == 'power_on':
             mac = self.config.get('mac')
             if mac is None:
-                self.logger.error('Error sending power on command. MAC is not set up')
+                self.logger.error(
+                    'Error sending power on command. MAC is not set up')
             else:
                 self.logger.debug('Sending wake up command to %s', mac)
                 wakeonlan.send_magic_packet(mac)
             return ''
         elif commandName == 'toggle_mute':
-            output = self.sendCommandRaw('status', self.config['commands']['status'])
+            output = self.sendCommandRaw(
+                'status', self.config['commands']['status'])
 
             if 'error' in output:
                 return output
 
             return self.sendCommandRaw('mute', self.config['commands']['mute'],
-                False if output['payload']['mute'] else True)
+                                       False if output['payload']['mute'] else True)
 
         if not self.connected:
             try:
                 self.connect()
             except:
                 raise Exception('Driver ' + __name__ +
-                    ' cannot connect to device')
+                                ' cannot connect to device')
 
         message = {}
         id = str(self.curID)
@@ -119,9 +121,9 @@ class WebOS(BaseDriver):
         if args is not None:
             if not argKey:
                 raise Exception('Command in ' + __name__ +
-                    ': ' + commandName + ' isn''t configured for arguments')
+                                ': ' + commandName + ' isn''t configured for arguments')
 
-            argData = { argKey: args }
+            argData = {argKey: args}
 
         if argData:
             message['payload'] = argData
@@ -151,8 +153,9 @@ class WebOS(BaseDriver):
             payload = result['output'].get('payload')
             if not payload:
                 self.logger.warning("Missing payload for command %s: %s",
-                    commandName, result['output'])
+                                    commandName, result['output'])
                 return
             param = payload.get(command['argKey'])
             if param is not None:
-                result['result'] = self.paramParser.translate_param(command, param)
+                result['result'] = self.paramParser.translate_param(
+                    command, param)

@@ -62,8 +62,8 @@ def RESTRemote(config, serverconfig, debug):
     logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s')
     logger.setLevel('DEBUG')
     logger.info('Starting with config file %s', config.name)
-    configData = yaml.load(config)
-    configData.update(yaml.load(serverconfig))
+    configData = yaml.safe_load(config)
+    configData.update(yaml.safe_load(serverconfig))
     sys.path.append(configData['driversPath'])
 
     drivers = {}
@@ -81,16 +81,18 @@ def RESTRemote(config, serverconfig, debug):
     for deviceName, deviceData in configData['devices'].items():
         if deviceData.get('enable', True):
             driverName = deviceData['driver']
-            logger.info('Loading device %s using driver %s', deviceName, driverName)
+            logger.info('Loading device %s using driver %s',
+                        deviceName, driverName)
             driverData = configData['drivers'][driverName]
             deviceData.update(driverData)
-            deviceData.get('values', {}).update(configData.get('driverConfig', {}).get(driverName, {}).get('values', {}))
+            deviceData.get('values', {}).update(configData.get(
+                'driverConfig', {}).get(driverName, {}).get('values', {}))
             utils.flatten_commands(deviceData)
             devices[deviceName] = drivers[driverName](deviceData, logger)
             devices[deviceName].start()
 
     app.run(host=configData.get('bindHost', '0.0.0.0'), port=configData.get('port', 5000),
-        debug=debug)
+            debug=debug)
 
 
 if __name__ == '__main__':

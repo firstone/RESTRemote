@@ -11,7 +11,7 @@ class UtilsTester(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         with open('tests/config.yaml', 'r') as configFile:
-            cls.config = yaml.load(configFile)
+            cls.config = yaml.safe_load(configFile)
 
     def test_simple(self):
         response = 'ISCP\x00\x00\x00\x10\x00\x00\x00\n\x01\x00\x00\x00!1MVL14\x1a\r\n'
@@ -24,14 +24,15 @@ class UtilsTester(unittest.TestCase):
         driver.sendCommandRaw('command1', config['commands']['command1'], '01')
         message = struct.Struct(">4sIIB3x8s")
         driver.conn.send.assert_called_with(message.pack('ISCP'.encode(), 16, 8,
-            1, '!1MVL01\r'.encode()))
+                                                         1, '!1MVL01\r'.encode()))
 
     def test_output(self):
         response = 'ISCP\x00\x00\x00\x10\x00\x00\x00\n\x01\x00\x00\x00!1MVL14\x1a\r\n'
         config = UtilsTester.config['onkyo']
         driver = OnkyoAVR(config, Mock())
-        result = { 'output': response }
-        driver.process_result('command2', config['commands']['command2'], result)
+        result = {'output': response}
+        driver.process_result(
+            'command2', config['commands']['command2'], result)
         self.assertEqual(result['result'], 20)
 
     def test_long_response(self):
@@ -52,17 +53,20 @@ class UtilsTester(unittest.TestCase):
 
         config = UtilsTester.config['onkyo']
         driver = OnkyoAVR(config, Mock())
-        result = { 'output': response }
-        driver.process_result('command2', config['commands']['command2'], result)
+        result = {'output': response}
+        driver.process_result(
+            'command2', config['commands']['command2'], result)
         self.assertEqual(result['result'], 42)
 
     def test_na_response(self):
         response = 'ISCP\x00\x00\x00\x10\x00\x00\x00\x0b\x01\x00\x00\x00!1MVLN/A\x1a\r\n'
         config = UtilsTester.config['onkyo']
         driver = OnkyoAVR(config, Mock())
-        result = { 'output': response }
-        driver.process_result('command2', config['commands']['command2'], result)
+        result = {'output': response}
+        driver.process_result(
+            'command2', config['commands']['command2'], result)
         self.assertNotIn('result', result)
+
 
 if __name__ == '__main__':
     unittest.main()
