@@ -35,13 +35,14 @@ class RemoteController(Controller):
                 if driverName in self.configData['drivers']:
                     for index, params in enumerate(paramList):
                         params['driver'] = driverName
-                        devicesConfig[driverName + '_' + str(100 - index)] = params
+                        devicesConfig[driverName + '_' +
+                                      str(100 - index)] = params
                 else:
                     for deviceDriverName, driverData in self.configData['drivers'].items():
                         if self.get_device_driver(deviceDriverName, driverData).processParams(
-                            driverData, { driverName: paramList }):
+                                driverData, {driverName: paramList}):
                             needChanges = True
-                            for deviceDriver in self.deviceDriverInstances[deviceDriverName].items():
+                            for deviceDriver in self.deviceDriverInstances[deviceDriverName].values():
                                 deviceDriver.configure(driverData)
 
             if needChanges:
@@ -64,7 +65,8 @@ class RemoteController(Controller):
 
         customData = self.polyConfig.get('customData', {})
         addressMap = copy.deepcopy(customData.get('addressMap', {}))
-        discoveredDevices = copy.deepcopy(customData.get('discoveredDevices', {}))
+        discoveredDevices = copy.deepcopy(
+            customData.get('discoveredDevices', {}))
         removedDevices = copy.deepcopy(customData.get('removedDevices', {}))
 
         # enumerate existing nodes
@@ -93,7 +95,7 @@ class RemoteController(Controller):
 
         if (customData.get('discoveredDevices') != discoveredDevices or
             customData.get('removedDevices') != removedDevices or
-            customData.get('addressMap') != addressMap):
+                customData.get('addressMap') != addressMap):
             self.saveCustomData({
                 'addressMap': addressMap,
                 'discoveredDevices': discoveredDevices,
@@ -153,7 +155,7 @@ class RemoteController(Controller):
     def isDeviceConfigured(self, device):
         for param in self.configData['drivers'][device['driver']].get('parameters', []):
             if param.get('isRequired', False) and (device[param['name']] == 0 or
-                device[param['name']] == '0' or device[param['name']] == ''):
+                                                   device[param['name']] == '0' or device[param['name']] == ''):
                 return False
         return True
 
@@ -178,11 +180,12 @@ class RemoteController(Controller):
         LOGGER.debug('Starting device discovery')
         customData = self.polyConfig.get('customData', {})
         addressMap = customData.get('addressMap', {})
-        discoveredDevices = copy.deepcopy(customData.get('discoveredDevices', {}))
+        discoveredDevices = copy.deepcopy(
+            customData.get('discoveredDevices', {}))
 
         for driverName, driverData in self.configData['drivers'].items():
             devices = self.get_device_driver(driverName,
-                driverData).discoverDevices(driverData)
+                                             driverData).discoverDevices(driverData)
             if devices is not None:
                 discoveredDevices.update(devices)
 
@@ -201,14 +204,15 @@ class RemoteController(Controller):
 
         devicesConfig = self.configData.get('devices', {})
         if discoveredDevices is not None:
-                devicesConfig.update(discoveredDevices)
+            devicesConfig.update(discoveredDevices)
 
         self.configData['devices'] = devicesConfig
         for deviceName, deviceData in devicesConfig.items():
             if self.isDeviceConfigured(deviceData) and deviceData.get('enable', True):
                 driverName = deviceData['driver']
                 deviceData.update(self.configData['drivers'][driverName])
-                polyData = self.configData['poly']['drivers'].get(driverName, {})
+                polyData = self.configData['poly']['drivers'].get(
+                    driverName, {})
                 deviceData['poly'].update(polyData)
 
                 deviceDriver = self.deviceDriverInstances.get(driverName, {}).get(
@@ -220,12 +224,13 @@ class RemoteController(Controller):
 
                 nodeAddress = self.getDeviceAddress(deviceName, addressMap)
                 if nodeAddress not in removedDevices:
-                    nodeName = deviceData.get('name', utils.name_to_desc(deviceName))
+                    nodeName = deviceData.get(
+                        'name', utils.name_to_desc(deviceName))
                     primaryDevice = PrimaryRemoteDevice(self, nodeAddress,
-                        driverName, nodeName, deviceData, deviceDriver)
+                                                        driverName, nodeName, deviceData, deviceDriver)
                     self.addNode(primaryDevice)
                 for commandGroup, commandGroupData in deviceData.get(
-                    'commandGroups', {}).items():
+                        'commandGroups', {}).items():
                     commandGroupData['poly'] = polyData
                     groupConfig = self.configData['poly']['commandGroups'].get(
                         commandGroup)
@@ -235,9 +240,10 @@ class RemoteController(Controller):
                             deviceName + '_' + commandGroup, addressMap)
                         if groupNodeAddress not in removedDevices:
                             self.addNode(RemoteDevice(self, primaryDevice, nodeAddress,
-                                groupNodeAddress, groupDriverName,
-                                    utils.name_to_desc(commandGroup),
-                                    commandGroupData, deviceDriver))
+                                                      groupNodeAddress, groupDriverName,
+                                                      utils.name_to_desc(
+                                                          commandGroup),
+                                                      commandGroupData, deviceDriver))
 
         if customData.get('addressMap') != addressMap:
             self.saveCustomData({
@@ -251,12 +257,12 @@ class RemoteController(Controller):
         if deviceDriver is None:
             driverModule = importlib.import_module('drivers.' + driverName)
             deviceDriver = getattr(driverModule,
-                deviceData.get('moduleName', driverName.capitalize()))
+                                   deviceData.get('moduleName', driverName.capitalize()))
             self.deviceDrivers[driverName] = deviceDriver
             self.deviceDriverInstances[driverName] = {}
 
         return deviceDriver
 
     id = 'controller'
-    commands = { 'DISCOVER': discover }
-    drivers = [ { 'driver': 'ST', 'value': 0, 'uom': 2 } ]
+    commands = {'DISCOVER': discover}
+    drivers = [{'driver': 'ST', 'value': 0, 'uom': 2}]
