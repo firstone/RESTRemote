@@ -140,8 +140,9 @@ class Chromecast(BaseDriver):
         return config_changed
 
     @ staticmethod
-    def discoverDevices(config):
+    def discoverDevices(logger):
         if not Chromecast.enabled:
+            logger.debug(f'Chromecast disabled')
             return
 
         if len(Chromecast.CAST_LIST) == 0:
@@ -151,6 +152,7 @@ class Chromecast(BaseDriver):
 
             for cast in casts:
                 friendly_name = cast.device.friendly_name
+                logger.debug(f'Found Chromecast device {friendly_name}')
                 Chromecast.CAST_LIST[friendly_name] = cast
 
         result = {}

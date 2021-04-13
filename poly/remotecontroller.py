@@ -184,8 +184,9 @@ class RemoteController(Controller):
             customData.get('discoveredDevices', {}))
 
         for driverName, driverData in self.configData['drivers'].items():
+            LOGGER.debug(f'Running discovery for {driverName}')
             devices = self.get_device_driver(driverName,
-                                             driverData).discoverDevices(driverData)
+                                             driverData).discoverDevices(LOGGER)
             if devices is not None:
                 discoveredDevices.update(devices)
 

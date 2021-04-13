@@ -16,7 +16,7 @@ class BaseDriver(object):
 
         self.paramParser = ParamParser(self.config, self.use_numeric_key)
         self.connectionDescription = (self.config.get('hostName', '') + ':' +
-            str(self.config.get('port', 0)))
+                                      str(self.config.get('port', 0)))
 
     def start(self):
         try:
@@ -24,7 +24,7 @@ class BaseDriver(object):
                 self.connect()
         except:
             self.logger.exception('Connection to %s failed',
-                self.connectionDescription)
+                                  self.connectionDescription)
 
     def connect(self):
         pass
@@ -60,7 +60,7 @@ class BaseDriver(object):
         command = self.config['commands'][commandName]
         if not command.get('result'):
             raise Exception('Invalid command for ' + __name__ +
-                ' and method: ' + commandName)
+                            ' and method: ' + commandName)
 
         result = {
             'driver': self.__class__.__name__,
@@ -125,7 +125,7 @@ class BaseDriver(object):
                 output = int(result['output'], 16)
             else:
                 output = self.paramParser.translate_param(command, result['output'],
-                    None, False)
+                                                          None, False)
         except:
             pass
 
@@ -137,5 +137,5 @@ class BaseDriver(object):
         return False
 
     @staticmethod
-    def discoverDevices(config):
+    def discoverDevices(logger):
         return None
