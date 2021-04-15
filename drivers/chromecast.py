@@ -1,5 +1,6 @@
 import pychromecast
 from pychromecast.discovery import stop_discovery
+from zeroconf import Zeroconf
 
 from drivers.base_driver import BaseDriver
 import utils
@@ -147,7 +148,7 @@ class Chromecast(BaseDriver):
 
         if len(Chromecast.CAST_LIST) == 0:
             casts, browser = pychromecast.get_chromecasts(
-                Chromecast.CAST_CONNECT_TRIES)
+                Chromecast.CAST_CONNECT_TRIES, zeroconf_instance=Zeroconf(unicast=True))
             stop_discovery(browser)
 
             for cast in casts:
