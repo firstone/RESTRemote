@@ -137,7 +137,7 @@ class Chromecast(BaseDriver):
 
         if len(Chromecast.CAST_LIST) == 0:
             zeroconf_instance = Zeroconf(unicast=True)
-            services, browser = pychromecast.dicovery.discover_chromecasts(
+            services, browser = pychromecast.discovery.discover_chromecasts(
                 timeout=Chromecast.CAST_CONNECT_TRIES, zeroconf_instance=zeroconf_instance)
             stop_discovery(browser)
 
