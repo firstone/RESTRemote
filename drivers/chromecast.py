@@ -63,33 +63,22 @@ class Chromecast(BaseDriver):
         return super(Chromecast, self).is_connected()
 
     def connect(self):
+        self.connected = False
+
         if self.cast is None:
-            Chromecast.discoverDevices(None)
+            Chromecast.discoverDevices(self.logger)
 
             device_name = self.config['name']
             self.cast = Chromecast.CAST_LIST.get(device_name)
 
             if not self.cast:
-                self.logger.debug(
-                    f'Device not found for {device_name}. Discovering')
-                casts, browser = pychromecast.get_listed_chromecasts(
-                    friendly_names=[device_name])
-                stop_discovery(browser)
-                if len(casts) == 0:
-                    self.logger.error(
-                        f'Couldn''t find chromecast {device_name}')
-                    return
+                self.logger.debug(f'Device not found: {device_name}')
+                return
 
-                self.logger.debug(f'Device found {device_name}')
-                self.cast = casts[0]
-                Chromecast.CAST_LIST[device_name] = self.cast
-
-        self.connected = False
-        if self.cast:
-            self.cast.wait()
-            self.connected = self.cast.socket_client.is_connected
-            if not self.connected:
-                self.disconnect()
+        self.cast.wait()
+        self.connected = self.cast.socket_client.is_connected
+        if not self.connected:
+            self.disconnect()
 
     def disconnect(self):
         try:
@@ -147,11 +136,14 @@ class Chromecast(BaseDriver):
             return
 
         if len(Chromecast.CAST_LIST) == 0:
-            casts, browser = pychromecast.get_chromecasts(
-                Chromecast.CAST_CONNECT_TRIES, zeroconf_instance=Zeroconf(unicast=True))
+            zeroconf_instance = Zeroconf(unicast=True)
+            services, browser = pychromecast.dicovery.discover_chromecasts(
+                timeout=Chromecast.CAST_CONNECT_TRIES, zeroconf_instance=zeroconf_instance)
             stop_discovery(browser)
 
-            for cast in casts:
+            for cast_info in services:
+                cast = pychromecast.get_chromecast_cast_info(
+                    cast_info, zeroconf_instance)
                 friendly_name = cast.device.friendly_name
                 logger.debug(f'Found Chromecast device {friendly_name}')
                 Chromecast.CAST_LIST[friendly_name] = cast
