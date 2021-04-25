@@ -142,7 +142,7 @@ class Chromecast(BaseDriver):
             stop_discovery(browser)
 
             for cast_info in services:
-                cast = pychromecast.get_chromecast_cast_info(
+                cast = pychromecast.get_chromecast_from_cast_info(
                     cast_info, zeroconf_instance)
                 friendly_name = cast.device.friendly_name
                 logger.debug(f'Found Chromecast device {friendly_name}')
