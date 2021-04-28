@@ -1,6 +1,5 @@
 import pychromecast
 from pychromecast.discovery import stop_discovery
-from zeroconf import Zeroconf
 
 from drivers.base_driver import BaseDriver
 import utils
@@ -136,12 +135,11 @@ class Chromecast(BaseDriver):
             return
 
         if len(Chromecast.CAST_LIST) == 0:
-            services, browser = pychromecast.discovery.discover_chromecasts(
-                timeout=Chromecast.CAST_CONNECT_TRIES)
+            casts, browser = pychromecast.get_chromecasts(
+                Chromecast.CAST_CONNECT_TRIES)
             stop_discovery(browser)
 
-            for cast_info in services:
-                cast = pychromecast.get_chromecast_from_cast_info(cast_info)
+            for cast in casts:
                 friendly_name = cast.device.friendly_name
                 logger.debug(f'Found Chromecast device {friendly_name}')
                 Chromecast.CAST_LIST[friendly_name] = cast
