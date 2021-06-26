@@ -10,8 +10,8 @@ class Chromecast(BaseDriver):
     APPS_KEY_NAME = 'chromecastApps'
     PLAYLISTS_KEY_NAME = 'chromecastPlaylists'
     ENABLED_KEY_NAME = 'enableChromecastSupport'
-    CAST_LIST = {}
     CAST_CONNECT_TRIES = 1
+    CAST_CONNECT_TIMEOUT = 5
 
     enabled = False
 
@@ -65,16 +65,17 @@ class Chromecast(BaseDriver):
         self.connected = False
 
         if self.cast is None:
-            Chromecast.discoverDevices(self.logger)
-
             device_name = self.config['name']
-            self.cast = Chromecast.CAST_LIST.get(device_name)
-
-            if not self.cast:
+            casts, browser = pychromecast.get_listed_chromecasts(
+                friendly_names=[device_name], tries=Chromecast.CAST_CONNECT_TRIES)
+            stop_discovery(browser)
+            if not casts:
                 self.logger.debug(f'Device not found: {device_name}')
                 return
 
-        self.cast.wait()
+            self.cast = casts[0]
+
+        self.cast.wait(Chromecast.CAST_CONNECT_TIMEOUT)
         self.connected = self.cast.socket_client.is_connected
         if not self.connected:
             self.disconnect()
@@ -85,7 +86,6 @@ class Chromecast(BaseDriver):
         except:
             pass
         self.cast = None
-        Chromecast.CAST_LIST[self.config['name']] = None
 
     @ staticmethod
     def processParams(config, param):
@@ -134,20 +134,16 @@ class Chromecast(BaseDriver):
             logger.debug(f'Chromecast disabled')
             return
 
-        if len(Chromecast.CAST_LIST) == 0:
-            casts, browser = pychromecast.get_chromecasts(
-                Chromecast.CAST_CONNECT_TRIES)
-            stop_discovery(browser)
-
-            for cast in casts:
-                friendly_name = cast.device.friendly_name
-                logger.debug(f'Found Chromecast device {friendly_name}')
-                Chromecast.CAST_LIST[friendly_name] = cast
+        casts, browser = pychromecast.get_chromecasts(
+            Chromecast.CAST_CONNECT_TRIES)
+        stop_discovery(browser)
 
         result = {}
-        for name in Chromecast.CAST_LIST.keys():
-            result[utils.desc_to_name(name)] = {
-                'name': name,
+        for cast in casts:
+            friendly_name = cast.device.friendly_name
+            logger.debug(f'Found Chromecast device {friendly_name}')
+            result[utils.desc_to_name(friendly_name)] = {
+                'name': friendly_name,
                 'driver': 'chromecast'
             }
 

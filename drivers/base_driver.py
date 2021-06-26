@@ -34,7 +34,10 @@ class BaseDriver(object):
             if not self.connected:
                 self.connect()
         except:
-            pass
+            try:
+                self.disconnect()
+            except:
+                pass
 
         return self.connected
 
