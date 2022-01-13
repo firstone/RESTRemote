@@ -1,3 +1,4 @@
+import copy
 from drivers.param_parser import ParamParser
 
 
@@ -104,7 +105,16 @@ class BaseDriver(object):
         }
 
         try:
-            result['output'] = self.sendCommandRaw(commandName, command, args)
+            if 'commands' in command:
+                commands = copy.deepcopy(command['commands'])
+
+                for sub_command in commands[:-1]:
+                    sub_command['has_more'] = True
+                    self.sendCommandRaw(commandName, sub_command, args)
+
+                result['output'] = self.sendCommandRaw(commandName, commands[-1], args)
+            else:
+                result['output'] = self.sendCommandRaw(commandName, command, args)
             self.process_result(commandName, command, result)
         except:
             self.connected = False

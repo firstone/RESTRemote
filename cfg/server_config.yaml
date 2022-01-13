@@ -9,40 +9,32 @@ drivers:
         description: nVidia Shield
         executable: adb
         poly:
-            hint: [ 1, 6, 7, 0 ]
+            hint: [1, 6, 7, 0]
         parameters:
-            -
-                name: name
-                title: Name
-                desc: Display name in ISY Admin Console
-                defaultValue: ''
-            -
-                name: hostName
-                title: Host Name
-                defaultValue: ''
-                isRequired: true
-            -
-                name: port
-                title: Port
-                defaultValue: 5555
-                type: NUMBER
+            - name: name
+              title: Name
+              desc: Display name in ISY Admin Console
+              defaultValue: ''
+            - name: hostName
+              title: Host Name
+              defaultValue: ''
+              isRequired: true
+            - name: port
+              title: Port
+              defaultValue: 5555
+              type: NUMBER
         values:
             activities:
-                -
-                    value: dashboard
-                    param: com.google.android.leanbacklauncher
-                -
-                    value: spmc
-                    param: com.semperpax.spmc16
-                -
-                    value: kodi
-                    param: org.xbmc.kodi
-                -
-                    value: netflix
-                    param: com.netflix.ninja
-                -
-                    value: etv
-                    param: com.etvnet.etvnetandroidapp
+                - value: dashboard
+                  param: com.google.android.leanbacklauncher
+                - value: spmc
+                  param: com.semperpax.spmc16
+                - value: kodi
+                  param: org.xbmc.kodi
+                - value: netflix
+                  param: com.netflix.ninja
+                - value: etv
+                  param: com.etvnet.etvnetandroidapp
         commandGroups:
             navigation:
                 commands:
@@ -113,202 +105,138 @@ drivers:
                         result: true
                     start_app:
                         values:
-                            -
-                                value: dashboard
-                                param: com.google.android.leanbacklauncher/.MainActivity
-                            -
-                                value: spmc
-                                param: com.semperpax.spmc16/.Splash
-                            -
-                                value: kodi
-                                param: org.xbmc.kodi/.Splash
-                            -
-                                value: netflix
-                                param: com.netflix.ninja/.MainActivity
-                            -
-                                value: etv
-                                param: com.etvnet.etvnetandroidapp/.MainActivity
+                            - value: dashboard
+                              param: com.google.android.leanbacklauncher/.MainActivity
+                            - value: spmc
+                              param: com.semperpax.spmc16/.Splash
+                            - value: kodi
+                              param: org.xbmc.kodi/.Splash
+                            - value: netflix
+                              param: com.netflix.ninja/.MainActivity
+                            - value: etv
+                              param: com.etvnet.etvnetandroidapp/.MainActivity
             keyboard:
                 commands:
                     send_key:
                         values:
-                            -
-                                value: A
-                                param: 29
-                            -
-                                value: B
-                                param: 30
-                            -
-                                value: C
-                                code: 31
-                            -
-                                value: D
-                                param: 32
-                            -
-                                value: E
-                                param: 33
-                            -
-                                value: F
-                                param: 34
-                            -
-                                value: G
-                                param: 35
-                            -
-                                value: H
-                                param: 36
-                            -
-                                value: I
-                                param: 37
-                            -
-                                value: J
-                                param: 38
-                            -
-                                value: K
-                                param: 39
-                            -
-                                value: L
-                                param: 40
-                            -
-                                value: M
-                                param: 41
-                            -
-                                value: N
-                                param: 42
-                            -
-                                value: O
-                                param: 43
-                            -
-                                value: P
-                                param: 44
-                            -
-                                value: Q
-                                param: 45
-                            -
-                                value: R
-                                param: 46
-                            -
-                                value: S
-                                param: 47
-                            -
-                                value: T
-                                param: 48
-                            -
-                                value: U
-                                param: 49
-                            -
-                                value: V
-                                param: 50
-                            -
-                                value: W
-                                param: 51
-                            -
-                                value: X
-                                param: 52
-                            -
-                                value: Y
-                                param: 53
-                            -
-                                value: Z
-                                param: 54
-                            -
-                                value: Space
-                                param: 62
-                            -
-                                value: Semicolon
-                                param: 74
-                            -
-                                value: Slash
-                                param: 76
-                            -
-                                value: Backslash
-                                param: 73
-                            -
-                                value: At
-                                param: 77
-                            -
-                                value: Delete
-                                param: 67
-                            -
-                                value: Period
-                                param: 56
-                            -
-                                value: Comma
-                                param: 55
-                            -
-                                value: Enter
-                                param: 66
-                            -
-                                value: Plus
-                                param: 81
-                            -
-                                value: Minus
-                                param: 69
-                            -
-                                value: Star
-                                param: 17
-                            -
-                                value: Pound
-                                param: 18
-                            -
-                                value: Shift
-                                param: 59
-                            -
-                                value: Caps Lock
-                                param: 115
-                            -
-                                value: Alt
-                                param: 57
-                            -
-                                value: Equals
-                                param: 70
-                            -
-                                value: Left Bracket
-                                param: 71
-                            -
-                                value: Right Bracket
-                                param: 72
-                            -
-                                value: Left Parenthesis
-                                param: 162
-                            -
-                                value: Right Parenthesis
-                                param: 163
-                            -
-                                value: Quote
-                                param: 75
-                            -
-                                value: Underscore
-                                param: 95
-                            -
-                                value: 0
-                                param: 7
-                            -
-                                value: 1
-                                param: 8
-                            -
-                                value: 2
-                                param: 9
-                            -
-                                value: 3
-                                param: 10
-                            -
-                                value: 4
-                                param: 11
-                            -
-                                value: 5
-                                param: 12
-                            -
-                                value: 6
-                                param: 13
-                            -
-                                value: 7
-                                param: 14
-                            -
-                                value: 8
-                                param: 15
-                            -
-                                value: 9
-                                param: 16
+                            - value: A
+                              param: 29
+                            - value: B
+                              param: 30
+                            - value: C
+                              code: 31
+                            - value: D
+                              param: 32
+                            - value: E
+                              param: 33
+                            - value: F
+                              param: 34
+                            - value: G
+                              param: 35
+                            - value: H
+                              param: 36
+                            - value: I
+                              param: 37
+                            - value: J
+                              param: 38
+                            - value: K
+                              param: 39
+                            - value: L
+                              param: 40
+                            - value: M
+                              param: 41
+                            - value: N
+                              param: 42
+                            - value: O
+                              param: 43
+                            - value: P
+                              param: 44
+                            - value: Q
+                              param: 45
+                            - value: R
+                              param: 46
+                            - value: S
+                              param: 47
+                            - value: T
+                              param: 48
+                            - value: U
+                              param: 49
+                            - value: V
+                              param: 50
+                            - value: W
+                              param: 51
+                            - value: X
+                              param: 52
+                            - value: Y
+                              param: 53
+                            - value: Z
+                              param: 54
+                            - value: Space
+                              param: 62
+                            - value: Semicolon
+                              param: 74
+                            - value: Slash
+                              param: 76
+                            - value: Backslash
+                              param: 73
+                            - value: At
+                              param: 77
+                            - value: Delete
+                              param: 67
+                            - value: Period
+                              param: 56
+                            - value: Comma
+                              param: 55
+                            - value: Enter
+                              param: 66
+                            - value: Plus
+                              param: 81
+                            - value: Minus
+                              param: 69
+                            - value: Star
+                              param: 17
+                            - value: Pound
+                              param: 18
+                            - value: Shift
+                              param: 59
+                            - value: Caps Lock
+                              param: 115
+                            - value: Alt
+                              param: 57
+                            - value: Equals
+                              param: 70
+                            - value: Left Bracket
+                              param: 71
+                            - value: Right Bracket
+                              param: 72
+                            - value: Left Parenthesis
+                              param: 162
+                            - value: Right Parenthesis
+                              param: 163
+                            - value: Quote
+                              param: 75
+                            - value: Underscore
+                              param: 95
+                            - value: 0
+                              param: 7
+                            - value: 1
+                              param: 8
+                            - value: 2
+                              param: 9
+                            - value: 3
+                              param: 10
+                            - value: 4
+                              param: 11
+                            - value: 5
+                              param: 12
+                            - value: 6
+                              param: 13
+                            - value: 7
+                              param: 14
+                            - value: 8
+                              param: 15
+                            - value: 9
+                              param: 16
         commands:
             power:
                 code: 26
@@ -318,67 +246,50 @@ drivers:
         timeout: 1
         promptTimeout: 60
         poly:
-            hint: [ 1, 6, 3, 0 ]
+            hint: [1, 6, 3, 0]
         parameters:
-            -
-                name: name
-                title: Name
-                desc: Display name in ISY Admin Console
-                defaultValue: ''
-            -
-                name: hostName
-                title: Host Name
-                defaultValue: lgwebostv
-            -
-                name: port
-                title: Port
-                defaultValue: 3000
-                type: NUMBER
-            -
-                name: mac
-                title: MAC
-                desc: LG Device MAC Address (used for Wake On LAN)
-                defaultValue: ''
-            -
-                name: clientKeyFile
-                title: Client Key File
-                desc: Used to save pairing data
-                defaultValue: cfg/lgtvClientKey.yaml
+            - name: name
+              title: Name
+              desc: Display name in ISY Admin Console
+              defaultValue: ''
+            - name: hostName
+              title: Host Name
+              defaultValue: lgwebostv
+            - name: port
+              title: Port
+              defaultValue: 3000
+              type: NUMBER
+            - name: mac
+              title: MAC
+              desc: LG Device MAC Address (used for Wake On LAN)
+              defaultValue: ''
+            - name: clientKeyFile
+              title: Client Key File
+              desc: Used to save pairing data
+              defaultValue: cfg/lgtvClientKey.yaml
         values:
             inputs:
-                -
-                    value: hdmi1
-                    param: com.webos.app.hdmi1
-                -
-                    value: hdmi2
-                    param: com.webos.app.hdmi2
-                -
-                    value: hdmi3
-                    param: com.webos.app.hdmi3
-                -
-                    value: hdmi4
-                    param: com.webos.app.hdmi4
-                -
-                    value: live_tv
-                    param: com.webos.app.livetv
-                -
-                    value: youtube
-                    param: youtube.leanback.v4
-                -
-                    value: netflix
-                -
-                    value: amazon
-                -
-                    value: vudu
-                -
-                    value: hulu
+                - value: hdmi1
+                  param: com.webos.app.hdmi1
+                - value: hdmi2
+                  param: com.webos.app.hdmi2
+                - value: hdmi3
+                  param: com.webos.app.hdmi3
+                - value: hdmi4
+                  param: com.webos.app.hdmi4
+                - value: live_tv
+                  param: com.webos.app.livetv
+                - value: youtube
+                  param: youtube.leanback.v4
+                - value: netflix
+                - value: amazon
+                - value: vudu
+                - value: hulu
             on_off:
-                -
-                    value: 'off'
-                    param: false
-                -
-                    value: 'on'
-                    param: true
+                - value: 'off'
+                  param: false
+                - value: 'on'
+                  param: true
         commandGroups:
             setup:
                 commands:
@@ -556,45 +467,36 @@ drivers:
         moduleName: TivoIP
         timeout: 5
         poly:
-            hint: [ 1, 6, 6, 0 ]
+            hint: [1, 6, 6, 0]
         parameters:
-            -
-                name: name
-                title: Name
-                desc: Display name in ISY Admin Console
-                defaultValue: ''
-            -
-                name: hostName
-                title: Host Name
-                defaultValue: ''
-                isRequired: true
-            -
-                name: port
-                title: Port
-                defaultValue: 31339
-                type: NUMBER
+            - name: name
+              title: Name
+              desc: Display name in ISY Admin Console
+              defaultValue: ''
+            - name: hostName
+              title: Host Name
+              defaultValue: ''
+              isRequired: true
+            - name: port
+              title: Port
+              defaultValue: 31339
+              type: NUMBER
         commandGroups:
             channels:
                 commands:
                     set_channel:
-                        commands:
-                            -
-                                code: IRCODE LIVETV
-                                delay: 1
-                            -
-                                code: 'SETCH '
-                                argument: true
-                                response: true
+                        code: IRCODE
+                        argument: true
+                        response: true
                         acceptsNumber: true
                     force_channel:
                         commands:
-                            -
-                                code: IRCODE LIVETV
-                                delay: 1
-                            -
-                                code: 'FORCECH '
-                                argument: true
-                                response: true
+                            - code: IRCODE LIVETV
+                              response: true
+                              delay: 1
+                            - code: IRCODE
+                              argument: true
+                              response: true
                         acceptsNumber: true
                     channel_up:
                         code: IRCODE CHANNELUP
@@ -619,18 +521,14 @@ drivers:
                     color_button:
                         code: IRCODE ACTION_
                         values:
-                            -
-                                value: A (Yellow)
-                                param: A
-                            -
-                                value: B (Blue)
-                                param: B
-                            -
-                                value: C (Red)
-                                param: C
-                            -
-                                value: D (Green)
-                                param: D
+                            - value: A (Yellow)
+                              param: A
+                            - value: B (Blue)
+                              param: B
+                            - value: C (Red)
+                              param: C
+                            - value: D (Green)
+                              param: D
             navigation:
                 commands:
                     up:
@@ -650,26 +548,16 @@ drivers:
                         description: Send Number Button
                         argument: true
                         values:
-                            -
-                                value: '1'
-                            -
-                                value: '2'
-                            -
-                                value: '3'
-                            -
-                                value: '4'
-                            -
-                                value: '5'
-                            -
-                                value: '6'
-                            -
-                                value: '7'
-                            -
-                                value: '8'
-                            -
-                                value: '9'
-                            -
-                                value: '0'
+                            - value: '1'
+                            - value: '2'
+                            - value: '3'
+                            - value: '4'
+                            - value: '5'
+                            - value: '6'
+                            - value: '7'
+                            - value: '8'
+                            - value: '9'
+                            - value: '0'
                     enter:
                         code: IRCODE ENTER
                     clear:
@@ -708,75 +596,57 @@ drivers:
         moduleName: DenonAVR
         timeout: 10
         poly:
-            hint: [ 1, 6, 5, 0 ]
+            hint: [1, 6, 5, 0]
         parameters:
-            -
-                name: name
-                title: Name
-                desc: Display name in ISY Admin Console
-                defaultValue: ''
-            -
-                name: hostName
-                title: Host Name
-                defaultValue: ''
-                isRequired: true
-            -
-                name: port
-                title: Port
-                defaultValue: 23
-                type: NUMBER
-            -
-                name: connectOnDemand
-                title: Connect On Demand
-                desc: Close connection after command is sent
-                defaultValue: false
-                type: BOOL
+            - name: name
+              title: Name
+              desc: Display name in ISY Admin Console
+              defaultValue: ''
+            - name: hostName
+              title: Host Name
+              defaultValue: ''
+              isRequired: true
+            - name: port
+              title: Port
+              defaultValue: 23
+              type: NUMBER
+            - name: connectOnDemand
+              title: Connect On Demand
+              desc: Close connection after command is sent
+              defaultValue: false
+              type: BOOL
         values:
             inputs:
-                -
-                    value: tv_sat
-                    param: SAT/CBL
-                -
-                    value: dvd
-                    param: DVD
-                -
-                    value: bluray
-                    param: BD
-                -
-                    value: tv_audio
-                    param: TV
-                -
-                    value: media
-                    param: MPLAY
-                -
-                    value: game
-                    param: GAME
-                -
-                    value: aux1
-                    param: AUX1
-                -
-                    value: cd
-                    param: CD
-                -
-                    value: aux2
-                    param: AUX2
-                -
-                    value: net
-                    param: NET
+                - value: tv_sat
+                  param: SAT/CBL
+                - value: dvd
+                  param: DVD
+                - value: bluray
+                  param: BD
+                - value: tv_audio
+                  param: TV
+                - value: media
+                  param: MPLAY
+                - value: game
+                  param: GAME
+                - value: aux1
+                  param: AUX1
+                - value: cd
+                  param: CD
+                - value: aux2
+                  param: AUX2
+                - value: net
+                  param: NET
             on_off:
-                -
-                    value: 'off'
-                    param: 'OFF'
-                -
-                    value: 'on'
-                    param: 'ON'
+                - value: 'off'
+                  param: 'OFF'
+                - value: 'on'
+                  param: 'ON'
             up_down:
-                -
-                    value: up
-                    param: UP
-                -
-                    value: down
-                    param: DOWN
+                - value: up
+                  param: UP
+                - value: down
+                  param: DOWN
         commands:
             select_input:
                 code: SI
@@ -883,81 +753,60 @@ drivers:
         moduleName: OnkyoAVR
         timeout: 10
         poly:
-            hint: [ 1, 6, 5, 0 ]
+            hint: [1, 6, 5, 0]
         parameters:
-            -
-                name: name
-                title: Name
-                desc: Display name in ISY Admin Console
-                defaultValue: ''
-            -
-                name: hostName
-                title: Host Name
-                defaultValue: ''
-                isRequired: true
-            -
-                name: port
-                title: Port
-                defaultValue: 60128
-                type: NUMBER
+            - name: name
+              title: Name
+              desc: Display name in ISY Admin Console
+              defaultValue: ''
+            - name: hostName
+              title: Host Name
+              defaultValue: ''
+              isRequired: true
+            - name: port
+              title: Port
+              defaultValue: 60128
+              type: NUMBER
         values:
             on_off:
-                -
-                    value: 'off'
-                    param: '00'
-                -
-                    value: 'on'
-                    param: '01'
+                - value: 'off'
+                  param: '00'
+                - value: 'on'
+                  param: '01'
             up_down:
-                -
-                    value: up
-                    param: UP
-                -
-                    value: down
-                    param: DOWN
+                - value: up
+                  param: UP
+                - value: down
+                  param: DOWN
             inputs:
-                -
-                    value: vcr_dvr
-                    param: '00'
-                -
-                    value: cbl_sat
-                    param: '01'
-                -
-                    value: game_tv
-                    param: '02'
-                -
-                    value: aux1
-                    param: '03'
-                -
-                    value: aux2
-                    param: '04'
-                -
-                    value: dvd
-                    param: '10'
-                -
-                    value: cd
-                    param: '23'
-                -
-                    value: net_radio
-                    param: '28'
-                -
-                    value: net
-                    param: '2B'
-                -
-                    value: usb
-                    param: '29'
-                -
-                    value: xm
-                    param: '31'
-                -
-                    value: sirius
-                    param: '32'
-                -
-                    value: am
-                    param: '25'
-                -
-                    value: fm
-                    param: '24'
+                - value: vcr_dvr
+                  param: '00'
+                - value: cbl_sat
+                  param: '01'
+                - value: game_tv
+                  param: '02'
+                - value: aux1
+                  param: '03'
+                - value: aux2
+                  param: '04'
+                - value: dvd
+                  param: '10'
+                - value: cd
+                  param: '23'
+                - value: net_radio
+                  param: '28'
+                - value: net
+                  param: '2B'
+                - value: usb
+                  param: '29'
+                - value: xm
+                  param: '31'
+                - value: sirius
+                  param: '32'
+                - value: am
+                  param: '25'
+                - value: fm
+                  param: '24'
         commands:
             toggle_mute:
                 code: AMTTG
@@ -1069,99 +918,79 @@ drivers:
         description: ESP8266 IR
         moduleName: ESP8266
         parameters:
-            -
-                name: name
-                title: Name
-                desc: Display name in ISY Admin Console
-                defaultValue: ''
-            -
-                name: hostName
-                title: Host Name
-                defaultValue: ''
-                isRequired: true
-            -
-                name: port
-                title: Port
-                defaultValue: 80
-                type: NUMBER
-            -
-                name: ir_emitter
-                title: IR Emitter
-                desc: Emitter Number (0 - 3)
-                defaultValue: 0
-                type: NUMBER
+            - name: name
+              title: Name
+              desc: Display name in ISY Admin Console
+              defaultValue: ''
+            - name: hostName
+              title: Host Name
+              defaultValue: ''
+              isRequired: true
+            - name: port
+              title: Port
+              defaultValue: 80
+              type: NUMBER
+            - name: ir_emitter
+              title: IR Emitter
+              desc: Emitter Number (0 - 3)
+              defaultValue: 0
+              type: NUMBER
         commands:
             power:
                 code: tv_power_
                 values:
-                    -
-                        value: 'on'
-                        param: 'on'
-                    -
-                        value: 'off'
-                        param: 'off'
+                    - value: 'on'
+                      param: 'on'
+                    - value: 'off'
+                      param: 'off'
             tv_volume_up: {}
             tv_volume_down: {}
     chromecast:
         description: Chromecast
         poly:
-            hint: [ 1, 6, 7, 0 ]
+            hint: [1, 6, 7, 0]
         driverParameters:
-            -
-                name: enableChromecastSupport
-                title: Enable Chromecast Support
-                defaultValue: False
-                type: BOOL
-            -
-                name: chromecastPlaylists
-                title: Chromecast Play Lists
-                isList: true
-                params:
-                    -
-                        name: name
-                        title: Name
-                        isRequired: true
-                    -
-                        name: url
-                        title: URL
-                        isRequired: true
-                    -
-                        name: type
-                        title: Type
-                        desc: mime type, for example 'video/mp4'
-                        isRequired: true
-            -
-                name: chromecastApps
-                title: Chromecast Apps
-                isList: true
-                params:
-                    -
-                        name: name
-                        title: Name
-                        isRequired: true
-                    -
-                        name: app_id
-                        title: App ID
-                        isRequired: true
+            - name: enableChromecastSupport
+              title: Enable Chromecast Support
+              defaultValue: False
+              type: BOOL
+            - name: chromecastPlaylists
+              title: Chromecast Play Lists
+              isList: true
+              params:
+                  - name: name
+                    title: Name
+                    isRequired: true
+                  - name: url
+                    title: URL
+                    isRequired: true
+                  - name: type
+                    title: Type
+                    desc: mime type, for example 'video/mp4'
+                    isRequired: true
+            - name: chromecastApps
+              title: Chromecast Apps
+              isList: true
+              params:
+                  - name: name
+                    title: Name
+                    isRequired: true
+                  - name: app_id
+                    title: App ID
+                    isRequired: true
         coreApps:
-            -
-                value: None
-                param: null
-            -
-                value: Spotify
-                param: CC32E753
-            -
-                value: Netflix
-                param: CA5E8412
-            -
-                value: YouTube
-                param: 233637DE
-            -
-                value: Google Play Music
-                param: '2872939A'
-            -
-                value: Default Media Receiver
-                param: CC1AD845
+            - value: None
+              param: null
+            - value: Spotify
+              param: CC32E753
+            - value: Netflix
+              param: CA5E8412
+            - value: YouTube
+              param: 233637DE
+            - value: Google Play Music
+              param: '2872939A'
+            - value: Default Media Receiver
+              param: CC1AD845
         defaultApp:
             value: Other
             param: ''
@@ -1170,28 +999,21 @@ drivers:
             chromecastPlaylists:
             chromecastApps:
             on_off:
-                -
-                    value: Off
-                    param: false
-                -
-                    value: On
-                    param: true
+                - value: Off
+                  param: false
+                - value: On
+                  param: true
             status:
-                -
-                    value: unknown
-                    param: UNKNOWN
-                -
-                    value: playing
-                    param: PLAYING
-                -
-                    value: buffering
-                    param: BUFFERING
-                -
-                    value: paused
-                    param: PAUSED
-                -
-                    value: idle
-                    param: IDLE
+                - value: unknown
+                  param: UNKNOWN
+                - value: playing
+                  param: PLAYING
+                - value: buffering
+                  param: BUFFERING
+                - value: paused
+                  param: PAUSED
+                - value: idle
+                  param: IDLE
         commands:
             play_list:
                 code: play_media
@@ -1241,14 +1063,12 @@ drivers:
                 result: true
                 code: status
                 value_set: on_off_reverse
-                code: status
                 argKey: volume_muted
             start_app:
                 code: start_app
                 value_set: chromecastApps
             current_app:
                 result: true
-                code: set_volume_muted
                 value_set: chromecastApps_reverse
                 code: status
                 argKey: app_id

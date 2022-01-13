@@ -1,5 +1,6 @@
+import copy
 import unittest
-from unittest.mock import MagicMock
+from unittest.mock import call, MagicMock
 import yaml
 
 from drivers.base_driver import BaseDriver
@@ -15,7 +16,7 @@ class UtilsTester(unittest.TestCase):
     def test_simple(self):
         config = UtilsTester.config['driver']
         driver = BaseDriver(config, None)
-        self.assertEqual(len(driver.getData('commands')['commands']), 6)
+        self.assertEqual(len(driver.getData('commands')['commands']), 7)
 
     def test_execute_command(self):
         config = UtilsTester.config['driver']
@@ -25,6 +26,19 @@ class UtilsTester(unittest.TestCase):
         driver.executeCommand('command1')
         driver.sendCommandRaw.assert_called_with('command1',
                                                  config['commands']['command1'], None)
+
+    def test_execute_command_list(self):
+        config = UtilsTester.config['driver']
+        driver = BaseDriver(config, None)
+        driver.sendCommandRaw = MagicMock()
+
+        driver.executeCommand('command7')
+        sub_command = copy.deepcopy(config['commands']['command7']['commands'][0])
+        sub_command['has_more'] = True
+        driver.sendCommandRaw.assert_has_calls([
+            call('command7', sub_command, None),
+            call('command7', config['commands']['command7']['commands'][1], None)
+        ])
 
     def test_execute_command_with_arg_no_translate(self):
         config = UtilsTester.config['driver']

@@ -14,28 +14,41 @@ class TivoIP(BaseDriver):
         logger.info('Loaded %s driver', self.__class__.__name__)
 
     def connect(self):
-        conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        conn.connect((self.config['hostName'], self.config['port']))
-        conn.settimeout(self.config['timeout'])
-        conn.close()
+        self.do_connect()
         self.connected = True
+        self.close()
+        
+    def do_connect(self):
+        if self.conn is not None:
+            return
+
+        self.conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.conn.connect((self.config['hostName'], self.config['port']))
+        self.conn.settimeout(self.config['timeout'])
+
+    def close(self):
+        self.conn.close()
+        self.conn = None
 
     def sendCommandRaw(self, commandName, command, args=None):
         result = ''
-        conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
-            conn.connect((self.config['hostName'], self.config['port']))
-            conn.settimeout(self.config['timeout'])
-            conn.send(command['code'].encode())
+            self.do_connect()
             if (command.get('argument') or 'value_set' in command) and args:
-                conn.send(args.encode())
-            conn.send('\r\n'.encode())
+                for digit in str(args):
+                    self.conn.send(f'{command["code"]} NUM{digit}\r\n'.encode())
+            else:
+                self.conn.send(f'{command["code"]}\r\n'.encode())
+
             if command.get('response', False):
-                result = conn.recv(TivoIP.RECEIVE_BUFFER_SIZE).decode()
+                result = self.conn.recv(TivoIP.RECEIVE_BUFFER_SIZE).decode()
             delay = command.get('delay')
             if delay:
                 time.sleep(delay)
         except socket.timeout:
             pass
-        conn.close()
+
+        if not command.get('has_more', False):
+            self.close()
+
         return result

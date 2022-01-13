@@ -124,27 +124,21 @@ state:
 driver:
     values:
         some_map:
-            -
-                value: key1
-                param: value1
-            -
-                value: key2
-                param: value2
+            - value: key1
+              param: value1
+            - value: key2
+              param: value2
         some_map2:
-            -
-                value: key3
-                param: value3
-            -
-                value: key4
-                param: value4
+            - value: key3
+              param: value3
+            - value: key4
+              param: value4
         some_map3:
-            -
-                value: key5
-                param: value5
-            -
-                value: key6
-                param: value6
-                isDefault: true
+            - value: key5
+              param: value5
+            - value: key6
+              param: value6
+              isDefault: true
     commands:
         command1:
             code: value1
@@ -166,15 +160,17 @@ driver:
             result: True
             code: value6
             value_set: some_map3_reverse
+        command7:
+            commands:
+                - code: subValue1
+                - code: subValue2
 denon:
     values:
         some_map:
-            -
-                value: up
-                param: UP
-            -
-                value: down
-                param: DOWN
+            - value: up
+              param: UP
+            - value: down
+              param: DOWN
     commands:
         command1:
             code: VL
@@ -197,12 +193,10 @@ denon:
 onkyo:
     values:
         some_map:
-            -
-                value: on
-                param: '01'
-            -
-                value: off
-                param: '02'
+            - value: on
+              param: '01'
+            - value: off
+              param: '02'
     commands:
         command1:
             code: MVL
@@ -214,12 +208,10 @@ onkyo:
 numberParams:
     values:
         bool_map:
-            -
-                value: '0'
-                param: false
-            -
-                value: '1'
-                param: true
+            - value: '0'
+              param: false
+            - value: '1'
+              param: true
     commands:
         boolCommand:
             code: value1
