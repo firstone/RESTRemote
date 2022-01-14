@@ -12,6 +12,7 @@ class TivoIP(BaseDriver):
         super(TivoIP, self).__init__(config, logger, use_numeric_key)
 
         logger.info('Loaded %s driver', self.__class__.__name__)
+        self.conn = None
 
     def connect(self):
         self.do_connect()
