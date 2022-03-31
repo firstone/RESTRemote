@@ -2,1209 +2,1212 @@ bindHost: 0.0.0.0
 port: 5000
 driversPath: ./drivers
 controller:
-    name: AVRemote
-    description: IP Remote Controller
+  name: AVRemote
+  description: IP Remote Controller
 drivers:
-    android:
-        description: nVidia Shield
-        executable: adb
-        poly:
-            hint: [1, 6, 7, 0]
-        parameters:
-            - name: name
-              title: Name
-              desc: Display name in ISY Admin Console
-              defaultValue: ''
-            - name: hostName
-              title: Host Name
-              defaultValue: ''
-              isRequired: true
-            - name: port
-              title: Port
-              defaultValue: 5555
-              type: NUMBER
-        values:
-            activities:
-                - value: dashboard
-                  param: com.google.android.leanbacklauncher
-                - value: spmc
-                  param: com.semperpax.spmc16
-                - value: kodi
-                  param: org.xbmc.kodi
-                - value: netflix
-                  param: com.netflix.ninja
-                - value: etv
-                  param: com.etvnet.etvnetandroidapp
-        commandGroups:
-            navigation:
-                commands:
-                    menu:
-                        code: 1
-                    home:
-                        code: 3
-                    back:
-                        code: 4
-                    up:
-                        code: 19
-                    down:
-                        code: 20
-                    left:
-                        code: 21
-                    right:
-                        code: 22
-                    center:
-                        code: 23
-                    page_up:
-                        code: 92
-                    page_down:
-                        code: 93
-            audio:
-                commands:
-                    volume_up:
-                        code: 23
-                    volume_down:
-                        code: 25
-            basic_media:
-                commands:
-                    pause:
-                        code: 127
-                    play:
-                        code: 126
-                    play_pause:
-                        code: 85
-                    stop:
-                        code: 86
-            media:
-                commands:
-                    fast_forward:
-                        code: 90
-                    next:
-                        code: 87
-                    prev:
-                        code: 88
-                    rewind:
-                        code: 89
-                    skip_back:
-                        code: 273
-                    skip_forward:
-                        code: 272
-                    step_back:
-                        code: 275
-                    step_forward:
-                        code: 274
-                    info:
-                        code: 165
-            setup:
-                commands:
-                    get_app_list:
-                        result: true
-            inputs:
-                commands:
-                    get_current_activity:
-                        value_set: activities_reverse
-                        result: true
-                    start_app:
-                        values:
-                            - value: dashboard
-                              param: com.google.android.leanbacklauncher/.MainActivity
-                            - value: spmc
-                              param: com.semperpax.spmc16/.Splash
-                            - value: kodi
-                              param: org.xbmc.kodi/.Splash
-                            - value: netflix
-                              param: com.netflix.ninja/.MainActivity
-                            - value: etv
-                              param: com.etvnet.etvnetandroidapp/.MainActivity
-            keyboard:
-                commands:
-                    send_key:
-                        values:
-                            - value: A
-                              param: 29
-                            - value: B
-                              param: 30
-                            - value: C
-                              code: 31
-                            - value: D
-                              param: 32
-                            - value: E
-                              param: 33
-                            - value: F
-                              param: 34
-                            - value: G
-                              param: 35
-                            - value: H
-                              param: 36
-                            - value: I
-                              param: 37
-                            - value: J
-                              param: 38
-                            - value: K
-                              param: 39
-                            - value: L
-                              param: 40
-                            - value: M
-                              param: 41
-                            - value: N
-                              param: 42
-                            - value: O
-                              param: 43
-                            - value: P
-                              param: 44
-                            - value: Q
-                              param: 45
-                            - value: R
-                              param: 46
-                            - value: S
-                              param: 47
-                            - value: T
-                              param: 48
-                            - value: U
-                              param: 49
-                            - value: V
-                              param: 50
-                            - value: W
-                              param: 51
-                            - value: X
-                              param: 52
-                            - value: Y
-                              param: 53
-                            - value: Z
-                              param: 54
-                            - value: Space
-                              param: 62
-                            - value: Semicolon
-                              param: 74
-                            - value: Slash
-                              param: 76
-                            - value: Backslash
-                              param: 73
-                            - value: At
-                              param: 77
-                            - value: Delete
-                              param: 67
-                            - value: Period
-                              param: 56
-                            - value: Comma
-                              param: 55
-                            - value: Enter
-                              param: 66
-                            - value: Plus
-                              param: 81
-                            - value: Minus
-                              param: 69
-                            - value: Star
-                              param: 17
-                            - value: Pound
-                              param: 18
-                            - value: Shift
-                              param: 59
-                            - value: Caps Lock
-                              param: 115
-                            - value: Alt
-                              param: 57
-                            - value: Equals
-                              param: 70
-                            - value: Left Bracket
-                              param: 71
-                            - value: Right Bracket
-                              param: 72
-                            - value: Left Parenthesis
-                              param: 162
-                            - value: Right Parenthesis
-                              param: 163
-                            - value: Quote
-                              param: 75
-                            - value: Underscore
-                              param: 95
-                            - value: 0
-                              param: 7
-                            - value: 1
-                              param: 8
-                            - value: 2
-                              param: 9
-                            - value: 3
-                              param: 10
-                            - value: 4
-                              param: 11
-                            - value: 5
-                              param: 12
-                            - value: 6
-                              param: 13
-                            - value: 7
-                              param: 14
-                            - value: 8
-                              param: 15
-                            - value: 9
-                              param: 16
-        commands:
-            power:
-                code: 26
-    web_os:
-        description: LG TV
-        moduleName: WebOS
-        timeout: 1
-        promptTimeout: 60
-        poly:
-            hint: [1, 6, 3, 0]
-        parameters:
-            - name: name
-              title: Name
-              desc: Display name in ISY Admin Console
-              defaultValue: ''
-            - name: hostName
-              title: Host Name
-              defaultValue: lgwebostv
-            - name: port
-              title: Port
-              defaultValue: 3000
-              type: NUMBER
-            - name: mac
-              title: MAC
-              desc: LG Device MAC Address (used for Wake On LAN)
-              defaultValue: ''
-            - name: clientKeyFile
-              title: Client Key File
-              desc: Used to save pairing data
-              defaultValue: cfg/lgtvClientKey.yaml
-        values:
-            inputs:
-                - value: hdmi1
-                  param: com.webos.app.hdmi1
-                - value: hdmi2
-                  param: com.webos.app.hdmi2
-                - value: hdmi3
-                  param: com.webos.app.hdmi3
-                - value: hdmi4
-                  param: com.webos.app.hdmi4
-                - value: live_tv
-                  param: com.webos.app.livetv
-                - value: youtube
-                  param: youtube.leanback.v4
-                - value: netflix
-                - value: amazon
-                - value: vudu
-                - value: hulu
-            on_off:
-                - value: 'off'
-                  param: false
-                - value: 'on'
-                  param: true
-        commandGroups:
-            setup:
-                commands:
-                    get_channels:
-                        uri: tv/getChannelList
-                        result: true
-                    get_input_list:
-                        uri: tv/getExternalInputList
-                        result: true
-                    # get_sw_info:
-                    #    uri: com.webos.service.update/getCurrentSWInformation
-                    #    result: true
-                    get_service_list:
-                        uri: api/getServiceList
-                        result: true
-                    # list_launch_points:
-                    #    uri: com.webos.applicationManager/listLaunchPoints
-                    #    result: true
-                    get_program_info:
-                        uri: tv/getChannelProgramInfo
-                        result: true
-                    get_foreground_app_info:
-                        uri: com.webos.applicationManager/getForegroundAppInfo
-                        result: true
-                    # get_app_status:
-                    #    uri: com.webos.service.appstatus/getAppStatus
-                    #    result: true
-                    # get_app_state:
-                    #    uri: system.launcher/getAppState
-                    #    result: true
-                    toast:
-                        uri: system.notifications/createToast
-                        argKey: message
-                    open_uri:
-                        uri: system.launcher/open
-                        argKey: target
-                    close:
-                        uri: system.launcher/close
-                        argKey: id
-                    delete_characters:
-                        uri: com.webos.service.ime/deleteCharacters
-                        argKey: count
-                    launch_app:
-                        uri: com.webos.applicationManager/launch
-                    close_web_app:
-                        uri: webapp/closeWebApp
-            inputs:
-                commands:
-                    current_channel:
-                        uri: tv/getCurrentChannel
-                        result: true
-                    input:
-                        uri: system.launcher/launch
-                        argKey: id
-                        value_set: inputs
-                    channel:
-                        uri: tv/openChannel
-                        argKey: channelId
-                    # input:
-                    #     uri: tv/switchInput
-                    #     argKey: inputId
-                    #     value_set: inputs
-                    channel_up:
-                        uri: tv/channelUp
-                    channel_down:
-                        uri: tv/channelDown
-                    current_input:
-                        uri: com.webos.applicationManager/getForegroundAppInfo
-                        argKey: appId
-                        value_set: inputs_reverse
-                        result: true
-            audio:
-                commands:
-                    status:
-                        uri: audio/getStatus
-                        result: true
-                    current_volume:
-                        argKey: volume
-                        uri: audio/getVolume
-                        result: true
-                    mute:
-                        uri: audio/setMute
-                        argKey: mute
-                        acceptsBool: true
-                        value_set: on_off
-                    mute_status:
-                        argKey: muted
-                        uri: audio/getVolume
-                        result: true
-                        value_set: on_off_reverse
-                    toggle_mute: {}
-                    set_volume:
-                        uri: audio/setVolume
-                        argKey: volume
-                        acceptsNumber: true
-                    volume_up:
-                        uri: audio/volumeUp
-                    volume_down:
-                        uri: audio/volumeDown
-            basic_media:
-                commands:
-                    play:
-                        uri: media.controls/play
-                    stop:
-                        uri: media.controls/stop
-                    pause:
-                        uri: media.controls/pause
-            media:
-                commands:
-                    rewind:
-                        uri: media.controls/rewind
-                    fast_forward:
-                        uri: media.controls/fastForward
-                    close_viewer:
-                        uri: media.viewer/close
-            navigation:
-                commands:
-                    enter:
-                        uri: com.webos.service.ime/sendEnterKey
-        commands:
-            power_off:
-                uri: system/turnOff
-            power_on: {}
-            # set_3d_on:
-            #     uri: com.webos.service.tv.display/set3DOn
-            # set_3d_off:
-            #     uri: com.webos.service.tv.display/set3DOff
-        registerCommand:
-            forcePairing: false
-            pairingType: PROMPT
-            manifest:
-                signed:
-                    permissions:
-                        - TEST_SECURE
-                        - CONTROL_INPUT_TEXT
-                        - CONTROL_MOUSE_AND_KEYBOARD
-                        - READ_INSTALLED_APPS
-                        - READ_LGE_SDX
-                        - READ_NOTIFICATIONS
-                        - SEARCH
-                        - WRITE_SETTINGS
-                        - WRITE_NOTIFICATION_ALERT
-                        - CONTROL_POWER
-                        - READ_CURRENT_CHANNEL
-                        - READ_RUNNING_APPS
-                        - READ_UPDATE_INFO
-                        - UPDATE_FROM_REMOTE_APP
-                        - READ_LGE_TV_INPUT_EVENTS
-                        - READ_TV_CURRENT_TIME
-                permissions:
-                    - LAUNCH
-                    - LAUNCH_WEBAPP
-                    - APP_TO_APP
-                    - CLOSE
-                    - TEST_OPEN
-                    - TEST_PROTECTED
-                    - CONTROL_AUDIO
-                    - CONTROL_DISPLAY
-                    - CONTROL_INPUT_JOYSTICK
-                    - CONTROL_INPUT_MEDIA_RECORDING
-                    - CONTROL_INPUT_MEDIA_PLAYBACK
-                    - CONTROL_INPUT_TV
-                    - CONTROL_POWER
-                    - READ_APP_STATUS
-                    - READ_CURRENT_CHANNEL
-                    - READ_INPUT_DEVICE_LIST
-                    - READ_NETWORK_STATE
-                    - READ_RUNNING_APPS
-                    - READ_TV_CHANNEL_LIST
-                    - WRITE_NOTIFICATION_TOAST
-                    - READ_POWER_STATE
-                    - READ_COUNTRY_INFO
-    tivo_ip:
-        description: Tivo
-        moduleName: TivoIP
-        timeout: 5
-        poly:
-            hint: [1, 6, 6, 0]
-        parameters:
-            - name: name
-              title: Name
-              desc: Display name in ISY Admin Console
-              defaultValue: ''
-            - name: hostName
-              title: Host Name
-              defaultValue: ''
-              isRequired: true
-            - name: port
-              title: Port
-              defaultValue: 31339
-              type: NUMBER
-        commandGroups:
-            channels:
-                commands:
-                    set_channel:
-                        code: IRCODE
-                        argument: true
-                        response: true
-                        acceptsNumber: true
-                    force_channel:
-                        commands:
-                            - code: IRCODE LIVETV
-                              response: true
-                              delay: 1
-                            - code: IRCODE
-                              argument: true
-                              response: true
-                        acceptsNumber: true
-                    channel_up:
-                        code: IRCODE CHANNELUP
-                    channel_down:
-                        code: IRCODE CHANNELDOWN
-            content:
-                commands:
-                    tivo:
-                        code: IRCODE TIVO
-                    live_tv:
-                        code: IRCODE LIVETV
-                    guide:
-                        code: IRCODE GUIDE
-                    info:
-                        code: IRCODE INFO
-                    exit:
-                        code: IRCODE EXIT
-                    thumbs_up:
-                        code: IRCODE THUMBSUP
-                    thumbs_down:
-                        code: IRCODE THUMBSDOWN
-                    color_button:
-                        code: IRCODE ACTION_
-                        values:
-                            - value: A (Yellow)
-                              param: A
-                            - value: B (Blue)
-                              param: B
-                            - value: C (Red)
-                              param: C
-                            - value: D (Green)
-                              param: D
-            navigation:
-                commands:
-                    up:
-                        code: IRCODE UP
-                    down:
-                        code: IRCODE DOWN
-                    left:
-                        code: IRCODE LEFT
-                    right:
-                        code: IRCODE RIGHT
-                    select:
-                        code: IRCODE SELECT
-                    tv_input:
-                        code: IRCODE TVINPUT
-                    number_button:
-                        code: IRCODE NUM
-                        description: Send Number Button
-                        argument: true
-                        values:
-                            - value: '1'
-                            - value: '2'
-                            - value: '3'
-                            - value: '4'
-                            - value: '5'
-                            - value: '6'
-                            - value: '7'
-                            - value: '8'
-                            - value: '9'
-                            - value: '0'
-                    enter:
-                        code: IRCODE ENTER
-                    clear:
-                        code: IRCODE CLEAR
-            audio:
-                commands:
-                    mute:
-                        code: IRCODE MUTE
-                    volume_down:
-                        code: IRCODE VOLUMEDOWN
-                    volume_up:
-                        code: IRCODE VOLUMEUP
-            basic_media:
-                commands:
-                    play:
-                        code: IRCODE PLAY
-                    pause:
-                        code: IRCODE PAUSE
-            media:
-                commands:
-                    forward:
-                        code: IRCODE FORWARD
-                    reverse:
-                        code: IRCODE REVERSE
-                    slow:
-                        code: IRCODE SLOW
-                    replay:
-                        code: IRCODE REPLAY
-                    advance:
-                        code: IRCODE ADVANCE
-                    record:
-                        code: IRCODE RECORD
-        commands: {}
-    denon_avr:
-        description: Denon AVR
-        moduleName: DenonAVR
-        timeout: 10
-        poly:
-            hint: [1, 6, 5, 0]
-        parameters:
-            - name: name
-              title: Name
-              desc: Display name in ISY Admin Console
-              defaultValue: ''
-            - name: hostName
-              title: Host Name
-              defaultValue: ''
-              isRequired: true
-            - name: port
-              title: Port
-              defaultValue: 23
-              type: NUMBER
-            - name: connectOnDemand
-              title: Connect On Demand
-              desc: Close connection after command is sent
-              defaultValue: false
-              type: BOOL
-        values:
-            inputs:
-                - value: tv_sat
-                  param: SAT/CBL
-                - value: dvd
-                  param: DVD
-                - value: bluray
-                  param: BD
-                - value: tv_audio
-                  param: TV
-                - value: media
-                  param: MPLAY
-                - value: game
-                  param: GAME
-                - value: aux1
-                  param: AUX1
-                - value: cd
-                  param: CD
-                - value: aux2
-                  param: AUX2
-                - value: net
-                  param: NET
-            on_off:
-                - value: 'off'
-                  param: 'OFF'
-                - value: 'on'
-                  param: 'ON'
-            up_down:
-                - value: up
-                  param: UP
-                - value: down
-                  param: DOWN
-        commands:
-            select_input:
-                code: SI
-                value_set: inputs
-            current_input_source:
-                code: SI?
-                value_set: inputs_reverse
-                result: true
-            volume:
-                code: MV
-                value_set: up_down
-            set_volume:
-                code: MV
-                acceptsFloat: true
-            current_volume:
-                code: MV?
-                acceptsFloat: true
-                result: true
-            power:
-                code: ZM
-                value_set: on_off
-            current_power:
-                code: ZM?
-                value_set: on_off_reverse
-                result: true
-            mute:
-                code: MU
-                value_set: on_off
-            current_mute:
-                code: MU?
-                value_set: on_off_reverse
-                result: true
-        commandGroups:
-            zone2:
-                suffix: _z2
-                commands:
-                    select_input:
-                        code: Z2
-                        value_set: inputs
-                    current_input_source:
-                        code: Z2?
-                        value_set: inputs_reverse
-                        result: true
-                    volume:
-                        code: Z2
-                        value_set: up_down
-                    set_volume:
-                        code: Z2
-                        acceptsFloat: true
-                    current_volume:
-                        code: Z2?
-                        acceptsFloat: true
-                        result: true
-                    power:
-                        code: Z2
-                        value_set: on_off
-                    current_power:
-                        code: Z2?
-                        value_set: on_off_reverse
-                        result: true
-                    mute:
-                        code: Z2MU
-                        value_set: on_off
-                    current_mute:
-                        code: Z2MU?
-                        value_set: on_off_reverse
-                        result: true
-            zone3:
-                suffix: _z3
-                commands:
-                    select_input:
-                        code: Z3
-                        value_set: inputs
-                    current_input_source:
-                        code: Z3?
-                        value_set: inputs_reverse
-                        result: true
-                    volume:
-                        code: Z3
-                        value_set: up_down
-                    set_volume:
-                        code: Z3
-                        acceptsFloat: true
-                    current_volume:
-                        code: Z3?
-                        acceptsFloat: true
-                        result: true
-                    power:
-                        code: Z3
-                        value_set: on_off
-                    current_power:
-                        code: Z3?
-                        value_set: on_off_reverse
-                        result: true
-                    mute:
-                        code: Z3MU
-                        value_set: on_off
-                    current_mute:
-                        code: Z3MU?
-                        value_set: on_off_reverse
-                        result: true
-    onkyo_avr:
-        description: Onkyo AVR
-        moduleName: OnkyoAVR
-        timeout: 10
-        poly:
-            hint: [1, 6, 5, 0]
-        parameters:
-            - name: name
-              title: Name
-              desc: Display name in ISY Admin Console
-              defaultValue: ''
-            - name: hostName
-              title: Host Name
-              defaultValue: ''
-              isRequired: true
-            - name: port
-              title: Port
-              defaultValue: 60128
-              type: NUMBER
-        values:
-            on_off:
-                - value: 'off'
-                  param: '00'
-                - value: 'on'
-                  param: '01'
-            up_down:
-                - value: up
-                  param: UP
-                - value: down
-                  param: DOWN
-            inputs:
-                - value: vcr_dvr
-                  param: '00'
-                - value: cbl_sat
-                  param: '01'
-                - value: game_tv
-                  param: '02'
-                - value: aux1
-                  param: '03'
-                - value: aux2
-                  param: '04'
-                - value: dvd
-                  param: '10'
-                - value: cd
-                  param: '23'
-                - value: net_radio
-                  param: '28'
-                - value: net
-                  param: '2B'
-                - value: usb
-                  param: '29'
-                - value: xm
-                  param: '31'
-                - value: sirius
-                  param: '32'
-                - value: am
-                  param: '25'
-                - value: fm
-                  param: '24'
-        commands:
-            toggle_mute:
-                code: AMTTG
-            mute:
-                code: AMT
-                value_set: on_off
-            current_mute:
-                code: AMTQSTN
-                value_set: on_off_reverse
-                result: true
-            power:
-                code: PWR
-                value_set: on_off
-            current_power:
-                code: PWRQSTN
-                value_set: on_off_reverse
-                result: true
-            volume:
-                code: MVL
-                value_set: up_down
-            current_volume:
-                code: MVLQSTN
-                result: true
-                acceptsHex: true
-            set_volume:
-                code: MVL
-                acceptsHex: true
-            select_input:
-                code: SLI
-                value_set: inputs
-            current_input_source:
-                code: SLIQSTN
-                result: true
-                value_set: inputs_reverse
-        commandGroups:
-            zone2:
-                suffix: _z2
-                commands:
-                    toggle_mute:
-                        code: ZMTTG
-                    mute:
-                        code: ZMT
-                        value_set: on_off
-                    current_mute:
-                        code: ZMTQSTN
-                        value_set: on_off_reverse
-                        result: true
-                    power:
-                        code: ZPW
-                        value_set: on_off
-                    current_power:
-                        code: ZPWQSTN
-                        value_set: on_off_reverse
-                        result: true
-                    volume:
-                        code: ZVL
-                        value_set: up_down
-                    current_volume:
-                        code: ZVLQSTN
-                        result: true
-                        acceptsHex: true
-                    set_volume:
-                        code: ZVL
-                        acceptsHex: true
-                    select_input:
-                        code: SLZ
-                        value_set: inputs
-                    current_input_source:
-                        code: SLZQSTN
-                        result: true
-                        value_set: inputs_reverse
-            zone3:
-                suffix: _z3
-                commands:
-                    toggle_mute:
-                        code: MT3TG
-                    mute:
-                        code: MT3
-                        value_set: on_off
-                    current_mute:
-                        code: MT3QSTN
-                        value_set: on_off_reverse
-                        result: true
-                    power:
-                        code: PW3
-                        value_set: on_off
-                    current_power:
-                        code: PW3QSTN
-                        value_set: on_off_reverse
-                        result: true
-                    volume:
-                        code: VL3
-                        value_set: up_down
-                    current_volume:
-                        code: VL3QSTN
-                        result: true
-                        acceptsHex: true
-                    set_volume:
-                        code: VL3
-                        acceptsHex: true
-                    select_input:
-                        code: SL3
-                        value_set: inputs
-                    current_input_source:
-                        code: SL3QSTN
-                        result: true
-                        value_set: inputs_reverse
-    esp8266:
-        description: ESP8266 IR
-        moduleName: ESP8266
-        parameters:
-            - name: name
-              title: Name
-              desc: Display name in ISY Admin Console
-              defaultValue: ''
-            - name: hostName
-              title: Host Name
-              defaultValue: ''
-              isRequired: true
-            - name: port
-              title: Port
-              defaultValue: 80
-              type: NUMBER
-            - name: ir_emitter
-              title: IR Emitter
-              desc: Emitter Number (0 - 3)
-              defaultValue: 0
-              type: NUMBER
-        commands:
-            power:
-                code: tv_power_
-                values:
-                    - value: 'on'
-                      param: 'on'
-                    - value: 'off'
-                      param: 'off'
-            tv_volume_up: {}
-            tv_volume_down: {}
-    chromecast:
-        description: Chromecast
-        poly:
-            hint: [1, 6, 7, 0]
-        driverParameters:
-            - name: enableChromecastSupport
-              title: Enable Chromecast Support
-              defaultValue: False
-              type: BOOL
-            - name: chromecastPlaylists
-              title: Chromecast Play Lists
-              isList: true
-              params:
-                  - name: name
-                    title: Name
-                    isRequired: true
-                  - name: url
-                    title: URL
-                    isRequired: true
-                  - name: type
-                    title: Type
-                    desc: mime type, for example 'video/mp4'
-                    isRequired: true
-            - name: chromecastApps
-              title: Chromecast Apps
-              isList: true
-              params:
-                  - name: name
-                    title: Name
-                    isRequired: true
-                  - name: app_id
-                    title: App ID
-                    isRequired: true
-        coreApps:
-            - value: None
-              param: null
-            - value: Spotify
-              param: CC32E753
-            - value: Netflix
-              param: CA5E8412
-            - value: YouTube
-              param: 233637DE
-            - value: Google Play Music
-              param: '2872939A'
-            - value: Default Media Receiver
-              param: CC1AD845
-        defaultApp:
-            value: Other
-            param: ''
-            isDefault: true
-        values:
-            chromecastPlaylists:
-            chromecastApps:
-            on_off:
-                - value: Off
-                  param: false
-                - value: On
-                  param: true
-            status:
-                - value: unknown
-                  param: UNKNOWN
-                - value: playing
-                  param: PLAYING
-                - value: buffering
-                  param: BUFFERING
-                - value: paused
-                  param: PAUSED
-                - value: idle
-                  param: IDLE
-        commands:
-            play_list:
-                code: play_media
-                value_set: chromecastPlaylists
-            play:
-                code: play
-                controller: media_controller
-            pause:
-                code: pause
-                controller: media_controller
-            stop:
-                code: stop
-                controller: media_controller
-            skip:
-                code: skip
-                controller: media_controller
-            rewind:
-                code: rewind
-                controller: media_controller
-            current_status:
-                result: true
-                readOnly: true
-                code: status
-                controller: media_controller
-                argKey: player_state
-                value_set: status_reverse
-            quit_app:
-                code: quit_app
-            volume_up:
-                code: volume_up
-            volume_down:
-                code: volume_down
-            set_volume:
-                code: set_volume
-                acceptsPct: true
-            current_volume:
-                result: true
-                acceptsPct: true
-                code: status
-                argKey: volume_level
-            set_mute:
-                acceptsBool: true
-                code: set_volume_muted
-                value_set: on_off
-            toggle_mute: {}
-            current_mute:
-                result: true
-                code: status
-                value_set: on_off_reverse
-                argKey: volume_muted
-            start_app:
-                code: start_app
-                value_set: chromecastApps
-            current_app:
-                result: true
-                value_set: chromecastApps_reverse
-                code: status
-                argKey: app_id
-poly:
+  android:
+    description: nVidia Shield
+    executable: adb
+    poly:
+      hint: [1, 6, 7, 0]
+    parameters:
+      - name: name
+        title: Name
+        desc: Display name in ISY Admin Console
+        defaultValue: ''
+      - name: hostName
+        title: Host Name
+        defaultValue: ''
+        isRequired: true
+      - name: port
+        title: Port
+        defaultValue: 5555
+        type: NUMBER
+    values:
+      activities:
+        - value: dashboard
+          param: com.google.android.leanbacklauncher
+        - value: spmc
+          param: com.semperpax.spmc16
+        - value: kodi
+          param: org.xbmc.kodi
+        - value: netflix
+          param: com.netflix.ninja
+        - value: etv
+          param: com.etvnet.etvnetandroidapp
     commandGroups:
-        channels:
-            nls: CH
-        content:
-            nls: CN
-        navigation:
-            nls: N
-        audio:
-            nls: A
-        basic_media:
-            nls: B
-        media:
-            nls: M
-        inputs:
-            nls: I
-        zone2:
-            nls: Z2
-        zone3:
-            nls: Z3
-        keyboard:
-            nls: K
-    drivers:
-        denon_avr:
+      navigation:
+        commands:
+          menu:
+            code: 1
+          home:
+            code: 3
+          back:
+            code: 4
+          up:
+            code: 19
+          down:
+            code: 20
+          left:
+            code: 21
+          right:
+            code: 22
+          center:
+            code: 23
+          page_up:
+            code: 92
+          page_down:
+            code: 93
+      audio:
+        commands:
+          volume_up:
+            code: 23
+          volume_down:
+            code: 25
+      basic_media:
+        commands:
+          pause:
+            code: 127
+          play:
+            code: 126
+          play_pause:
+            code: 85
+          stop:
+            code: 86
+      media:
+        commands:
+          fast_forward:
+            code: 90
+          next:
+            code: 87
+          prev:
+            code: 88
+          rewind:
+            code: 89
+          skip_back:
+            code: 273
+          skip_forward:
+            code: 272
+          step_back:
+            code: 275
+          step_forward:
+            code: 274
+          info:
+            code: 165
+      setup:
+        commands:
+          get_app_list:
+            result: true
+      inputs:
+        commands:
+          get_current_activity:
+            value_set: activities_reverse
+            result: true
+          start_app:
+            values:
+              - value: dashboard
+                param: com.google.android.leanbacklauncher/.MainActivity
+              - value: spmc
+                param: com.semperpax.spmc16/.Splash
+              - value: kodi
+                param: org.xbmc.kodi/.Splash
+              - value: netflix
+                param: com.netflix.ninja/.MainActivity
+              - value: etv
+                param: com.etvnet.etvnetandroidapp/.MainActivity
+      keyboard:
+        commands:
+          send_key:
+            values:
+              - value: A
+                param: 29
+              - value: B
+                param: 30
+              - value: C
+                code: 31
+              - value: D
+                param: 32
+              - value: E
+                param: 33
+              - value: F
+                param: 34
+              - value: G
+                param: 35
+              - value: H
+                param: 36
+              - value: I
+                param: 37
+              - value: J
+                param: 38
+              - value: K
+                param: 39
+              - value: L
+                param: 40
+              - value: M
+                param: 41
+              - value: N
+                param: 42
+              - value: O
+                param: 43
+              - value: P
+                param: 44
+              - value: Q
+                param: 45
+              - value: R
+                param: 46
+              - value: S
+                param: 47
+              - value: T
+                param: 48
+              - value: U
+                param: 49
+              - value: V
+                param: 50
+              - value: W
+                param: 51
+              - value: X
+                param: 52
+              - value: Y
+                param: 53
+              - value: Z
+                param: 54
+              - value: Space
+                param: 62
+              - value: Semicolon
+                param: 74
+              - value: Slash
+                param: 76
+              - value: Backslash
+                param: 73
+              - value: At
+                param: 77
+              - value: Delete
+                param: 67
+              - value: Period
+                param: 56
+              - value: Comma
+                param: 55
+              - value: Enter
+                param: 66
+              - value: Plus
+                param: 81
+              - value: Minus
+                param: 69
+              - value: Star
+                param: 17
+              - value: Pound
+                param: 18
+              - value: Shift
+                param: 59
+              - value: Caps Lock
+                param: 115
+              - value: Alt
+                param: 57
+              - value: Equals
+                param: 70
+              - value: Left Bracket
+                param: 71
+              - value: Right Bracket
+                param: 72
+              - value: Left Parenthesis
+                param: 162
+              - value: Right Parenthesis
+                param: 163
+              - value: Quote
+                param: 75
+              - value: Underscore
+                param: 95
+              - value: 0
+                param: 7
+              - value: 1
+                param: 8
+              - value: 2
+                param: 9
+              - value: 3
+                param: 10
+              - value: 4
+                param: 11
+              - value: 5
+                param: 12
+              - value: 6
+                param: 13
+              - value: 7
+                param: 14
+              - value: 8
+                param: 15
+              - value: 9
+                param: 16
+    commands:
+      power:
+        code: 26
+  web_os:
+    description: LG TV
+    moduleName: WebOS
+    timeout: 1
+    promptTimeout: 60
+    poly:
+      hint: [1, 6, 3, 0]
+    parameters:
+      - name: name
+        title: Name
+        desc: Display name in ISY Admin Console
+        defaultValue: ''
+      - name: hostName
+        title: Host Name
+        defaultValue: lgwebostv
+      - name: port
+        title: Port
+        defaultValue: 3000
+        type: NUMBER
+      - name: mac
+        title: MAC
+        desc: LG Device MAC Address (used for Wake On LAN)
+        defaultValue: ''
+      - name: broadcastAddress
+        title: Broadcast Address
+        defaultValue: ''
+      - name: clientKeyFile
+        title: Client Key File
+        desc: Used to save pairing data
+        defaultValue: cfg/lgtvClientKey.yaml
+    values:
+      inputs:
+        - value: hdmi1
+          param: com.webos.app.hdmi1
+        - value: hdmi2
+          param: com.webos.app.hdmi2
+        - value: hdmi3
+          param: com.webos.app.hdmi3
+        - value: hdmi4
+          param: com.webos.app.hdmi4
+        - value: live_tv
+          param: com.webos.app.livetv
+        - value: youtube
+          param: youtube.leanback.v4
+        - value: netflix
+        - value: amazon
+        - value: vudu
+        - value: hulu
+      on_off:
+        - value: 'off'
+          param: false
+        - value: 'on'
+          param: true
+    commandGroups:
+      setup:
+        commands:
+          get_channels:
+            uri: tv/getChannelList
+            result: true
+          get_input_list:
+            uri: tv/getExternalInputList
+            result: true
+          # get_sw_info:
+          #    uri: com.webos.service.update/getCurrentSWInformation
+          #    result: true
+          get_service_list:
+            uri: api/getServiceList
+            result: true
+          # list_launch_points:
+          #    uri: com.webos.applicationManager/listLaunchPoints
+          #    result: true
+          get_program_info:
+            uri: tv/getChannelProgramInfo
+            result: true
+          get_foreground_app_info:
+            uri: com.webos.applicationManager/getForegroundAppInfo
+            result: true
+          # get_app_status:
+          #    uri: com.webos.service.appstatus/getAppStatus
+          #    result: true
+          # get_app_state:
+          #    uri: system.launcher/getAppState
+          #    result: true
+          toast:
+            uri: system.notifications/createToast
+            argKey: message
+          open_uri:
+            uri: system.launcher/open
+            argKey: target
+          close:
+            uri: system.launcher/close
+            argKey: id
+          delete_characters:
+            uri: com.webos.service.ime/deleteCharacters
+            argKey: count
+          launch_app:
+            uri: com.webos.applicationManager/launch
+          close_web_app:
+            uri: webapp/closeWebApp
+      inputs:
+        commands:
+          current_channel:
+            uri: tv/getCurrentChannel
+            result: true
+          input:
+            uri: system.launcher/launch
+            argKey: id
+            value_set: inputs
+          channel:
+            uri: tv/openChannel
+            argKey: channelId
+          # input:
+          #     uri: tv/switchInput
+          #     argKey: inputId
+          #     value_set: inputs
+          channel_up:
+            uri: tv/channelUp
+          channel_down:
+            uri: tv/channelDown
+          current_input:
+            uri: com.webos.applicationManager/getForegroundAppInfo
+            argKey: appId
+            value_set: inputs_reverse
+            result: true
+      audio:
+        commands:
+          status:
+            uri: audio/getStatus
+            result: true
+          current_volume:
+            argKey: volume
+            uri: audio/getVolume
+            result: true
+          mute:
+            uri: audio/setMute
+            argKey: mute
+            acceptsBool: true
+            value_set: on_off
+          mute_status:
+            argKey: muted
+            uri: audio/getVolume
+            result: true
+            value_set: on_off_reverse
+          toggle_mute: {}
+          set_volume:
+            uri: audio/setVolume
+            argKey: volume
+            acceptsNumber: true
+          volume_up:
+            uri: audio/volumeUp
+          volume_down:
+            uri: audio/volumeDown
+      basic_media:
+        commands:
+          play:
+            uri: media.controls/play
+          stop:
+            uri: media.controls/stop
+          pause:
+            uri: media.controls/pause
+      media:
+        commands:
+          rewind:
+            uri: media.controls/rewind
+          fast_forward:
+            uri: media.controls/fastForward
+          close_viewer:
+            uri: media.viewer/close
+      navigation:
+        commands:
+          enter:
+            uri: com.webos.service.ime/sendEnterKey
+    commands:
+      power_off:
+        uri: system/turnOff
+      power_on: {}
+      # set_3d_on:
+      #     uri: com.webos.service.tv.display/set3DOn
+      # set_3d_off:
+      #     uri: com.webos.service.tv.display/set3DOff
+    registerCommand:
+      forcePairing: false
+      pairingType: PROMPT
+      manifest:
+        signed:
+          permissions:
+            - TEST_SECURE
+            - CONTROL_INPUT_TEXT
+            - CONTROL_MOUSE_AND_KEYBOARD
+            - READ_INSTALLED_APPS
+            - READ_LGE_SDX
+            - READ_NOTIFICATIONS
+            - SEARCH
+            - WRITE_SETTINGS
+            - WRITE_NOTIFICATION_ALERT
+            - CONTROL_POWER
+            - READ_CURRENT_CHANNEL
+            - READ_RUNNING_APPS
+            - READ_UPDATE_INFO
+            - UPDATE_FROM_REMOTE_APP
+            - READ_LGE_TV_INPUT_EVENTS
+            - READ_TV_CURRENT_TIME
+        permissions:
+          - LAUNCH
+          - LAUNCH_WEBAPP
+          - APP_TO_APP
+          - CLOSE
+          - TEST_OPEN
+          - TEST_PROTECTED
+          - CONTROL_AUDIO
+          - CONTROL_DISPLAY
+          - CONTROL_INPUT_JOYSTICK
+          - CONTROL_INPUT_MEDIA_RECORDING
+          - CONTROL_INPUT_MEDIA_PLAYBACK
+          - CONTROL_INPUT_TV
+          - CONTROL_POWER
+          - READ_APP_STATUS
+          - READ_CURRENT_CHANNEL
+          - READ_INPUT_DEVICE_LIST
+          - READ_NETWORK_STATE
+          - READ_RUNNING_APPS
+          - READ_TV_CHANNEL_LIST
+          - WRITE_NOTIFICATION_TOAST
+          - READ_POWER_STATE
+          - READ_COUNTRY_INFO
+  tivo_ip:
+    description: Tivo
+    moduleName: TivoIP
+    timeout: 5
+    poly:
+      hint: [1, 6, 6, 0]
+    parameters:
+      - name: name
+        title: Name
+        desc: Display name in ISY Admin Console
+        defaultValue: ''
+      - name: hostName
+        title: Host Name
+        defaultValue: ''
+        isRequired: true
+      - name: port
+        title: Port
+        defaultValue: 31339
+        type: NUMBER
+    commandGroups:
+      channels:
+        commands:
+          set_channel:
+            code: IRCODE
+            argument: true
+            response: true
+            acceptsNumber: true
+          force_channel:
             commands:
-                set_volume:
-                    param:
-                        uom: 12
-                        min: 0
-                        max: 98
-                        step: 0.5
-                        prec: 1
-                    driver:
-                        name: SVOL
-                        description: Volume
-                        input: current_volume
-                select_input:
-                    driver:
-                        name: GV0
-                        description: Input
-                        input: current_input_source
-                power:
-                    driver:
-                        name: GV1
-                        input: current_power
-                mute:
-                    driver:
-                        name: GV2
-                        input: current_mute
-        onkyo_avr:
-            commands:
-                set_volume:
-                    param:
-                        uom: 12
-                        min: 0
-                        max: 80
-                        step: 1
-                        prec: 0
-                    driver:
-                        name: SVOL
-                        description: Volume
-                        input: current_volume
-                power:
-                    driver:
-                        name: GV0
-                        input: current_power
-                mute:
-                    driver:
-                        name: GV1
-                        input: current_mute
-                select_input:
-                    driver:
-                        name: GV2
-                        description: Input
-                        input: current_input_source
-        web_os:
-            commands:
-                set_volume:
-                    param:
-                        uom: 12
-                        min: 0
-                        max: 20
-                        step: 1
-                        prec: 0
-                    driver:
-                        name: SVOL
-                        input: current_volume
-                input:
-                    driver:
-                        name: GV0
-                        input: current_input
-                mute:
-                    driver:
-                        name: GV1
-                        input: mute_status
-        tivo_ip:
-            commands:
-                set_channel:
-                    param:
-                        uom: 56
-                        subset: 0-9999
-                force_channel:
-                    param:
-                        uom: 56
-                        subset: 0-9999
-        android:
-            commands:
-                start_app:
-                    driver:
-                        name: GV0
-                        description: Current Activity
-                        input: get_current_activity
-        chromecast:
-            commands:
-                current_status:
-                    driver:
-                        name: GV0
-                        description: Status
-                set_volume:
-                    param:
-                        uom: 51
-                        subset: 0-100
-                    driver:
-                        name: SVOL
-                        description: Volume
-                        input: current_volume
-                set_mute:
-                    driver:
-                        name: GV1
-                        description: Mute
-                        input: current_mute
-                start_app:
-                    driver:
-                        name: GV2
-                        description: Current App
-                        input: current_app
+              - code: IRCODE LIVETV
+                response: true
+                delay: 1
+              - code: IRCODE
+                argument: true
+                response: true
+            acceptsNumber: true
+          channel_up:
+            code: IRCODE CHANNELUP
+          channel_down:
+            code: IRCODE CHANNELDOWN
+      content:
+        commands:
+          tivo:
+            code: IRCODE TIVO
+          live_tv:
+            code: IRCODE LIVETV
+          guide:
+            code: IRCODE GUIDE
+          info:
+            code: IRCODE INFO
+          exit:
+            code: IRCODE EXIT
+          thumbs_up:
+            code: IRCODE THUMBSUP
+          thumbs_down:
+            code: IRCODE THUMBSDOWN
+          color_button:
+            code: IRCODE ACTION_
+            values:
+              - value: A (Yellow)
+                param: A
+              - value: B (Blue)
+                param: B
+              - value: C (Red)
+                param: C
+              - value: D (Green)
+                param: D
+      navigation:
+        commands:
+          up:
+            code: IRCODE UP
+          down:
+            code: IRCODE DOWN
+          left:
+            code: IRCODE LEFT
+          right:
+            code: IRCODE RIGHT
+          select:
+            code: IRCODE SELECT
+          tv_input:
+            code: IRCODE TVINPUT
+          number_button:
+            code: IRCODE NUM
+            description: Send Number Button
+            argument: true
+            values:
+              - value: '1'
+              - value: '2'
+              - value: '3'
+              - value: '4'
+              - value: '5'
+              - value: '6'
+              - value: '7'
+              - value: '8'
+              - value: '9'
+              - value: '0'
+          enter:
+            code: IRCODE ENTER
+          clear:
+            code: IRCODE CLEAR
+      audio:
+        commands:
+          mute:
+            code: IRCODE MUTE
+          volume_down:
+            code: IRCODE VOLUMEDOWN
+          volume_up:
+            code: IRCODE VOLUMEUP
+      basic_media:
+        commands:
+          play:
+            code: IRCODE PLAY
+          pause:
+            code: IRCODE PAUSE
+      media:
+        commands:
+          forward:
+            code: IRCODE FORWARD
+          reverse:
+            code: IRCODE REVERSE
+          slow:
+            code: IRCODE SLOW
+          replay:
+            code: IRCODE REPLAY
+          advance:
+            code: IRCODE ADVANCE
+          record:
+            code: IRCODE RECORD
+    commands: {}
+  denon_avr:
+    description: Denon AVR
+    moduleName: DenonAVR
+    timeout: 10
+    poly:
+      hint: [1, 6, 5, 0]
+    parameters:
+      - name: name
+        title: Name
+        desc: Display name in ISY Admin Console
+        defaultValue: ''
+      - name: hostName
+        title: Host Name
+        defaultValue: ''
+        isRequired: true
+      - name: port
+        title: Port
+        defaultValue: 23
+        type: NUMBER
+      - name: connectOnDemand
+        title: Connect On Demand
+        desc: Close connection after command is sent
+        defaultValue: false
+        type: BOOL
+    values:
+      inputs:
+        - value: tv_sat
+          param: SAT/CBL
+        - value: dvd
+          param: DVD
+        - value: bluray
+          param: BD
+        - value: tv_audio
+          param: TV
+        - value: media
+          param: MPLAY
+        - value: game
+          param: GAME
+        - value: aux1
+          param: AUX1
+        - value: cd
+          param: CD
+        - value: aux2
+          param: AUX2
+        - value: net
+          param: NET
+      on_off:
+        - value: 'off'
+          param: 'OFF'
+        - value: 'on'
+          param: 'ON'
+      up_down:
+        - value: up
+          param: UP
+        - value: down
+          param: DOWN
+    commands:
+      select_input:
+        code: SI
+        value_set: inputs
+      current_input_source:
+        code: SI?
+        value_set: inputs_reverse
+        result: true
+      volume:
+        code: MV
+        value_set: up_down
+      set_volume:
+        code: MV
+        acceptsFloat: true
+      current_volume:
+        code: MV?
+        acceptsFloat: true
+        result: true
+      power:
+        code: ZM
+        value_set: on_off
+      current_power:
+        code: ZM?
+        value_set: on_off_reverse
+        result: true
+      mute:
+        code: MU
+        value_set: on_off
+      current_mute:
+        code: MU?
+        value_set: on_off_reverse
+        result: true
+    commandGroups:
+      zone2:
+        suffix: _z2
+        commands:
+          select_input:
+            code: Z2
+            value_set: inputs
+          current_input_source:
+            code: Z2?
+            value_set: inputs_reverse
+            result: true
+          volume:
+            code: Z2
+            value_set: up_down
+          set_volume:
+            code: Z2
+            acceptsFloat: true
+          current_volume:
+            code: Z2?
+            acceptsFloat: true
+            result: true
+          power:
+            code: Z2
+            value_set: on_off
+          current_power:
+            code: Z2?
+            value_set: on_off_reverse
+            result: true
+          mute:
+            code: Z2MU
+            value_set: on_off
+          current_mute:
+            code: Z2MU?
+            value_set: on_off_reverse
+            result: true
+      zone3:
+        suffix: _z3
+        commands:
+          select_input:
+            code: Z3
+            value_set: inputs
+          current_input_source:
+            code: Z3?
+            value_set: inputs_reverse
+            result: true
+          volume:
+            code: Z3
+            value_set: up_down
+          set_volume:
+            code: Z3
+            acceptsFloat: true
+          current_volume:
+            code: Z3?
+            acceptsFloat: true
+            result: true
+          power:
+            code: Z3
+            value_set: on_off
+          current_power:
+            code: Z3?
+            value_set: on_off_reverse
+            result: true
+          mute:
+            code: Z3MU
+            value_set: on_off
+          current_mute:
+            code: Z3MU?
+            value_set: on_off_reverse
+            result: true
+  onkyo_avr:
+    description: Onkyo AVR
+    moduleName: OnkyoAVR
+    timeout: 10
+    poly:
+      hint: [1, 6, 5, 0]
+    parameters:
+      - name: name
+        title: Name
+        desc: Display name in ISY Admin Console
+        defaultValue: ''
+      - name: hostName
+        title: Host Name
+        defaultValue: ''
+        isRequired: true
+      - name: port
+        title: Port
+        defaultValue: 60128
+        type: NUMBER
+    values:
+      on_off:
+        - value: 'off'
+          param: '00'
+        - value: 'on'
+          param: '01'
+      up_down:
+        - value: up
+          param: UP
+        - value: down
+          param: DOWN
+      inputs:
+        - value: vcr_dvr
+          param: '00'
+        - value: cbl_sat
+          param: '01'
+        - value: game_tv
+          param: '02'
+        - value: aux1
+          param: '03'
+        - value: aux2
+          param: '04'
+        - value: dvd
+          param: '10'
+        - value: cd
+          param: '23'
+        - value: net_radio
+          param: '28'
+        - value: net
+          param: '2B'
+        - value: usb
+          param: '29'
+        - value: xm
+          param: '31'
+        - value: sirius
+          param: '32'
+        - value: am
+          param: '25'
+        - value: fm
+          param: '24'
+    commands:
+      toggle_mute:
+        code: AMTTG
+      mute:
+        code: AMT
+        value_set: on_off
+      current_mute:
+        code: AMTQSTN
+        value_set: on_off_reverse
+        result: true
+      power:
+        code: PWR
+        value_set: on_off
+      current_power:
+        code: PWRQSTN
+        value_set: on_off_reverse
+        result: true
+      volume:
+        code: MVL
+        value_set: up_down
+      current_volume:
+        code: MVLQSTN
+        result: true
+        acceptsHex: true
+      set_volume:
+        code: MVL
+        acceptsHex: true
+      select_input:
+        code: SLI
+        value_set: inputs
+      current_input_source:
+        code: SLIQSTN
+        result: true
+        value_set: inputs_reverse
+    commandGroups:
+      zone2:
+        suffix: _z2
+        commands:
+          toggle_mute:
+            code: ZMTTG
+          mute:
+            code: ZMT
+            value_set: on_off
+          current_mute:
+            code: ZMTQSTN
+            value_set: on_off_reverse
+            result: true
+          power:
+            code: ZPW
+            value_set: on_off
+          current_power:
+            code: ZPWQSTN
+            value_set: on_off_reverse
+            result: true
+          volume:
+            code: ZVL
+            value_set: up_down
+          current_volume:
+            code: ZVLQSTN
+            result: true
+            acceptsHex: true
+          set_volume:
+            code: ZVL
+            acceptsHex: true
+          select_input:
+            code: SLZ
+            value_set: inputs
+          current_input_source:
+            code: SLZQSTN
+            result: true
+            value_set: inputs_reverse
+      zone3:
+        suffix: _z3
+        commands:
+          toggle_mute:
+            code: MT3TG
+          mute:
+            code: MT3
+            value_set: on_off
+          current_mute:
+            code: MT3QSTN
+            value_set: on_off_reverse
+            result: true
+          power:
+            code: PW3
+            value_set: on_off
+          current_power:
+            code: PW3QSTN
+            value_set: on_off_reverse
+            result: true
+          volume:
+            code: VL3
+            value_set: up_down
+          current_volume:
+            code: VL3QSTN
+            result: true
+            acceptsHex: true
+          set_volume:
+            code: VL3
+            acceptsHex: true
+          select_input:
+            code: SL3
+            value_set: inputs
+          current_input_source:
+            code: SL3QSTN
+            result: true
+            value_set: inputs_reverse
+  esp8266:
+    description: ESP8266 IR
+    moduleName: ESP8266
+    parameters:
+      - name: name
+        title: Name
+        desc: Display name in ISY Admin Console
+        defaultValue: ''
+      - name: hostName
+        title: Host Name
+        defaultValue: ''
+        isRequired: true
+      - name: port
+        title: Port
+        defaultValue: 80
+        type: NUMBER
+      - name: ir_emitter
+        title: IR Emitter
+        desc: Emitter Number (0 - 3)
+        defaultValue: 0
+        type: NUMBER
+    commands:
+      power:
+        code: tv_power_
+        values:
+          - value: 'on'
+            param: 'on'
+          - value: 'off'
+            param: 'off'
+      tv_volume_up: {}
+      tv_volume_down: {}
+  chromecast:
+    description: Chromecast
+    poly:
+      hint: [1, 6, 7, 0]
+    driverParameters:
+      - name: enableChromecastSupport
+        title: Enable Chromecast Support
+        defaultValue: False
+        type: BOOL
+      - name: chromecastPlaylists
+        title: Chromecast Play Lists
+        isList: true
+        params:
+          - name: name
+            title: Name
+            isRequired: true
+          - name: url
+            title: URL
+            isRequired: true
+          - name: type
+            title: Type
+            desc: mime type, for example 'video/mp4'
+            isRequired: true
+      - name: chromecastApps
+        title: Chromecast Apps
+        isList: true
+        params:
+          - name: name
+            title: Name
+            isRequired: true
+          - name: app_id
+            title: App ID
+            isRequired: true
+    coreApps:
+      - value: None
+        param: null
+      - value: Spotify
+        param: CC32E753
+      - value: Netflix
+        param: CA5E8412
+      - value: YouTube
+        param: 233637DE
+      - value: Google Play Music
+        param: '2872939A'
+      - value: Default Media Receiver
+        param: CC1AD845
+    defaultApp:
+      value: Other
+      param: ''
+      isDefault: true
+    values:
+      chromecastPlaylists:
+      chromecastApps:
+      on_off:
+        - value: Off
+          param: false
+        - value: On
+          param: true
+      status:
+        - value: unknown
+          param: UNKNOWN
+        - value: playing
+          param: PLAYING
+        - value: buffering
+          param: BUFFERING
+        - value: paused
+          param: PAUSED
+        - value: idle
+          param: IDLE
+    commands:
+      play_list:
+        code: play_media
+        value_set: chromecastPlaylists
+      play:
+        code: play
+        controller: media_controller
+      pause:
+        code: pause
+        controller: media_controller
+      stop:
+        code: stop
+        controller: media_controller
+      skip:
+        code: skip
+        controller: media_controller
+      rewind:
+        code: rewind
+        controller: media_controller
+      current_status:
+        result: true
+        readOnly: true
+        code: status
+        controller: media_controller
+        argKey: player_state
+        value_set: status_reverse
+      quit_app:
+        code: quit_app
+      volume_up:
+        code: volume_up
+      volume_down:
+        code: volume_down
+      set_volume:
+        code: set_volume
+        acceptsPct: true
+      current_volume:
+        result: true
+        acceptsPct: true
+        code: status
+        argKey: volume_level
+      set_mute:
+        acceptsBool: true
+        code: set_volume_muted
+        value_set: on_off
+      toggle_mute: {}
+      current_mute:
+        result: true
+        code: status
+        value_set: on_off_reverse
+        argKey: volume_muted
+      start_app:
+        code: start_app
+        value_set: chromecastApps
+      current_app:
+        result: true
+        value_set: chromecastApps_reverse
+        code: status
+        argKey: app_id
+poly:
+  commandGroups:
+    channels:
+      nls: CH
+    content:
+      nls: CN
+    navigation:
+      nls: N
+    audio:
+      nls: A
+    basic_media:
+      nls: B
+    media:
+      nls: M
+    inputs:
+      nls: I
+    zone2:
+      nls: Z2
+    zone3:
+      nls: Z3
+    keyboard:
+      nls: K
+  drivers:
+    denon_avr:
+      commands:
+        set_volume:
+          param:
+            uom: 12
+            min: 0
+            max: 98
+            step: 0.5
+            prec: 1
+          driver:
+            name: SVOL
+            description: Volume
+            input: current_volume
+        select_input:
+          driver:
+            name: GV0
+            description: Input
+            input: current_input_source
+        power:
+          driver:
+            name: GV1
+            input: current_power
+        mute:
+          driver:
+            name: GV2
+            input: current_mute
+    onkyo_avr:
+      commands:
+        set_volume:
+          param:
+            uom: 12
+            min: 0
+            max: 80
+            step: 1
+            prec: 0
+          driver:
+            name: SVOL
+            description: Volume
+            input: current_volume
+        power:
+          driver:
+            name: GV0
+            input: current_power
+        mute:
+          driver:
+            name: GV1
+            input: current_mute
+        select_input:
+          driver:
+            name: GV2
+            description: Input
+            input: current_input_source
+    web_os:
+      commands:
+        set_volume:
+          param:
+            uom: 12
+            min: 0
+            max: 20
+            step: 1
+            prec: 0
+          driver:
+            name: SVOL
+            input: current_volume
+        input:
+          driver:
+            name: GV0
+            input: current_input
+        mute:
+          driver:
+            name: GV1
+            input: mute_status
+    tivo_ip:
+      commands:
+        set_channel:
+          param:
+            uom: 56
+            subset: 0-9999
+        force_channel:
+          param:
+            uom: 56
+            subset: 0-9999
+    android:
+      commands:
+        start_app:
+          driver:
+            name: GV0
+            description: Current Activity
+            input: get_current_activity
+    chromecast:
+      commands:
+        current_status:
+          driver:
+            name: GV0
+            description: Status
+        set_volume:
+          param:
+            uom: 51
+            subset: 0-100
+          driver:
+            name: SVOL
+            description: Volume
+            input: current_volume
+        set_mute:
+          driver:
+            name: GV1
+            description: Mute
+            input: current_mute
+        start_app:
+          driver:
+            name: GV2
+            description: Current App
+            input: current_app

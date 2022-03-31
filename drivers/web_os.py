@@ -84,8 +84,13 @@ class WebOS(BaseDriver):
                 self.logger.error(
                     'Error sending power on command. MAC is not set up')
             else:
-                self.logger.debug('Sending wake up command to %s', mac)
-                wakeonlan.send_magic_packet(mac)
+                ip = self.confg.get('broadcastAddress')
+                if ip == '':
+                    ip = '255.255.255.255'
+
+                self.logger.debug('Sending wake up command to %s (%s)', mac, ip)
+
+                wakeonlan.send_magic_packet(mac, ip_address=ip)
             return ''
         elif commandName == 'toggle_mute':
             output = self.sendCommandRaw(

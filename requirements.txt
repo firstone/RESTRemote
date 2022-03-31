@@ -4,5 +4,5 @@ polyinterface>=2.0.28
 pyyaml>=3.12
 pychromecast>=9.1.2
 requests>=2.18.4
-wakeonlan>=1.1.6
+wakeonlan>=2.1.0
 ws4py>=0.5.1

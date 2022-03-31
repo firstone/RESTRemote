@@ -64,6 +64,8 @@ The first time you start the service, it needs to be accepted on TV. Start the s
 
 For some reason listing available launch point or available app doesn't work for me. So you can usually turn on an app, then issue get running app status command, and use that ID to configure launch commands.
 
+If TV doesn't turn on using *Power On* command, set **Broadcast Address** parameter to you match your subnet. For example, if you TV's IP address is *192.168.0.xxx*, set **Broadcast Address** to *192.168.0.255*
+
 ### Shield (Android devices)
 
 Android based devices use adb debugging mode. Make sure you have adb installed and configured in *executable*. It either has to be in path or have absolute path specified. Not sure if there's auto discovery so just plug host name or IP into *hostName*.
