@@ -84,7 +84,7 @@ class WebOS(BaseDriver):
                 self.logger.error(
                     'Error sending power on command. MAC is not set up')
             else:
-                ip = self.confg.get('broadcastAddress')
+                ip = self.config.get('broadcastAddress')
                 if ip == '':
                     ip = '255.255.255.255'
 
