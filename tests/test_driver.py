@@ -167,7 +167,7 @@ class UtilsTester(unittest.TestCase):
 
         driver.executeCommand('intCommand', '123')
         driver.sendCommandRaw.assert_called_with('intCommand',
-                                                 config['commands']['intCommand'], '123')
+                                                 config['commands']['intCommand'], 123)
 
     def test_execute_command_hex_param(self):
         config = UtilsTester.config['numberParams']

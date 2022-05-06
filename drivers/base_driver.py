@@ -91,7 +91,7 @@ class BaseDriver(object):
             if command.get('acceptsBool') and type(args) is not bool:
                 args = args == 'true' or args == 'on'
             elif command.get('acceptsNumber'):
-                args = str(int(args))
+                args = int(args)
             elif command.get('acceptsPct'):
                 args = float(args)/100
             elif command.get('acceptsFloat'):

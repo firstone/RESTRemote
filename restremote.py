@@ -73,7 +73,7 @@ def RESTRemote(config, serverconfig, debug):
         driver = getattr(module, driverData.get(
             'moduleName', driverName.capitalize()))
         drivers[driverName] = driver
-        deviceData = driver.discoverDevices(driverData)
+        deviceData = driver.discoverDevices(logger)
         if deviceData is not None:
             devicesConfig.update(deviceData)
 
