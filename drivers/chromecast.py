@@ -140,7 +140,7 @@ class Chromecast(BaseDriver):
 
         result = {}
         for cast in casts:
-            friendly_name = cast.device.friendly_name
+            friendly_name = cast.cast_info.friendly_name
             logger.debug(f'Found Chromecast device {friendly_name}')
             result[utils.desc_to_name(friendly_name)] = {
                 'name': friendly_name,
